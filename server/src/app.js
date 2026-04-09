@@ -1,4 +1,6 @@
 const express = require("express");
+const path = require("path");
+const fs = require("fs");
 const httpLogger = require("@src/shared/middlewares/httpLogger.middleware");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -47,6 +49,12 @@ app.use(cookieParser());
 
 app.use(httpLogger);
 
+// Serve static files from built client (for production/Replit)
+const clientDistPath = path.join(__dirname, "../../client/dist");
+if (fs.existsSync(clientDistPath)) {
+  app.use(express.static(clientDistPath));
+}
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
@@ -69,8 +77,14 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-app.all("/{*splat}", (req, res, next) => {
-  next(new ApiError(`Cannot ${req.method} ${req.originalUrl}`, 404));
+// Serve index.html for all non-API routes (SPA fallback)
+app.get("*", (req, res) => {
+  const indexPath = path.join(__dirname, "../../client/dist/index.html");
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).json({ error: "Frontend not built. Run: npm run build" });
+  }
 });
 
 // Error handling

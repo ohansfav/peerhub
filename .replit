@@ -1,0 +1,15 @@
+run = "bash start-replit.sh"
+
+entrypoint = "server/src/server.js"
+
+[env]
+NODE_ENV = "production"
+JWT_SECRET = "replit-secret-key-change-in-production"
+EMAIL_SERVICE = "console"
+ADMIN_EMAIL = "admin@peerhub.com"
+ADMIN_PASSWORD = "admin123"
+DATABASE_URL = "file:./database.sqlite"
+PORT = "3000"
+
+[packager]
+language = "nodejs"

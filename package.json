@@ -1,0 +1,16 @@
+{
+  "name": "peerhub",
+  "version": "1.0.0",
+  "description": "Peerhub - P2P Tutoring Platform",
+  "main": "server/src/server.js",
+  "scripts": {
+    "build": "cd client && npm run build && cd ../server && npm install",
+    "start": "cd server && npm start",
+    "start:prod": "cd client && npm install && npm run build && cd ../server && npm install && npm start",
+    "dev": "concurrently \"cd client && npm run dev\" \"cd server && npm start\"",
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install"
+  },
+  "keywords": ["tutoring", "peerhub", "education"],
+  "author": "Peerhub Team",
+  "license": "MIT"
+}

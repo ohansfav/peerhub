@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+  workflow_call:
+    secrets:
+      VITE_API_URL:
+        required: false
+      VITE_STREAM_API_KEY:
+        required: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-lint:
+    name: Lint and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm install
+
+      # - name: Lint
+      #   run: npm run lint
+
+      - name: Write environment file
+        run: |
+          echo "Creating .env file"
+          touch .env
+          if [[ -n "${{ secrets.VITE_API_URL }}" ]]; then
+            echo "VITE_API_URL=${{ secrets.VITE_API_URL }}" >> .env
+          fi
+          if [[ -n "${{ secrets.VITE_STREAM_API_KEY }}" ]]; then
+            echo "VITE_STREAM_API_KEY=${{ secrets.VITE_STREAM_API_KEY }}" >> .env
+          fi
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          if-no-files-found: error

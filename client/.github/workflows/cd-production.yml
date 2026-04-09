@@ -1,0 +1,138 @@
+name: CD Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  APP_NAME: "edupeerhub-client"
+  ENV_NAME: "production"
+  SERVICE_ENV: "production"
+  BRANCH: "main"
+  REPO_URL: "https://github.com/Edupeerhub/edupeerhub-client.git"
+  DEPLOY_DIR: "/var/www/edupeerhub-client-production"
+  SERVICE_NAME: "edupeerhub-client-production"
+
+jobs:
+  ci:
+    name: CI (reused)
+    uses: ./.github/workflows/ci.yml
+    secrets:
+      VITE_API_URL: ${{ secrets.PRODUCTION_VITE_API_URL }}
+      VITE_STREAM_API_KEY: ${{ secrets.PROD_VITE_STREAM_API_KEY }}
+
+  deploy:
+    name: Deploy production
+    needs: ci
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      - name: Archive build output
+        run: tar -czf dist.tar.gz -C dist .
+
+      - name: Upload build artifact to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: dist.tar.gz
+          target: /tmp/${{ env.SERVICE_NAME }}
+
+      - name: Deploy artifact and configure Nginx (production)
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            UPLOAD_DIR="/tmp/${{ env.SERVICE_NAME }}"
+            ARCHIVE="$UPLOAD_DIR/dist.tar.gz"
+            TEMP_DIR="/tmp/${{ env.SERVICE_NAME }}-extracted"
+            DEPLOY_PATH="${{ env.DEPLOY_DIR }}"
+
+            if [ ! -f "$ARCHIVE" ]; then
+              echo "Build archive not found at $ARCHIVE" >&2
+              exit 1
+            fi
+
+            sudo apt-get update -y
+            sudo apt-get install -y nginx certbot python3-certbot-nginx
+
+            sudo rm -rf "$TEMP_DIR"
+            sudo mkdir -p "$TEMP_DIR" "$DEPLOY_PATH"
+
+            sudo tar -xzf "$ARCHIVE" -C "$TEMP_DIR"
+
+            sudo find "$DEPLOY_PATH" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+            sudo cp -r "$TEMP_DIR"/. "$DEPLOY_PATH"/
+
+            sudo chown -R $USER:$USER "$DEPLOY_PATH"
+            sudo rm -f "$ARCHIVE"
+            sudo rm -rf "$TEMP_DIR"
+
+            # Create Nginx configuration
+            sudo tee "/etc/nginx/sites-available/${{ env.SERVICE_NAME }}" > /dev/null << EOL
+            server {
+                listen 80;
+                server_name ${{ secrets.PRODUCTION_DOMAIN }};
+
+                root ${{ env.DEPLOY_DIR }};
+                index index.html;
+
+                location / {
+                    try_files \$uri \$uri/ /index.html;
+                }
+
+                location ~* \.(js|css|png|jpg|jpeg|gif|ico)\$ {
+                    expires max;
+                    add_header Cache-Control "public, immutable";
+                }
+            }
+            EOL
+
+            # Enable the site (only if available)
+            SITE_AVAIL="/etc/nginx/sites-available/${{ env.SERVICE_NAME }}"
+            SITE_ENABLED="/etc/nginx/sites-enabled/${{ env.SERVICE_NAME }}"
+            if [ -f "$SITE_AVAIL" ]; then
+              if [ -L "$SITE_ENABLED" ]; then
+                CURRENT_TARGET=$(readlink -f "$SITE_ENABLED")
+                if [ "$CURRENT_TARGET" = "$SITE_AVAIL" ]; then
+                  echo "Nginx site ${{ env.SERVICE_NAME }} already enabled."
+                else
+                  echo "Updating Nginx site symlink to correct target."
+                  sudo ln -sfn "$SITE_AVAIL" "$SITE_ENABLED"
+                fi
+              else
+                echo "Enabling Nginx site ${{ env.SERVICE_NAME }}."
+                sudo ln -s "$SITE_AVAIL" "$SITE_ENABLED"
+              fi
+            else
+              echo "Nginx site config $SITE_AVAIL not found; cannot enable site." >&2
+              exit 1
+            fi
+
+            # Test Nginx configuration
+            sudo nginx -t
+
+            # Reload Nginx
+            sudo systemctl reload nginx
+            echo "Obtaining SSL certificate for ${{ secrets.PRODUCTION_DOMAIN }}..."
+            sudo certbot --nginx -d "${{ secrets.PRODUCTION_DOMAIN }}" --non-interactive --agree-tos -m "${{ secrets.SSL_EMAIL }}" --redirect
+            

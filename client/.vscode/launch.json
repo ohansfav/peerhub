@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "chrome", // use "pwa-chrome" if you’re on the new VS Code debugger
+      "request": "launch",
+      "name": "Debug Vite + Vivaldi",
+      "url": "http://localhost:5173", // Vite default port
+      "webRoot": "${workspaceFolder}/src"
+    }
+  ]
+}

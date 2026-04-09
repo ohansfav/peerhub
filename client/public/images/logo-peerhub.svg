@@ -1,0 +1,17 @@
+<svg width="500" height="200" viewBox="0 0 500 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="105" cy="55" r="16" fill="#2D70B7"/>
+  <path d="M60 140C60 110 80 85 105 85C125 85 140 100 145 120" stroke="#2D70B7" stroke-width="18" stroke-linecap="round"/>
+  
+  <circle cx="155" cy="55" r="16" fill="#28A745"/>
+  <path d="M110 145C125 125 140 85 185 45" stroke="#28A745" stroke-width="18" stroke-linecap="round"/>
+  
+  <path d="M165 45H190V70" stroke="#28A745" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <text x="220" y="135" font-family="sans-serif" font-weight="800" font-size="72" letter-spacing="-2">
+    <tspan fill="#2D70B7">Peer</tspan><tspan fill="#28A745">up</tspan>
+  </text>
+  
+  <text x="225" y="165" font-family="sans-serif" font-weight="500" font-size="14" fill="#555" letter-spacing="0.5">
+    P2P TUTORING FOR NIGERIAN UNIVERSITIES
+  </text>
+</svg>

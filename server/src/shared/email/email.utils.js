@@ -29,6 +29,13 @@ const sendEmail = async (options) => {
   }
 
   // Production: Use Mailtrap
+  if (!mailtrapClient) {
+    logger.warn(
+      "📧 Email sending skipped: Mailtrap client not configured (MAILTRAP_TOKEN missing)."
+    );
+    return;
+  }
+
   return mailtrapClient.send({
     from: sender,
     ...options,

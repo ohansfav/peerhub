@@ -1,23 +1,9 @@
 const cloudinary = require("cloudinary").v2;
 
-const isTests = process.env.NODE_ENV === "test";
-const isDev = process.env.NODE_ENV === "development";
-
-// In production, Cloudinary credentials are required
-if (!isTests && !isDev) {
-  if (
-    !process.env.CLOUDINARY_CLOUD_NAME ||
-    !process.env.CLOUDINARY_API_KEY ||
-    !process.env.CLOUDINARY_API_SECRET
-  ) {
-    throw new Error("Missing Cloudinary environment variables");
-  }
-}
-
-// Configure if credentials are available
+// Configure only when all credentials are present
 if (
-  process.env.CLOUDINARY_CLOUD_NAME ||
-  process.env.CLOUDINARY_API_KEY ||
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
   process.env.CLOUDINARY_API_SECRET
 ) {
   cloudinary.config({
@@ -25,6 +11,10 @@ if (
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
+} else {
+  console.warn(
+    "⚠️  Cloudinary credentials not configured. Image uploads will be unavailable until CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are set."
+  );
 }
 
 module.exports = cloudinary;

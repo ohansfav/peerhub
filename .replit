@@ -1,4 +1,4 @@
-run = "bash start-replit.sh"
+run = "cd client && npm install && npm run build && cd ../server && npm install && npm start"
 
 entrypoint = "server/src/server.js"
 

@@ -8,12 +8,15 @@ import AvailabilityIcon from "../assets/images/layout-icons/clock.svg?react";
 import MessageIcon from "../assets/images/layout-icons/message.svg?react";
 import StudentsIcon from "../assets/images/layout-icons/students.svg?react";
 import ReportsIcon from "../assets/images/layout-icons/reports.svg?react";
-import { UsersIcon } from "lucide-react";
+import { UsersIcon, BookOpenCheck, GraduationCap } from "lucide-react";
 
 export const studentSidebarLinks = [
   { path: "/student/dashboard", label: "Dashboard", icon: DashboardIcon },
+  { path: "/student/my-courses", label: "My Courses", icon: GraduationCap },
+  { path: "/student/courses", label: "Course Catalog", icon: BookOpenCheck },
   { path: "/student/sessions", label: "My Sessions", icon: SessionIcon },
-  { path: "/student/library", label: "Library", icon: LibraryIcon },
+  { path: "/student/quizzes", label: "Quizzes", icon: BookOpenCheck },
+  { path: "/student/library", label: "Course Materials", icon: LibraryIcon },
   { path: "/student/tutors", label: "Tutors", icon: TutorIcon },
   { path: "/student/chats", label: "Messages", icon: MessageIcon },
   { path: "/student/faq", label: "Ask Questions", icon: AskIcon },
@@ -27,13 +30,13 @@ export const tutorSidebarLinks = [
     label: "Booking Requests",
     icon: StudentsIcon,
   },
-
   { path: "/tutor/sessions", label: "My Sessions", icon: SessionIcon },
   {
     path: "/tutor/availability",
     label: "Availability",
     icon: AvailabilityIcon,
   },
+  { path: "/tutor/quizzes", label: "Quizzes & Broadcasts", icon: BookOpenCheck },
   { path: "/tutor/chats", label: "Messages", icon: MessageIcon },
   { path: "/tutor/faq", label: "Ask Questions", icon: AskIcon },
   { path: "/tutor/settings", label: "Settings", icon: SettingsIcon },

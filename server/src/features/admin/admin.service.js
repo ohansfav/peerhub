@@ -1,4 +1,4 @@
-const { User, Tutor, Student, Admin } = require("@src/shared/database/models");
+const { User, Tutor, Student, Admin, Course } = require("@src/shared/database/models");
 const { Op } = require("sequelize");
 const { getSignedFileUrl } = require("@src/shared/S3/s3Service");
 const ApiError = require("@utils/apiError");
@@ -158,7 +158,7 @@ exports.getUserCounts = async (range = "week") => {
 
   // --- CURRENT TOTALS ---
   const [totalTutors, totalStudents, totalPendingTutors] = await Promise.all([
-    User.count({ where: { role: "tutor" } }),
+    Tutor.unscoped().count({ where: { approvalStatus: "approved" } }),
     User.count({ where: { role: "student" } }),
     Tutor.unscoped().count({ where: { approvalStatus: "pending" } }),
   ]);
@@ -416,4 +416,107 @@ exports.createAdmin = async (adminData) => {
   );
 
   return newAdmin;
+};
+
+// =====================
+// Suspend / Unsuspend / Delete
+// =====================
+
+exports.suspendUser = async (id, reason) => {
+  const user = await User.findByPk(id);
+  if (!user) throw new ApiError("User not found", 404);
+  if (user.role === "admin") throw new ApiError("Cannot suspend an admin", 403);
+  if (user.accountStatus === "suspended")
+    throw new ApiError("User is already suspended", 400);
+
+  user.accountStatus = "suspended";
+  user.suspendedAt = new Date();
+  user.suspensionReason = reason || "Suspended by admin";
+  await user.save();
+  return user;
+};
+
+exports.unsuspendUser = async (id) => {
+  const user = await User.findByPk(id);
+  if (!user) throw new ApiError("User not found", 404);
+  if (user.accountStatus !== "suspended")
+    throw new ApiError("User is not suspended", 400);
+
+  user.accountStatus = "active";
+  user.suspendedAt = null;
+  user.suspensionReason = null;
+  await user.save();
+  return user;
+};
+
+exports.deleteUser = async (id) => {
+  const user = await User.findByPk(id);
+  if (!user) throw new ApiError("User not found", 404);
+  if (user.role === "admin") throw new ApiError("Cannot delete an admin from here", 403);
+
+  await user.destroy(); // soft delete (paranoid)
+  return { message: "User deleted successfully" };
+};
+
+exports.updateUser = async (id, data) => {
+  const user = await User.findByPk(id);
+  if (!user) throw new ApiError("User not found", 404);
+
+  const allowedFields = ["firstName", "lastName", "email"];
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      user[field] = data[field];
+    }
+  }
+  await user.save();
+  return user;
+};
+
+// =====================
+// Admin Course Management
+// =====================
+
+exports.getAllCourses = async (query = {}) => {
+  const { page = 1, limit = 50 } = query;
+  const { rows, count } = await Course.findAndCountAll({
+    order: [["level", "ASC"], ["courseCode", "ASC"]],
+    limit: Number(limit),
+    offset: (Number(page) - 1) * Number(limit),
+  });
+  return {
+    data: rows,
+    meta: {
+      total: count,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(count / Number(limit)),
+    },
+  };
+};
+
+exports.createCourse = async (courseData) => {
+  const existing = await Course.findOne({ where: { courseCode: courseData.courseCode } });
+  if (existing) throw new ApiError("Course with this code already exists", 409);
+  return await Course.create(courseData);
+};
+
+exports.updateCourse = async (id, data) => {
+  const course = await Course.findByPk(id);
+  if (!course) throw new ApiError("Course not found", 404);
+
+  const allowedFields = ["courseCode", "title", "description", "creditUnits", "level", "semester", "isActive"];
+  for (const field of allowedFields) {
+    if (data[field] !== undefined) {
+      course[field] = data[field];
+    }
+  }
+  await course.save();
+  return course;
+};
+
+exports.deleteCourse = async (id) => {
+  const course = await Course.findByPk(id);
+  if (!course) throw new ApiError("Course not found", 404);
+  await course.destroy();
+  return { message: "Course deleted successfully" };
 };

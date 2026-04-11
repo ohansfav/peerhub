@@ -224,13 +224,19 @@ exports.addStreamUser = async ({
   role,
 }) => {
   try {
-    await upsertStreamUser({
-      id: id.toString(),
-      name: `${firstName} ${lastName}`.trim(),
-      image: profileImageUrl,
-      email: email,
-      app_role: role,
-    });
+    const timeoutPromise = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Stream sync timed out")), 5000)
+    );
+    await Promise.race([
+      upsertStreamUser({
+        id: id.toString(),
+        name: `${firstName} ${lastName}`.trim(),
+        image: profileImageUrl,
+        email: email,
+        app_role: role,
+      }),
+      timeoutPromise,
+    ]);
   } catch (error) {
     // Log error but don't fail user creation if Stream is offline
     console.warn("⚠️  Stream sync warning (continuing offline):", error.message);

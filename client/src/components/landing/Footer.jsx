@@ -53,7 +53,7 @@ const Footer = () => {
   };
 
   return (
-    <footer id="contact" className="bg-[#deeaf6] text-[#1C252E]">
+    <footer id="contact" className="bg-gradient-to-b from-slate-900 to-slate-950 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
           <div className="lg:col-span-2">
@@ -64,13 +64,13 @@ const Footer = () => {
                   alt={ASSETS.logo?.alt}
                   className="h-8 md:h-8"
                 />
-                <p className=" text-xl md:text-xl font-bold text-gray-900">
-                  Peerhub
+                <p className="text-xl md:text-xl font-bold bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
+                  Peerup
                 </p>
               </div>
             </div>
             <p className="text-gray-400 text-sm mb-6">
-              Making quality education accessible for all.
+              Peer-to-peer learning for university students. Learn better, together.
             </p>
 
             <div>
@@ -97,7 +97,7 @@ const Footer = () => {
                 </button>
               </form>
               {subscribed && (
-                <p className="text-green-400 text-sm mt-2">
+                <p className="text-blue-400 text-sm mt-2">
                   Thanks for subscribing!
                 </p>
               )}
@@ -111,7 +111,7 @@ const Footer = () => {
                 <li key={link.label}>
                   <Link
                     to={link.to}
-                    className="text-[#1C252E] hover:text-gray-400 transition-colors text-sm"
+                    className="text-gray-200 hover:text-blue-400 transition-colors text-sm"
                   >
                     {link.label}
                   </Link>
@@ -127,7 +127,7 @@ const Footer = () => {
                 <li key={link.label}>
                   <button
                     onClick={link.onClick}
-                    className="text-[#1C252E] hover:text-gray-400 transition-colors text-sm text-left"
+                    className="text-gray-200 hover:text-blue-400 transition-colors text-sm text-left"
                   >
                     {link.label}
                   </button>
@@ -145,7 +145,7 @@ const Footer = () => {
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="text-[#1C252E] hover:text-gray-400 transition-colors text-sm flex items-center space-x-2"
+                      className="text-gray-200 hover:text-blue-400 transition-colors text-sm flex items-center space-x-2"
                     >
                       <Icon className="w-4 h-4" />
                       <span>{link.label}</span>
@@ -161,7 +161,7 @@ const Footer = () => {
                   <li key={link.label}>
                     <button
                       onClick={link.onClick}
-                      className="text-[#1C252E] hover:text-gray-400 transition-colors text-sm text-left"
+                      className="text-gray-200 hover:text-blue-400 transition-colors text-sm text-left"
                     >
                       {link.label}
                     </button>
@@ -172,9 +172,9 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="pt-8 border-t border-gray-800 text-center text-gray-400 text-sm">
+        <div className="pt-8 border-t border-slate-700 text-center text-gray-300 text-sm">
           <p>
-            &copy; {new Date().getFullYear()} Peerhub. All rights reserved.
+            &copy; {new Date().getFullYear()} Peerup. All rights reserved.
           </p>
         </div>
       </div>

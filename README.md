@@ -1,6 +1,6 @@
-# 🎓 Peerhub - Full Stack Tutoring Platform
+# 🎓 Peerup - Full Stack Tutoring Platform
 
-> A peer-powered ed-tech platform connecting Nigerian students with verified tutors for personalized, live one-on-one tutoring sessions.
+> A peer-powered ed-tech platform connecting university students with verified tutors for personalized, live one-on-one tutoring sessions.
 
 ## 📋 Project Status
 
@@ -55,7 +55,7 @@ npm run dev
 ## 📁 Project Structure
 
 ```
-Peerhub/
+Peerup/
 ├── server/                          # Backend (Node.js/Express)
 │   ├── src/
 │   │   ├── server.js               # Entry point

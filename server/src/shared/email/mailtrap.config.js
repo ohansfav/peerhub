@@ -19,6 +19,6 @@ if (process.env.MAILTRAP_TOKEN) {
 exports.mailtrapClient = mailtrapClient;
 
 exports.sender = {
-  email: "hello@peerhub.com",
-  name: "Peerhub",
+  email: "hello@peerup.com",
+  name: "Peerup",
 };

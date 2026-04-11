@@ -47,7 +47,7 @@ const ResetPasswordPage = () => {
   return (
     <AuthLayout>
       <div className=" flex flex-col items-center justify-center gap-2 mb-5 ">
-        <img src={logo} alt="Peerhub" />
+        <img src={logo} alt="Peerup" />
         <h2 className="text-xl font-semibold  text-start">Reset Password</h2>
       </div>
       {error && <ErrorAlert error={error} />}

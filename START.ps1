@@ -1,9 +1,9 @@
-# Peerhub Quick Start Script for PowerShell
+# Peerup Quick Start Script for PowerShell
 # This script starts both the backend server and frontend
 
 Write-Host "`n"
 Write-Host "╔════════════════════════════════════════════════════════════╗" -ForegroundColor Cyan
-Write-Host "║         Peerhub - Quick Start Script (PowerShell)       ║" -ForegroundColor Cyan
+Write-Host "║         Peerup - Quick Start Script (PowerShell)       ║" -ForegroundColor Cyan
 Write-Host "║                                                            ║" -ForegroundColor Cyan
 Write-Host "║  Starting Backend (Port 3000) and Frontend (Port 5173)    ║" -ForegroundColor Cyan
 Write-Host "╚════════════════════════════════════════════════════════════╝" -ForegroundColor Cyan

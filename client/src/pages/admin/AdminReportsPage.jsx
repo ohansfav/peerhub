@@ -9,14 +9,14 @@ const stats = [
     title: "Revenue",
     value: "₦100,000",
     note: "+5%",
-    noteClass: "text-green-600",
+    noteClass: "text-blue-500",
   },
   {
     id: "s2",
     title: "Engagement Overview",
     value: "+15%",
     note: "Last 30 days +10%",
-    noteClass: "text-green-600",
+    noteClass: "text-blue-500",
   },
   {
     id: "s3",
@@ -57,7 +57,7 @@ function StatCard({ title, value, note, noteClass }) {
     <div className="bg-white rounded-xl p-5 shadow-sm border">
       <div className="text-sm text-gray-500">{title}</div>
       <div className="mt-3 text-2xl font-semibold text-gray-900">{value}</div>
-      <div className={`mt-2 text-sm ${noteClass || "text-green-600"}`}>
+      <div className={`mt-2 text-sm ${noteClass || "text-blue-500"}`}>
         {note}
       </div>
     </div>
@@ -116,7 +116,7 @@ function ViewButton({ onClick }) {
   return (
     <button
       onClick={onClick}
-      className="px-4 py-2 rounded-full border bg-white text-blue-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100"
+      className="px-4 py-2 rounded-full border bg-white text-blue-600 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-green-100"
       aria-label="View"
     >
       View
@@ -127,9 +127,26 @@ function ViewButton({ onClick }) {
 /* --- Page --- */
 export default function AdminReportsPage() {
   return (
-    <h1 className="text-3xl font-extrabold text-gray-900 mb-4 text-center">
-      Coming Soon...
-    </h1>
+    <div className="max-w-6xl mx-auto space-y-8">
+      <h1 className="text-2xl font-bold text-gray-900">Reports</h1>
+
+      {/* stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        {stats.map((s) => (
+          <div key={s.id} className="bg-white border rounded-xl p-6">
+            <p className="text-sm text-gray-500">{s.title}</p>
+            <p className="text-2xl font-bold text-gray-900 mt-1">{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-white border rounded-xl p-6">
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">Platform Overview</h2>
+        <p className="text-gray-500 text-sm">
+          Detailed analytics and reporting features are being expanded. Current stats are shown above.
+        </p>
+      </div>
+    </div>
   );
 
   // return (
@@ -164,7 +181,7 @@ export default function AdminReportsPage() {
   //         <div>
   //           <h3 className="text-lg font-semibold">Quick Engagement Overview</h3>
   //           <div className="mt-2 text-3xl font-bold text-gray-900">+15%</div>
-  //           <div className="text-sm text-green-600 mt-1">Last 30 Days +15%</div>
+  //           <div className="text-sm text-blue-500 mt-1">Last 30 Days +15%</div>
   //         </div>
 
   //         <button
@@ -261,7 +278,7 @@ export default function AdminReportsPage() {
   //                   <span
   //                     className={`inline-block px-3 py-1 text-xs rounded-full ${
   //                       s.status === "Active"
-  //                         ? "bg-green-100 text-green-700"
+  //                         ? "bg-blue-100 text-blue-600"
   //                         : "bg-red-100 text-red-600"
   //                     }`}
   //                   >

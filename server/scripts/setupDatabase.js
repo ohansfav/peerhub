@@ -23,13 +23,13 @@ async function setupDatabase() {
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({
-      where: { email: "admin@peerhub.com" },
+      where: { email: "admin@peerup.com" },
     });
 
     if (existingAdmin) {
       console.log("\n⚠️  Admin user already exists!");
       console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-      console.log("📧 Email:    admin@peerhub.com")
+      console.log("📧 Email:    admin@peerup.com")
       console.log("🔐 Password: admin123");
       console.log("👤 Role:     admin");
       console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");
@@ -40,7 +40,7 @@ async function setupDatabase() {
     // Create admin user (password will be auto-hashed by beforeCreate hook)
     console.log("👤 Creating admin user...");
     const adminUser = await User.create({
-      email: "admin@peerhub.com",
+      email: "admin@peerup.com",
       firstName: "Admin",
       lastName: "User",
       passwordHash: "admin123", // Hook will hash this automatically
@@ -63,43 +63,23 @@ async function setupDatabase() {
     console.log("📝 Creating exams...");
     const examsData = [
       {
-        name: "WAEC",
-        description: "West African Examinations Council - Secondary school certificate",
+        name: "Semester Exam",
+        description: "End of semester university examinations",
         isActive: true,
       },
       {
-        name: "JAMB",
-        description: "Joint Admissions and Matriculation Board - University entrance exam",
+        name: "Mid-Semester Test",
+        description: "Mid-semester continuous assessment tests",
         isActive: true,
       },
       {
-        name: "NECO",
-        description: "National Examination Council - Secondary school certificate alternative",
+        name: "Project Defence",
+        description: "Final year project and thesis defence preparation",
         isActive: true,
       },
       {
-        name: "UTME",
-        description: "Unified Tertiary Matriculation Examination - Replaced JAMB part 1",
-        isActive: true,
-      },
-      {
-        name: "POST-UTME",
-        description: "Post-UTME screening examination for university admission",
-        isActive: true,
-      },
-      {
-        name: "Mock Exams",
-        description: "Practice and mock examination papers",
-        isActive: true,
-      },
-      {
-        name: "GCE A-Levels",
-        description: "General Certificate of Education Advanced Level",
-        isActive: true,
-      },
-      {
-        name: "Professional Exams",
-        description: "Professional certification and licensing exams",
+        name: "Professional Certification",
+        description: "Professional exams like ICAN, ANAN, NSE, COREN, etc.",
         isActive: true,
       },
     ];
@@ -117,65 +97,93 @@ async function setupDatabase() {
     console.log("📚 Creating subjects...");
     const subjectsData = [
       {
+        name: "Computer Science",
+        description: "Programming, algorithms, data structures, and software engineering",
+        isActive: true,
+      },
+      {
         name: "Mathematics",
-        description: "Algebra, Geometry, Trigonometry, Calculus, and more",
+        description: "Calculus, linear algebra, statistics, and discrete mathematics",
         isActive: true,
       },
       {
         name: "English",
-        description: "English Language, Literature, Grammar, and Writing",
+        description: "Academic writing, communication skills, and literature",
         isActive: true,
       },
       {
         name: "Physics",
-        description: "Mechanics, Electricity, Magnetism, Thermodynamics, and Waves",
+        description: "Mechanics, thermodynamics, electromagnetism, and modern physics",
         isActive: true,
       },
       {
         name: "Chemistry",
-        description:
-          "Inorganic Chemistry, Organic Chemistry, Physical Chemistry, and Biochemistry",
+        description: "Organic, inorganic, physical, and analytical chemistry",
         isActive: true,
       },
       {
         name: "Biology",
-        description: "Cell Biology, Genetics, Ecology, and Physiology",
+        description: "Cell biology, genetics, microbiology, and ecology",
         isActive: true,
       },
       {
-        name: "History",
-        description: "World History, African History, and Modern History",
-        isActive: true,
-      },
-      {
-        name: "Geography",
-        description: "Physical Geography, Human Geography, and Cartography",
+        name: "Accounting",
+        description: "Financial accounting, cost accounting, and auditing",
         isActive: true,
       },
       {
         name: "Economics",
-        description: "Microeconomics, Macroeconomics, and Business Studies",
+        description: "Microeconomics, macroeconomics, and development economics",
         isActive: true,
       },
       {
-        name: "Government",
-        description: "Political Science, Civic Education, and Public Administration",
+        name: "Business Administration",
+        description: "Management principles, marketing, and organizational behaviour",
         isActive: true,
       },
       {
-        name: "Literature in English",
-        description: "Poetry, Drama, Prose, and Literary Analysis",
+        name: "Mass Communication",
+        description: "Media studies, journalism, public relations, and broadcasting",
         isActive: true,
       },
       {
-        name: "Computer Science",
-        description:
-          "Programming, Algorithms, Data Structures, and Web Development",
+        name: "Political Science",
+        description: "Government, international relations, and public administration",
         isActive: true,
       },
       {
-        name: "French",
-        description: "French Language, Grammar, Conversation, and Culture",
+        name: "Law",
+        description: "Constitutional law, contract law, criminal law, and jurisprudence",
+        isActive: true,
+      },
+      {
+        name: "Education",
+        description: "Curriculum studies, educational psychology, and teaching methods",
+        isActive: true,
+      },
+      {
+        name: "Engineering",
+        description: "Mechanical, electrical, civil, and chemical engineering fundamentals",
+        isActive: true,
+      },
+      {
+        name: "Biochemistry",
+        description: "Molecular biology, enzymology, and metabolic pathways",
+        isActive: true,
+      },
+      {
+        name: "Microbiology",
+        description: "Bacteriology, virology, immunology, and parasitology",
+        isActive: true,
+      },
+      {
+        name: "Sociology",
+        description: "Social theory, research methods, and social institutions",
+        isActive: true,
+      },
+      {
+        name: "Philosophy",
+        description: "Logic, ethics, epistemology, and African philosophy",
         isActive: true,
       },
     ];

@@ -116,8 +116,8 @@ const StudentOnboardingPage = () => {
 
     <div key="step3">
       <StepHeader
-        title="What exams are you targeting?"
-        subtitle="Select the exams you plan to take"
+        title="What assessments are you preparing for?"
+        subtitle="Select the university assessments relevant to you"
       />
       <SelectableCardList
         options={examInfo}

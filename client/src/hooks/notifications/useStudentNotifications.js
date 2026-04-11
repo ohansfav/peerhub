@@ -4,15 +4,15 @@ import {
   getAllStudentBookings,
   getUpcomingSession,
 } from "../../lib/api/common/bookingApi";
+import { getBroadcastMessages } from "../../lib/api/broadcast/broadcastApi";
 import { formatSessionDate } from "../../utils/time";
 
 export function useStudentNotifications(enabled = true) {
   const upcomingSession = useQuery({
     queryKey: ["studentNotificationsUpcomingSession"],
     queryFn: getUpcomingSession,
-    // staleTime: 30000,
-    staleTime: 1000 * 60 * 5, // 5 mins
-    cacheTime: 1000 * 60 * 10, // 10 mins
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
     enabled,
   });
 
@@ -20,9 +20,16 @@ export function useStudentNotifications(enabled = true) {
     queryKey: ["studentNotificationsBookings"],
     queryFn: () =>
       getAllStudentBookings({ status: ["confirmed", "cancelled"] }),
-    // staleTime: 30000,
-    staleTime: 1000 * 60 * 5, // 5 mins
-    cacheTime: 1000 * 60 * 10, // 10 mins
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+    enabled,
+  });
+
+  const broadcasts = useQuery({
+    queryKey: ["broadcastMessages"],
+    queryFn: getBroadcastMessages,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
     enabled,
   });
 
@@ -73,11 +80,31 @@ export function useStudentNotifications(enabled = true) {
       });
     }
 
+    // Broadcast messages
+    if (broadcasts.data) {
+      broadcasts.data.forEach((msg) => {
+        const senderName = msg.sender
+          ? `${msg.sender.firstName} ${msg.sender.lastName}`
+          : "System";
+
+        result.push({
+          id: `broadcast-${String(msg.id)}`,
+          type: "announcement",
+          sender: senderName,
+          message: `${msg.title}: ${msg.message}`,
+          timestamp: msg.createdAt,
+          priority: "medium",
+        });
+      });
+    }
+
     return result.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  }, [enabled, upcomingSession.data, bookings.data]);
+  }, [enabled, upcomingSession.data, bookings.data, broadcasts.data]);
 
   return {
     notifications,
-    isLoading: enabled && (upcomingSession.isLoading || bookings.isLoading),
+    isLoading:
+      enabled &&
+      (upcomingSession.isLoading || bookings.isLoading || broadcasts.isLoading),
   };
 }

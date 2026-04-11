@@ -45,7 +45,7 @@ const SignupPage = () => {
     <AuthLayout>
       <div className="flex flex-col justify-center space-y-5 md:space-y-1">
         <AuthIntro
-          heading="Welcome To Peerhub"
+          heading="Welcome To Peerup"
           subText="Already have an account?"
           linkText="Log In"
           linkTo="/login"

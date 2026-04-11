@@ -252,7 +252,7 @@ const TutorAvailabilityPage = () => {
               </div>
 
               {formData.startTime && formData.endTime && (
-                <div className="text-sm text-gray-600 bg-green-100 rounded-50 px-3 py-2 rounded-md">
+                <div className="text-sm text-gray-600 bg-blue-100 rounded-50 px-3 py-2 rounded-md">
                   Duration:{" "}
                   {calculateDuration(formData.startTime, formData.endTime)}{" "}
                   minutes
@@ -330,7 +330,7 @@ const TutorAvailabilityPage = () => {
                           {formatDate(availability.scheduledStart)}
                         </h3>
                         {availability.status === "open" && (
-                          <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-medium rounded-full">
+                          <span className="px-3 py-1 bg-blue-100 text-blue-600 text-xs font-medium rounded-full">
                             Open
                           </span>
                         )}

@@ -173,7 +173,7 @@ const TutorDashboardPage = () => {
       title: "Verified Tutor",
       subtitle: "Your Profile is approved",
       btnMessage: "View Profile",
-      bgColor: "bg-green-100",
+      bgColor: "bg-blue-100",
       color: "text-green-900",
       sessionMessage: (
         <p className="text-sm text-gray-600">
@@ -188,7 +188,7 @@ const TutorDashboardPage = () => {
       title: "Verified Tutor",
       subtitle: "Your Profile is approved",
       btnMessage: "View Profile",
-      bgColor: "bg-green-100",
+      bgColor: "bg-blue-100",
       color: "text-green-900",
       sessionMessage: (
         <div className="w-full space-y-3">
@@ -347,7 +347,7 @@ const TutorDashboardPage = () => {
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">
                     {tutorStatus === "approved" || tutorStatus === "active" ? (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <Check className="w-4 h-4 text-blue-400" />
                     ) : (
                       <Clock className="w-4 h-4 text-red-500" />
                     )}{" "}
@@ -355,7 +355,7 @@ const TutorDashboardPage = () => {
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     {tutorStatus === "approved" || tutorStatus === "active" ? (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <Check className="w-4 h-4 text-blue-400" />
                     ) : (
                       <Clock className="w-4 h-4 text-red-500" />
                     )}{" "}
@@ -363,7 +363,7 @@ const TutorDashboardPage = () => {
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     {tutorStatus === "approved" || tutorStatus === "active" ? (
-                      <Check className="w-4 h-4 text-green-500" />
+                      <Check className="w-4 h-4 text-blue-400" />
                     ) : (
                       <Clock className="w-4 h-4 text-red-500" />
                     )}

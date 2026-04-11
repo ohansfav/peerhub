@@ -1,4 +1,4 @@
-# Peerhub Program Execution & Error Fixes - Status Report
+# Peerup Program Execution & Error Fixes - Status Report
 
 **Date**: April 8, 2026  
 **Status**: ✅ Backend running successfully | ⚠️ Frontend network issues

@@ -26,6 +26,7 @@ import StudentRoute from "./components/routes/StudentRoute";
 import TutorRoute from "./components/routes/TutorRoute";
 import StudentLibraryPage from "./pages/student/StudentLibraryPage";
 import StudentTutorsPage from "./pages/student/StudentTutorsPage";
+import StudentQuizPage from "./pages/student/StudentQuizPage";
 import FAQPage from "./pages/general/FAQPage";
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
 import AdminManageAdminsPage from "./pages/admin/AdminManageAdminsPage";
@@ -41,9 +42,12 @@ import ChatPage from "./pages/messaging/ChatPage";
 import CallPage from "./pages/messaging/CallPage";
 import RecentChatsPage from "./pages/messaging/RecentChatsPage";
 import TutorPrivateProfilePage from "./pages/tutor/TutorPrivateProfilePage";
+import TutorQuizPage from "./pages/tutor/TutorQuizPage";
 import BookingRequestsPage from "./pages/tutor/BookingRequestsPage";
 import StudentSessionsPage from "./pages/student/StudentSessionsPage";
 import StudentTutorProfilePage from "./pages/student/StudentTutorProfilePage";
+import StudentCourseCatalogPage from "./pages/student/StudentCourseCatalogPage";
+import StudentMyCoursesPage from "./pages/student/StudentMyCoursesPage";
 import AccountSettingsPage from "./pages/general/AccountSettingsPage";
 
 export default function App() {
@@ -98,6 +102,7 @@ export default function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<StudentDashboardPage />} />
           <Route path="library" element={<StudentLibraryPage />} />
+          <Route path="quizzes" element={<StudentQuizPage />} />
           <Route path="tutors" element={<StudentTutorsPage />} />
           <Route
             path="tutor-profile/:id"
@@ -117,6 +122,8 @@ export default function App() {
           />
           <Route path="booking/:id" element={<StudentBookingPage />} />
           <Route path="sessions" element={<StudentSessionsPage />} />
+          <Route path="courses" element={<StudentCourseCatalogPage />} />
+          <Route path="my-courses" element={<StudentMyCoursesPage />} />
           <Route path="faq" element={<FAQPage />} />
           <Route path="settings" element={<AccountSettingsPage />} />
         </Route>
@@ -134,6 +141,7 @@ export default function App() {
           <Route path="dashboard" element={<TutorDashboardPage />} />
           <Route path="sessions" element={<TutorSessionsPage />} />
           <Route path="availability" element={<TutorAvailabilityPage />} />
+          <Route path="quizzes" element={<TutorQuizPage />} />
           <Route
             path="chats"
             element={<RecentChatsPage key={location.pathname} />}

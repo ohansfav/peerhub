@@ -1,8 +1,12 @@
 const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
 const logger = require("../utils/logger");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const path = require("path");
+const fs = require("fs");
 // const { s3Client: client, isTests } = require("./s3Client");
 const { r2Client: client, isTests } = require("./r2Client");
+
+const LOCAL_UPLOAD_DIR = path.join(__dirname, "../../../uploads");
 
 async function uploadFileToS3(file, folder = "uploads") {
   if (isTests) {
@@ -10,10 +14,14 @@ async function uploadFileToS3(file, folder = "uploads") {
     return { key: `${folder}/${Date.now()}_${file.originalname}` };
   }
 
-  // Mock S3 upload if client is not configured (development mode)
+  // Save locally if client is not configured (development mode)
   if (!client) {
-    logger.warn("⚠️ S3 client not configured: using mock upload.");
-    return { key: `${folder}/${Date.now()}_${file.originalname}` };
+    logger.warn("⚠️ S3 client not configured: saving file locally.");
+    const key = `${folder}/${Date.now()}_${file.originalname}`;
+    const localPath = path.join(LOCAL_UPLOAD_DIR, key);
+    fs.mkdirSync(path.dirname(localPath), { recursive: true });
+    fs.writeFileSync(localPath, file.buffer);
+    return { key };
   }
 
   const key = `${folder}/${Date.now()}_${file.originalname}`;
@@ -36,10 +44,15 @@ async function getSignedFileUrl(key, expiresIn = 300) {
     return `https://example.com/dev-s3-bucket/${key}`; // Mock URL for tests
   }
 
-  // Return mock URL if client is not configured (development mode)
+  // Serve from local uploads if client is not configured (development mode)
   if (!client) {
-    logger.warn("⚠️ S3 client not configured: returning mock URL.");
-    return `https://example.com/dev-s3-bucket/${key}`;
+    const localPath = path.join(LOCAL_UPLOAD_DIR, key);
+    if (fs.existsSync(localPath)) {
+      const port = process.env.PORT || 3000;
+      return `/api/uploads/${key}`;
+    }
+    logger.warn("⚠️ S3 client not configured and local file not found.");
+    return `/api/uploads/${key}`;
   }
 
   // default 5 min
@@ -50,4 +63,4 @@ async function getSignedFileUrl(key, expiresIn = 300) {
   return await getSignedUrl(client, command, { expiresIn });
 }
 
-module.exports = { uploadFileToS3, getSignedFileUrl };
+module.exports = { uploadFileToS3, getSignedFileUrl, LOCAL_UPLOAD_DIR };

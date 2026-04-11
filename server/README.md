@@ -1,10 +1,10 @@
-# Peerhub Server
+# Peerup Server
 
 ## Project Overview
 
-**Peerhub** is a proprietary peer-powered ed-tech platform designed to democratize access to quality education for Nigerian secondary school students. By connecting learners with vetted university undergraduates and recent graduates, Peerhub enables personalized, live one-on-one tutoring sessions focused on exam preparation for WAEC, NECO, and JAMB.
+**Peerup** is a proprietary peer-powered ed-tech platform designed to democratize access to quality education for university students. By connecting learners with vetted undergraduate and graduate tutors, Peerup enables personalized, live one-on-one tutoring sessions.
 
-This repository contains the **server-side API** powering Peerhub. The frontend (client) and backend (server) are maintained as separate codebases.
+This repository contains the **server-side API** powering Peerup. The frontend (client) and backend (server) are maintained as separate codebases.
 
 ---
 
@@ -64,8 +64,8 @@ Empower Nigerian students with affordable, accessible, and high-quality academic
 1. **Clone the Repository**
 
    ```sh
-   git clone https://github.com/Peerhub/Peerhub-server.git
-   cd Peerhub-server
+   git clone https://github.com/Peerup/Peerup-server.git
+   cd Peerup-server
    ```
 
 2. **Install Dependencies**
@@ -155,7 +155,7 @@ All configuration is managed via environment variables. See `.env.example` for d
 | DB_HOST        | Database host              | localhost             |
 | DB_USER        | Database username          | postgres              |
 | DB_PASS        | Database password          | secret                |
-| DB_NAME        | Database name              | Peerhub_db         |
+| DB_NAME        | Database name              | Peerup_db         |
 | JWT_SECRET     | JWT signing secret         | your_jwt_secret       |
 | CLIENT_URL     | Frontend base URL          | http://localhost:5173 |
 | EMAIL_ENABLED  | Enable email notifications | true                  |
@@ -217,5 +217,5 @@ This repository contains code developed as part of a school project. It is inten
 
 ## Support & Contact
 
-For technical support or business inquiries, please contact the Peerhub team via the official website.
+For technical support or business inquiries, please contact the Peerup team via the official website.
 

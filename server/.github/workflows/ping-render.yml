@@ -21,7 +21,7 @@ jobs:
           echo "⏳ Waiting $jitter seconds before ping..."
           sleep $jitter
 
-          URL="https://staging-api-edupeerhub.onrender.com/api/health"
+          URL="https://staging-api-edupeerup.onrender.com/api/health"
           echo "🌐 Target URL: $URL"
 
           max_retries=3

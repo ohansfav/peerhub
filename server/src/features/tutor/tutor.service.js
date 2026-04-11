@@ -214,9 +214,8 @@ const DEFAULT_STATS = {
 };
 
 exports.updateTutorProfile = async ({ id, tutorProfile }) => {
-  const [count, [newTutorProfile]] = await Tutor.update(tutorProfile, {
+  const [count] = await Tutor.update(tutorProfile, {
     where: { user_id: id },
-    returning: true,
   });
 
   if (count === 0) {
@@ -227,8 +226,10 @@ exports.updateTutorProfile = async ({ id, tutorProfile }) => {
     );
   }
 
+  const updatedProfile = await Tutor.unscoped().findByPk(id);
+
   await addSubjectsToProfile({
-    profile: newTutorProfile,
+    profile: updatedProfile,
     subjectIds: tutorProfile.subjects,
   });
   return await this.getTutor(id);

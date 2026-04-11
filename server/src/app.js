@@ -20,12 +20,18 @@ const chatRoutes = require("@features/chat/chat.route");
 const ApiError = require("@utils/apiError");
 const sendResponse = require("@utils/sendResponse");
 const reviewRoutes = require("@features/reviews/review.route");
+const quizRoutes = require("@features/quiz/quiz.route");
+const broadcastRoutes = require("@features/broadcast/broadcast.route");
+const studentStatsRoutes = require("@features/student/studentStats.route");
+const courseRoutes = require("@features/course/course.route");
 
 const app = express();
 
 const allowedOrigins = (
   process.env.CLIENT_URL || "http://localhost:5173"
-).split(",");
+).split(",").map(o => o.trim());
+
+const isDevMode = process.env.NODE_ENV === "development";
 
 // Trust first proxy
 app.set("trust proxy", 1);
@@ -35,7 +41,13 @@ app.use(helmet());
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow requests with no origin (e.g., mobile apps, Postman)
+      if (!origin) return callback(null, true);
+      // In development, allow all localhost origins regardless of port
+      if (isDevMode && /^https?:\/\/localhost(:\d+)?$/.test(origin)) {
+        return callback(null, true);
+      }
+      if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
       return callback(new Error("Not allowed by CORS"));
@@ -66,8 +78,16 @@ app.use("/api/booking", bookingRoutes);
 app.use("/api/exam", examRoutes);
 app.use("/api/events", eventsRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/quiz", quizRoutes);
+app.use("/api/broadcast", broadcastRoutes);
+app.use("/api/student-stats", studentStatsRoutes);
+app.use("/api/course", courseRoutes);
 
 app.use("/api/chat", chatRoutes);
+
+// Serve locally uploaded files in development
+const { LOCAL_UPLOAD_DIR } = require("@src/shared/S3/s3Service");
+app.use("/api/uploads", express.static(LOCAL_UPLOAD_DIR));
 
 app.get("/api/health", (req, res) => {
   sendResponse(res, 200, "Server is healthy", {
@@ -78,7 +98,11 @@ app.get("/api/health", (req, res) => {
 });
 
 // Serve index.html for all non-API routes (SPA fallback)
-app.get("*", (req, res) => {
+app.use((req, res, next) => {
+  // Skip if it's an API route
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
   const indexPath = path.join(__dirname, "../../client/dist/index.html");
   if (fs.existsSync(indexPath)) {
     res.sendFile(indexPath);

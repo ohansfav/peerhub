@@ -9,12 +9,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#4CA1F0",
-        secondary: "#A1E3AF",
-        "primary-focus": "#3B8CD8", // dark hover version
-        accent: "#2C3A47",
-        background: "#F5F9FC",
-        text: "#2C3A47",
+        primary: "#2563EB",
+        secondary: "#F59E0B",
+        "primary-focus": "#1D4ED8",
+        accent: "#0F172A",
+        background: "#F8FAFC",
+        text: "#0F172A",
       },
       fontFamily: {
         sans: ["Poppins", "sans-serif"],
@@ -41,14 +41,14 @@ export default {
     themes: [
       {
         light: {
-          primary: "#4CA1F0", // this sets btn-primary
-          "primary-focus": "#3B8CD8", // dark hover version
-          secondary: "#A1E3AF",
-          accent: "#2C3A47",
-          neutral: "#F5F9FC",
+          primary: "#2563EB",
+          "primary-focus": "#1D4ED8",
+          secondary: "#F59E0B",
+          accent: "#0F172A",
+          neutral: "#F8FAFC",
           "base-100": "#FFFFFF",
           info: "#2094F3",
-          success: "#009485",
+          success: "#22C55E",
           warning: "#FF9900",
           error: "#FF5724",
         },

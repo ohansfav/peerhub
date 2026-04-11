@@ -5,7 +5,7 @@ function setAuthCookie(res, token) {
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     domain:
-      process.env.NODE_ENV === "production" ? ".peerhub.com" : undefined,
+      process.env.NODE_ENV === "production" ? ".peerup.com" : undefined,
   });
 }
 
@@ -16,7 +16,7 @@ function clearAuthCookie(res) {
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     secure: process.env.NODE_ENV === "production",
     domain:
-      process.env.NODE_ENV === "production" ? ".peerhub.com" : undefined,
+      process.env.NODE_ENV === "production" ? ".peerup.com" : undefined,
   });
 }
 

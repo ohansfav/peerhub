@@ -8,6 +8,7 @@ import { useAuth } from "../../hooks/useAuthContext";
 import { useUserProfile } from "../../hooks/profile/useUserProfile";
 import PageLoader from "../common/PageLoader";
 import LogoutPageLoader from "../ui/LogoutPageLoader";
+import { getAvatarUrl } from "../../utils/getAvatarUrl";
 
 const Navbar = ({ onToggleSidebar }) => {
   const { authUser } = useAuth();
@@ -122,7 +123,7 @@ const Navbar = ({ onToggleSidebar }) => {
                 >
                   <div className="w-8 sm:w-9 h-8 sm:h-9 rounded-full overflow-hidden border-2 border-white shadow-sm">
                     <img
-                      src={user?.profileImageUrl}
+                      src={getAvatarUrl(user?.profileImageUrl, `${user?.firstName} ${user?.lastName}`)}
                       alt="User Avatar"
                       className="w-full h-full object-cover"
                     />

@@ -191,7 +191,7 @@ export default function AdminTutorsProfilePage() {
                     <span
                       className={`inline-flex items-center px-3 py-1 text-xs font-medium rounded-full border ${
                         tutor.approvalStatus === "approved"
-                          ? "bg-green-100 text-green-700 border-green-200"
+                          ? "bg-blue-100 text-blue-600 border-blue-200"
                           : tutor.approvalStatus === "pending"
                           ? "bg-yellow-100 text-yellow-700 border-yellow-200"
                           : tutor.approvalStatus === "rejected"

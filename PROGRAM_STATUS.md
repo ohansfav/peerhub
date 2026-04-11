@@ -1,4 +1,4 @@
-# 🎯 Peerhub Program Execution Summary
+# 🎉 Peerup Program Execution Summary
 
 ## ✅ BACKEND IS FULLY RUNNING
 

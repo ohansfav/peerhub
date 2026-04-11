@@ -17,6 +17,7 @@ import { handleToastError } from "../../utils/toastDisplayHandler";
 import { useUserProfile } from "../../hooks/profile/useUserProfile";
 import Input from "../../components/ui/Input";
 import ErrorAlert from "../../components/common/ErrorAlert";
+import { getAvatarUrl } from "../../utils/getAvatarUrl";
 
 const AccountSettingsPage = () => {
   const fileInputRef = useRef(null);
@@ -226,7 +227,7 @@ const AccountSettingsPage = () => {
     return <p className="text-center py-8 text-red-500">No profile found</p>;
   }
 
-  const displayImage = imagePreview || user?.profileImageUrl;
+  const displayImage = imagePreview || getAvatarUrl(user?.profileImageUrl, `${user?.firstName} ${user?.lastName}`);
 
   return (
     <div className="max-w-6xl mx-auto px-2">
@@ -254,7 +255,7 @@ const AccountSettingsPage = () => {
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
-                    className="absolute bottom-0 right-0 bg-green-600 text-white p-2 rounded-full hover:bg-primary/90"
+                    className="absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full hover:bg-primary/90"
                   >
                     <Upload className="w-5 h-5" />
                   </button>
@@ -341,7 +342,7 @@ const AccountSettingsPage = () => {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Grade Level
+                          Level
                         </label>
                         <input
                           type="text"
@@ -349,7 +350,7 @@ const AccountSettingsPage = () => {
                           value={roleSpecificData.gradeLevel}
                           onChange={handleRoleSpecificChange}
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                          placeholder="e.g., SS2/SS3"
+                          placeholder="e.g., 100L/200L/300L"
                         />
                       </div>
 

@@ -13,23 +13,23 @@ const FAQPage = () => {
     // --- GENERAL FAQs (visible to everyone) ---
     {
       id: 1,
-      question: "What subjects are covered?",
+      question: "What courses are covered?",
       answer:
-        "Peerhub covers all major subjects required for WAEC, NECO, and JAMB examinations including Mathematics, English Language, Physics, Chemistry, Biology, Economics, Government, Literature, and more. Our tutors are qualified to teach across the Nigerian secondary school curriculum.",
+        "Peerup covers a wide range of university courses including Computer Science, Mathematics, Physics, Chemistry, Biology, Accounting, Economics, Engineering, Law, Mass Communication, and more.",
       roles: ["all"],
     },
     {
       id: 2,
-      question: "Is Peerhub free to use?",
+      question: "Is Peerup free to use?",
       answer:
-        "Peerhub offers both free and premium features. Students can access our resource library and ask questions in the community forum for free. Live one-on-one tutoring sessions are available through affordable subscription plans designed to be accessible to Nigerian students. We also offer scholarship programs for students in need.",
+        "Peerup offers both free and premium features. Students can access the course resource library and ask questions in the community forum for free. Live one-on-one tutoring sessions are available through affordable plans designed for university students.",
       roles: ["all"],
     },
     {
       id: 3,
-      question: "What are Peerhub's goals?",
+      question: "What are Peerup's goals?",
       answer:
-        "Peerhub's mission is to make learning accessible, personalized, and engaging by connecting students with the right tutors.",
+        "Peerup's mission is to make peer-to-peer learning accessible, flexible, and personalized for every university student.",
       roles: ["all"],
     },
 
@@ -38,14 +38,14 @@ const FAQPage = () => {
       id: 4,
       question: "Who are the Tutors?",
       answer:
-        "Our tutors are carefully vetted university undergraduates and recent graduates who have excelled in their fields. Each tutor goes through a rigorous verification process including credential checks, subject matter assessments, and teaching demonstrations to ensure they meet our high standards for quality education.",
+        "Our tutors are fellow university students who have excelled in their courses. Each tutor goes through a verification process including credential checks and academic performance review to ensure quality peer tutoring.",
       roles: ["student"],
     },
     {
       id: 5,
-      question: "Are The Peerhub Tutors Qualified?",
+      question: "Are The Peerup Tutors Qualified?",
       answer:
-        "All Peerhub tutors are carefully vetted, experienced, and qualified in their respective fields to provide the best learning experience.",
+        "All Peerup tutors are carefully vetted and verified students who excel in their respective fields, ensuring the best learning experience.",
       roles: ["student"],
     },
     {
@@ -68,7 +68,7 @@ const FAQPage = () => {
       id: 8,
       question: "How do I become a Tutor?",
       answer:
-        "To become a tutor on Peerhub, you need to be a current university undergraduate or recent graduate. Apply through our platform by submitting your credentials, academic transcripts, and completing our tutor assessment. Once verified and approved, you can start creating your availability and connecting with students.",
+        "Any university student can become a tutor on Peerup! Apply through the platform by selecting the courses you excel in, sharing your academic background, and uploading your student ID or credentials. Once verified, you can start tutoring.",
       roles: ["tutor"],
     },
     {

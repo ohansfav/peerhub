@@ -14,13 +14,13 @@ permissions:
   contents: read
 
 env:
-  APP_NAME: "edupeerhub-client"
+  APP_NAME: "edupeerup-client"
   ENV_NAME: "production"
   SERVICE_ENV: "production"
   BRANCH: "main"
-  REPO_URL: "https://github.com/Edupeerhub/edupeerhub-client.git"
-  DEPLOY_DIR: "/var/www/edupeerhub-client-production"
-  SERVICE_NAME: "edupeerhub-client-production"
+  REPO_URL: "https://github.com/Edupeerup/edupeerup-client.git"
+  DEPLOY_DIR: "/var/www/edupeerup-client-production"
+  SERVICE_NAME: "edupeerup-client-production"
 
 jobs:
   ci:

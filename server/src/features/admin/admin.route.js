@@ -16,7 +16,11 @@ router.use(requireAdmin);
 router.get("/users", adminController.getAllUsers);
 router.get("/users/counts", adminController.getUserSummaryCounts);
 router.get("/users/:id", adminController.getUserById);
+router.put("/users/:id", adminController.updateUser);
 router.patch("/users/:id/restore", adminController.restoreUser);
+router.patch("/users/:id/suspend", adminController.suspendUser);
+router.patch("/users/:id/unsuspend", adminController.unsuspendUser);
+router.delete("/users/:id", adminController.deleteUser);
 
 // =====================
 // Pending Tutor Routes
@@ -30,6 +34,14 @@ router.patch(
   validate(adminValidation.rejectTutor),
   adminController.rejectTutor
 );
+
+// =====================
+// Course Management Routes
+// =====================
+router.get("/courses", adminController.getAllCourses);
+router.post("/courses", adminController.createCourse);
+router.put("/courses/:id", adminController.updateCourse);
+router.delete("/courses/:id", adminController.deleteCourse);
 
 router.use(requireSuperAdmin);
 router.post(

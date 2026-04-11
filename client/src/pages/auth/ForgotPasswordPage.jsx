@@ -40,7 +40,7 @@ const ForgotPasswordPage = () => {
         {!isSuccess && (
           <div className="space-y-4">
             <div className=" flex flex-col items-center justify-center gap-2 ">
-              <img src={logo} alt="Peerhub" />
+              <img src={logo} alt="Peerup" />
               <h2 className="text-2xl font-semibold text-center mb-3 text-black">
                 Forgot Password{" "}
               </h2>
@@ -95,7 +95,7 @@ const ForgotPasswordPage = () => {
         {/* SUCCESS MESSAGE */}
         {isSuccess && (
           <div className="items-center flex flex-col space-y-4">
-            <img src={checkmark} alt="Peerhub" />
+            <img src={checkmark} alt="Peerup" />
             <p className="text-base-content text-center">
               If an account exists for{" "}
               <span className="font-semibold">{email}</span>, you will receive a

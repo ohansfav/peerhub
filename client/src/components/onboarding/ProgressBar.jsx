@@ -5,7 +5,7 @@ const ProgressBar = ({ currentStep, totalSteps }) => (
         <div
           key={index}
           className={`flex-1 h-1 rounded ${
-            index < currentStep ? "bg-blue-400" : "bg-gray-300"
+            index < currentStep ? "bg-blue-500" : "bg-gray-300"
           }`}
         />
       ))}

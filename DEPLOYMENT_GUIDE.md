@@ -1,6 +1,6 @@
-# 🚀 Peerhub - Deployment Guide
+# 🚀 Peerup - Deployment Guide
 
-Host your Peerhub application online for free! Here are the simplest options.
+Host your Peerup application online for free! Here are the simplest options.
 
 ---
 
@@ -12,15 +12,15 @@ Host your Peerhub application online for free! Here are the simplest options.
    ```bash
    git init
    git add .
-   git commit -m "Initial Peerhub deployment"
-   git remote add origin https://github.com/YOUR_USERNAME/peerhub-client.git
+   git commit -m "Initial Peerup deployment"
+   git remote add origin https://github.com/YOUR_USERNAME/peerup-client.git
    git push -u origin main
    ```
 
 2. **Connect to Vercel:**
    - Go to [vercel.com](https://vercel.com)
    - Click "New Project"
-   - Import from GitHub (select your `peerhub-client` repo)
+   - Import from GitHub (select your `peerup-client` repo)
    - Click "Deploy"
    - Your frontend is now live at `yourapp.vercel.app`
 
@@ -52,7 +52,7 @@ Host your Peerhub application online for free! Here are the simplest options.
      NODE_ENV=production
      JWT_SECRET=your-secret-key-here
      EMAIL_SERVICE=console
-     ADMIN_EMAIL=admin@peerhub.com
+     ADMIN_EMAIL=admin@peerup.com
      ADMIN_PASSWORD=admin123
      DATABASE_URL=your-railway-db-url
      ```
@@ -94,7 +94,7 @@ Heroku removed free tier, but you can use:
    ```bash
    npm install -g heroku
    heroku login
-   heroku create your-peerhub-api
+   heroku create your-peerup-api
    git push heroku main
    heroku config:set NODE_ENV=production
    heroku config:set JWT_SECRET=your-secret
@@ -146,7 +146,7 @@ Heroku removed free tier, but you can use:
 
 Once deployed:
 1. Send them: `https://your-app.vercel.app`
-2. Login credentials: `admin@peerhub.com / admin123`
+2. Login credentials: `admin@peerup.com / admin123`
 3. They can explore and signup as student or tutor!
 
 ---

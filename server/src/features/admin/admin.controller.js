@@ -150,3 +150,84 @@ exports.getAllAdmins = async (req, res, next) => {
     next(error);
   }
 };
+
+// =====================
+// Suspend / Unsuspend / Delete / Update
+// =====================
+
+exports.suspendUser = async (req, res, next) => {
+  try {
+    const { reason } = req.body;
+    const user = await adminService.suspendUser(req.params.id, reason);
+    sendResponse(res, 200, "User suspended successfully", user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.unsuspendUser = async (req, res, next) => {
+  try {
+    const user = await adminService.unsuspendUser(req.params.id);
+    sendResponse(res, 200, "User unsuspended successfully", user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteUser = async (req, res, next) => {
+  try {
+    const result = await adminService.deleteUser(req.params.id);
+    sendResponse(res, 200, "User deleted successfully", result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateUser = async (req, res, next) => {
+  try {
+    const user = await adminService.updateUser(req.params.id, req.body);
+    sendResponse(res, 200, "User updated successfully", user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// =====================
+// Course Management
+// =====================
+
+exports.getAllCourses = async (req, res, next) => {
+  try {
+    const result = await adminService.getAllCourses(req.query);
+    sendResponse(res, 200, "Courses fetched", result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.createCourse = async (req, res, next) => {
+  try {
+    const course = await adminService.createCourse(req.body);
+    sendResponse(res, 201, "Course created successfully", course);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateCourse = async (req, res, next) => {
+  try {
+    const course = await adminService.updateCourse(req.params.id, req.body);
+    sendResponse(res, 200, "Course updated successfully", course);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteCourse = async (req, res, next) => {
+  try {
+    const result = await adminService.deleteCourse(req.params.id);
+    sendResponse(res, 200, "Course deleted successfully", result);
+  } catch (error) {
+    next(error);
+  }
+};

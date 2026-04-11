@@ -197,7 +197,7 @@ export default function AdminTutorsPage() {
           <span
             className={`inline-block px-3 py-1 text-xs rounded-full ${
               status === "approved"
-                ? "bg-green-100 text-green-700"
+                ? "bg-blue-100 text-blue-600"
                 : "bg-gray-100 text-gray-600"
             }`}
           >
@@ -228,7 +228,7 @@ export default function AdminTutorsPage() {
           <span
             className={`inline-block px-3 py-1 text-xs rounded-full ${
               status === "approved"
-                ? "bg-green-100 text-green-700"
+                ? "bg-blue-100 text-blue-600"
                 : "bg-gray-100 text-gray-600"
             }`}
           >

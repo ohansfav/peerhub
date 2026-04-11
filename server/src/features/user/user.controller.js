@@ -16,12 +16,22 @@ exports.updateProfile = async (req, res, next) => {
   try {
     const targetId = req.params.id;
 
-    const fileData = req.file
-      ? {
+    let fileData = {};
+    if (req.file) {
+      if (req.file.path && req.file.path.startsWith("http")) {
+        // Cloudinary upload - path is a full URL
+        fileData = {
           profileImageUrl: req.file.path,
           profileImagePublicId: req.file.filename,
-        }
-      : {};
+        };
+      } else {
+        // Local upload - construct URL from filename
+        fileData = {
+          profileImageUrl: `/api/uploads/profiles/${req.file.filename}`,
+          profileImagePublicId: null,
+        };
+      }
+    }
 
     const updatedUser = await UserService.updateUser(targetId, {
       ...req.body,

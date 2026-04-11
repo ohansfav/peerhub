@@ -128,7 +128,7 @@ const studentColumns = [
         <span
           className={`inline-block px-3 py-1 text-xs rounded-full ${
             status === "active"
-              ? "bg-green-100 text-green-700"
+              ? "bg-blue-100 text-blue-600"
               : status === "inactive"
               ? "bg-red-100 text-red-600"
               : "bg-gray-100 text-gray-600"
@@ -164,7 +164,7 @@ const renderStudentCard = (student) => {
         <span
           className={`inline-block px-3 py-1 text-xs rounded-full ${
             status === "active"
-              ? "bg-green-100 text-green-700"
+              ? "bg-blue-100 text-blue-600"
               : status === "inactive"
               ? "bg-red-100 text-red-600"
               : "bg-gray-100 text-gray-600"
@@ -216,7 +216,7 @@ export default function AdminDashboardPage() {
           typeof counts?.growth?.tutors === "number" &&
           counts?.growth?.tutors < 0
             ? "text-red-500"
-            : "text-green-600",
+            : "text-blue-500",
       },
       {
         title: "Total Students",
@@ -226,7 +226,7 @@ export default function AdminDashboardPage() {
           typeof counts?.growth?.students === "number" &&
           counts?.growth?.students < 0
             ? "text-red-500"
-            : "text-green-600",
+            : "text-blue-500",
       },
       {
         title: "Pending Tutor Application",
@@ -235,7 +235,7 @@ export default function AdminDashboardPage() {
         deltaClass:
           typeof counts?.growth?.pendingTutors === "number" &&
           counts?.growth?.pendingTutors < 0
-            ? "text-green-600"
+            ? "text-blue-500"
             : "text-red-500",
       },
     ],

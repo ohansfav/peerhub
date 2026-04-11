@@ -61,7 +61,7 @@ const TutorOnboardingPage = () => {
   const steps = [
     <div key="step1">
       <StepHeader
-        title="What are your subject expertise?"
+        title="What courses are you proficient in?"
         subtitle="Choose all that apply"
       />
       <SelectableCardList
@@ -86,7 +86,7 @@ const TutorOnboardingPage = () => {
 
     <div key="step3">
       <StepHeader
-        title="Upload your academic credentials or NYSC details"
+        title="Upload your student ID or academic credentials"
         subtitle="Supported formats:  JPG, JPEG, PNG, PDF"
       />
       <FileUpload
@@ -104,11 +104,11 @@ const TutorOnboardingPage = () => {
 
   return (
     <AuthLayout>
-      <div className="flex flex-col justify-between md:h-[90vh] space-y-2">
+      <div className="flex flex-col justify-between md:min-h-[90vh] space-y-2">
         <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
         <ErrorAlert error={generalError} />
-        <div className="flex-1">{steps[currentStep - 1]}</div>
+        <div className="flex-1 overflow-y-auto">{steps[currentStep - 1]}</div>
 
         {currentStep === 1 && formData.subjects.length === 0 && (
           <p className="text-sm text-red-500 mt-2">

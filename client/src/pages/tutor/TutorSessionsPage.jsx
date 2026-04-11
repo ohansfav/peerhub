@@ -178,7 +178,7 @@ const TutorSessionsPage = () => {
               onClick={() => setActiveTab("upcoming")}
               className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "upcoming"
-                  ? "border-blue-500 text-blue-600"
+                  ? "border-blue-600 text-blue-600"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -188,7 +188,7 @@ const TutorSessionsPage = () => {
               onClick={() => setActiveTab("past")}
               className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "past"
-                  ? "border-blue-500 text-blue-600"
+                  ? "border-blue-600 text-blue-600"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -198,7 +198,7 @@ const TutorSessionsPage = () => {
               onClick={() => setActiveTab("pending")}
               className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "pending"
-                  ? "border-blue-500 text-blue-600"
+                  ? "border-blue-600 text-blue-600"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
@@ -208,7 +208,7 @@ const TutorSessionsPage = () => {
               onClick={() => setActiveTab("cancelled")}
               className={`pb-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "cancelled"
-                  ? "border-blue-500 text-blue-600"
+                  ? "border-blue-600 text-blue-600"
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >

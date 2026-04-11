@@ -1,4 +1,4 @@
-# Peerhub - Nigeria Implementation Guide
+# Peerup - Nigeria Implementation Guide
 
 ## Quick Reference for Your Project
 

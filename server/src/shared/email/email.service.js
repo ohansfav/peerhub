@@ -43,7 +43,7 @@ const sendWelcomeEmail = async (email, name) => {
       to: [{ email }],
       template_uuid: "0cac693c-dc72-4084-8364-bfad49a07de3",
       template_variables: {
-        company_info_name: "Peerhub",
+        company_info_name: "Peerup",
         name,
         company_info_address: "123, Ikeja",
         company_info_city: "Lagos",

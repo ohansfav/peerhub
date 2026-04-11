@@ -431,8 +431,8 @@ export default function BookingSession() {
         {step === 4 && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
             <div className="text-center mb-6">
-              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Check size={32} className="text-green-600" />
+              <div className="w-14 h-14 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Check size={32} className="text-blue-500" />
               </div>
               <h2 className="text-xl font-semibold text-gray-900 mb-1">
                 Booking Request Sent!

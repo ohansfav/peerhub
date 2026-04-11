@@ -1,4 +1,5 @@
 const sendResponse = require("@utils/sendResponse");
+const logger = require("@src/shared/utils/logger");
 const {
   addStreamUser,
   changeUserPassword,
@@ -31,14 +32,16 @@ exports.signup = async (req, res, next) => {
       password,
     });
 
-    await sendVerificationEmail(newUser.email, newUser.verificationToken);
+    await sendVerificationEmail(newUser.email, newUser.verificationToken).catch(
+      (err) => logger.warn("Failed to send verification email:", err.message)
+    );
     await addStreamUser(newUser);
 
     await trackEvent(eventTypes.USER_SIGNED_UP, {
       userId: newUser.id,
       email: newUser.email,
       fullName: `${newUser.firstName} ${newUser.lastName}`,
-    });
+    }).catch((err) => logger.warn("Failed to track signup event:", err.message));
 
     // In development mode, don't auto-login - let user go to login page
     const isDevMode = process.env.NODE_ENV === "development";

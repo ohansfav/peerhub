@@ -9,3 +9,8 @@ export * from "./useTutorDocument";
 export * from "./useUserCounts";
 export * from "./useUsers";
 export * from "./useAdminUser";
+export * from "./useSuspendUser";
+export * from "./useUnsuspendUser";
+export * from "./useDeleteUser";
+export * from "./useUpdateUser";
+export * from "./useAdminCourses";

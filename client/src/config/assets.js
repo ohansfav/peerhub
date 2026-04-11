@@ -15,25 +15,25 @@ export const ASSETS = {
   // Hero Section
   hero: {
     backgroundImage: "/images/hero.png",
-    alt: "Nigerian students studying together",
+    alt: "University students collaborating in lecture hall",
   },
 
   // About Section
   about: {
     studentImage: "/images/student.png",
-    alt: "Student learning with laptop",
+    alt: "Student learning on campus",
   },
 
   // Call-to-Action Section
   cta: {
     backgroundImage: "/images/cta.png",
-    alt: "Students collaborating on learning",
+    alt: "Students collaborating on campus",
   },
 
   // Logo (you can replace this with your actual logo path)
   logo: {
     image: "/images/logo.png?v=2",
-    alt: "Peerhub Logo",
+    alt: "Peerup Logo",
   },
 };
 
@@ -45,62 +45,62 @@ export const TESTIMONIALS = [
   {
     id: 1,
     name: "Aminat Olaleye",
-    role: "SS3 Student",
+    role: "300L Biochemistry Student",
     rating: 4.88,
-    text: "My WAEC preparation was stressful until I found a tutor on Peerhub. She made Physics so simple and I scored A1!",
+    text: "The Peerup platform made my semester exam preparation so much easier. I found a tutor who broke down Organic Chemistry perfectly and I aced my exams!",
     image:
-      "https://res.cloudinary.com/dwllr51vn/image/upload/t_edupeerhub-landing-testimonials/iwaria-inc-SESt1VL2D-w-unsplash_piqb8c",
-    alt: "Nigerian female student smiling",
+      "https://res.cloudinary.com/dwllr51vn/image/upload/w_128,h_128,c_fill,g_face,q_auto,f_auto/iwaria-inc-SESt1VL2D-w-unsplash_piqb8c",
+    alt: "Female university student smiling",
   },
   {
     id: 2,
     name: "Blessing Okoro",
-    role: "NYSC Tutor",
+    role: "400L Computer Science Tutor",
     rating: 4.6,
-    text: "During my service year, Peerhub helped me earn extra income while making a difference. The students are eager to learn and the platform is reliable.",
+    text: "As a final year student, Peerup gave me a platform to help juniors while earning. The scheduling system works perfectly around my lecture timetable.",
     image:
-      "https://res.cloudinary.com/dwllr51vn/image/upload/t_edupeerhub-landing-testimonials/ikechukwu-julius-ugwu-F9bkOxw-dyQ-unsplash_gsvuwj",
-    alt: "Nigerian female young tutor",
+      "https://res.cloudinary.com/dwllr51vn/image/upload/w_128,h_128,c_fill,g_face,q_auto,f_auto/ikechukwu-julius-ugwu-F9bkOxw-dyQ-unsplash_gsvuwj",
+    alt: "Female university tutor",
   },
   {
     id: 3,
     name: "David Adeyemi",
-    role: "SS2 Student",
+    role: "200L Engineering Student",
     rating: 5,
-    text: "I was failing Mathematics badly but my tutor on Peerhub was so patient with me. Now I actually understand algebra and geometry!",
+    text: "I was struggling with Calculus but my tutor on Peerup was so patient. Now I actually understand differential equations and integration!",
     image:
-      "https://res.cloudinary.com/dwllr51vn/image/upload/t_edupeerhub-landing-testimonials/josh-kidd-2gOu7Nfrnns-unsplash_hbaaqm",
-    alt: "Nigerian male student",
+      "https://res.cloudinary.com/dwllr51vn/image/upload/w_128,h_128,c_fill,g_face,q_auto,f_auto/josh-kidd-2gOu7Nfrnns-unsplash_hbaaqm",
+    alt: "Male university student",
   },
   {
     id: 4,
     name: "Emmanuel Nnamdi",
-    role: "University Graduate Tutor",
+    role: "500L Law Tutor",
     rating: 4.4,
-    text: "As a fresh graduate, Peerhub gave me a great way to stay sharp in my field while helping secondary school students. The scheduling is flexible which I really appreciate.",
+    text: "Peerup gave me a great way to stay sharp in my courses while mentoring younger students. The flexible scheduling fits my busy programme perfectly.",
     image:
-      "https://res.cloudinary.com/dwllr51vn/image/upload/t_edupeerhub-landing-testimonials/johnson-sesbire-K-USwvom-Pw-unsplash_jt4uej",
-    alt: "Nigerian male young professional",
+      "https://res.cloudinary.com/dwllr51vn/image/upload/w_128,h_128,c_fill,g_face,q_auto,f_auto/johnson-sesbire-K-USwvom-Pw-unsplash_jt4uej",
+    alt: "Male university student",
   },
   {
     id: 5,
     name: "Khadijah Musa",
-    role: "SS1 Student",
+    role: "100L Microbiology Student",
     rating: 4.8,
-    text: "Chemistry used to confuse me so much but my tutor breaks everything down step by step. Peerhub made it easy to find someone who actually cares about my progress!",
+    text: "General Chemistry used to confuse me but through Peerup, my tutor breaks everything down step by step. It's easy to find someone who cares about my progress!",
     image:
-      "https://res.cloudinary.com/dwllr51vn/image/upload/t_edupeerhub-landing-testimonials/adeniji-abdullahi-a-CPz2KWjCwDQ-unsplash_lcttjh",
-    alt: "Nigerian female student studying",
+      "https://res.cloudinary.com/dwllr51vn/image/upload/w_128,h_128,c_fill,g_face,q_auto,f_auto/adeniji-abdullahi-a-CPz2KWjCwDQ-unsplash_lcttjh",
+    alt: "Female university student studying",
   },
   {
     id: 6,
     name: "Ibrahim Lawal",
-    role: "NYSC Tutor",
+    role: "300L English Tutor",
     rating: 5,
-    text: "Teaching English on Peerhub has been amazing. I get to help students improve their writing and speaking skills while earning during my service year. Win-win!",
+    text: "Teaching academic writing on Peerup has been incredible. I help fellow students improve their essays and communication skills while earning. It's a win-win!",
     image:
-      "https://res.cloudinary.com/dwllr51vn/image/upload/t_edupeerhub-landing-testimonials/mubarak-showole-Ve7xjKImd28-unsplash_tnhkcv",
-    alt: "Nigerian male tutor smiling",
+      "https://res.cloudinary.com/dwllr51vn/image/upload/w_128,h_128,c_fill,g_face,q_auto,f_auto/mubarak-showole-Ve7xjKImd28-unsplash_tnhkcv",
+    alt: "Male university tutor smiling",
   },
 ];
 
@@ -111,27 +111,27 @@ export const TESTIMONIALS = [
 export const FAQ_ITEMS = [
   {
     id: 1,
-    question: "What subjects are covered?",
+    question: "What courses are available on the platform?",
     answer:
-      "Peerhub covers all major subjects required for WAEC, NECO, and JAMB examinations including Mathematics, English Language, Physics, Chemistry, Biology, Economics, Government, Literature, and more. Our tutors are qualified to teach across the Nigerian secondary school curriculum.",
+      "Peerup covers a wide range of university courses including Computer Science, Mathematics, Physics, Chemistry, Biology, Accounting, Economics, Engineering, Law, Mass Communication, and more.",
   },
   {
     id: 2,
     question: "Who are the Tutors?",
     answer:
-      "Our tutors are carefully vetted university undergraduates and recent graduates who have excelled in their fields. Each tutor goes through a rigorous verification process including credential checks, subject matter assessments, and teaching demonstrations to ensure they meet our high standards for quality education.",
+      "Our tutors are verified students and instructors from universities. Each tutor undergoes a credential check and academic performance review to ensure they meet our quality standards for peer-assisted learning.",
   },
   {
     id: 3,
     question: "How do I become a Tutor?",
     answer:
-      "To become a tutor on Peerhub, you need to be a current university undergraduate or recent graduate. Apply through our platform by submitting your credentials, academic transcripts, and completing our tutor assessment. Once verified and approved, you can start creating your availability and connecting with students.",
+      "Any university student can apply as a tutor on Peerup. Select the courses you excel in, share your academic background, and upload your student ID or credentials. Once verified and approved, you can set your availability and start tutoring.",
   },
   {
     id: 4,
-    question: "Is Peerhub free to use?",
+    question: "Is the platform free to use?",
     answer:
-      "Peerhub offers both free and premium features. Students can access our resource library and ask questions in the community forum for free. Live one-on-one tutoring sessions are available through affordable subscription plans designed to be accessible to Nigerian students. We also offer scholarship programs for students in need.",
+      "Peerup offers both free and premium features. Students can access the course resource library, learning materials, and community forum for free. Live one-on-one tutoring sessions and premium resources are available through affordable plans.",
   },
 ];
 
@@ -142,44 +142,44 @@ export const FAQ_ITEMS = [
 export const HOW_IT_WORKS_STEPS = [
   {
     id: 1,
-    title: "Join Peerhub",
+    title: "Create Your Account",
     description:
-      "Sign up and get guided towards the support of a tutor ready to teach.",
+      "Sign up with your institutional email and get matched with resources tailored to your programme.",
     icon: "UserPlus",
   },
   {
     id: 2,
     title: "Access Your Dashboard",
     description:
-      "Instantly view your upcoming sessions, streaks, past completions and more.",
+      "View your enrolled courses, upcoming sessions, learning progress, and resources in one place.",
     icon: "Monitor",
   },
   {
     id: 3,
     title: "Join Live Sessions",
     description:
-      "Learn with others in real-time online sessions tailored to your academic needs.",
+      "Attend real-time online tutoring sessions tailored to your course curriculum.",
     icon: "Video",
   },
   {
     id: 4,
-    title: "Explore the Library",
+    title: "Explore Course Materials",
     description:
-      "Access learning resources, notes and past WAEC/NECO/JAMB questions materials tailored to your studied classes.",
+      "Access lecture notes, past questions, study guides, and exam materials for your courses.",
     icon: "BookOpen",
   },
   {
     id: 5,
     title: "Ask a Question Anytime",
     description:
-      "Post academic questions to get help from verified tutors 24 x 7 or tutor assistance.",
+      "Post academic questions and get help from verified tutors and fellow students.",
     icon: "MessageCircle",
   },
   {
     id: 6,
-    title: "Stay Motivated",
+    title: "Track Your Progress",
     description:
-      "Earn badges, maintain learning streaks, and celebrate milestones as you go along.",
+      "Monitor your learning milestones, course completion, and academic performance over time.",
     icon: "Trophy",
   },
 ];

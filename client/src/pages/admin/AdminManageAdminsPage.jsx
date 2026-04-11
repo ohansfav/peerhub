@@ -41,7 +41,7 @@ const adminColumns = [
       <span
         className={`px-2 py-1 text-xs rounded-full ${
           admin.user.accountStatus === "active"
-            ? "bg-green-100 text-green-800"
+            ? "bg-blue-100 text-blue-700"
             : "bg-gray-100 text-gray-600"
         }`}
       >

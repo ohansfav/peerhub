@@ -4,23 +4,31 @@ import {
   fetchTutorBookings,
   getUpcomingSession,
 } from "../../lib/api/common/bookingApi";
+import { getBroadcastMessages } from "../../lib/api/broadcast/broadcastApi";
 import { formatTimeRemaining } from "../../utils/time";
 
 export function useTutorNotifications(enabled = true) {
   const bookings = useQuery({
     queryKey: ["tutorNotificationsBookings"],
     queryFn: () => fetchTutorBookings({ status: ["pending", "confirmed"] }),
-    // staleTime: 30000, // 30 secs
-    staleTime: 1000 * 60 * 5, // 5 mins
-    cacheTime: 1000 * 60 * 10, // 10 mins
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
     enabled,
   });
 
   const sessions = useQuery({
     queryKey: ["tutorNotificationsUpcomingSessions"],
     queryFn: getUpcomingSession,
-    staleTime: 1000 * 60 * 5, // 5 mins
-    cacheTime: 1000 * 60 * 10, // 10 mins
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
+    enabled,
+  });
+
+  const broadcasts = useQuery({
+    queryKey: ["broadcastMessages"],
+    queryFn: getBroadcastMessages,
+    staleTime: 1000 * 60 * 5,
+    cacheTime: 1000 * 60 * 10,
     enabled,
   });
 
@@ -75,11 +83,31 @@ export function useTutorNotifications(enabled = true) {
       }
     }
 
+    // Broadcast messages
+    if (broadcasts.data) {
+      broadcasts.data.forEach((msg) => {
+        const senderName = msg.sender
+          ? `${msg.sender.firstName} ${msg.sender.lastName}`
+          : "System";
+
+        result.push({
+          id: `broadcast-${String(msg.id)}`,
+          type: "announcement",
+          sender: senderName,
+          message: `${msg.title}: ${msg.message}`,
+          timestamp: msg.createdAt,
+          priority: "medium",
+        });
+      });
+    }
+
     return result.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-  }, [enabled, bookings.data, sessions.data]);
+  }, [enabled, bookings.data, sessions.data, broadcasts.data]);
 
   return {
     notifications,
-    isLoading: enabled && (bookings.isLoading || sessions.isLoading),
+    isLoading:
+      enabled &&
+      (bookings.isLoading || sessions.isLoading || broadcasts.isLoading),
   };
 }

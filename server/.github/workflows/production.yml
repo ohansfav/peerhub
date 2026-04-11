@@ -112,11 +112,11 @@ jobs:
           script: |
             set -euo pipefail
 
-            APP_NAME="edupeerhub-server"
+            APP_NAME="edupeerup-server"
             ENV_NAME="production"
             SERVICE_ENV="production"   # value for NODE_ENV on server
             BRANCH="main"
-            REPO_URL="https://github.com/Edupeerhub/edupeerhub-server.git"
+            REPO_URL="https://github.com/Edupeerup/edupeerup-server.git"
             DEPLOY_DIR="/var/www/${APP_NAME}-${ENV_NAME}"
             SERVICE_NAME="${APP_NAME}-${ENV_NAME}"
 

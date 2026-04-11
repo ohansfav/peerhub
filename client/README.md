@@ -1,10 +1,10 @@
-# Peerhub Client
+# Peerup Client
 
 ## Project Overview
 
-**Peerhub** is a proprietary peer-powered ed-tech platform designed to democratize access to quality education for Nigerian secondary school students. By connecting learners with vetted university undergraduates and recent graduates, Peerhub enables personalized, live one-on-one tutoring sessions focused on exam preparation for WAEC, NECO, and JAMB.
+**Peerup** is a proprietary peer-powered ed-tech platform designed to democratize access to quality education for university students. By connecting learners with vetted undergraduate and graduate tutors, Peerup enables personalized, live one-on-one tutoring sessions.
 
-This repository contains the **client-side web application** for Peerhub. The frontend (client) and backend (server) are maintained as separate codebases.
+This repository contains the **client-side web application** for Peerup. The frontend (client) and backend (server) are maintained as separate codebases.
 
 ---
 
@@ -66,8 +66,8 @@ Empower Nigerian students with affordable, accessible, and high-quality academic
 1. **Clone the Repository**
 
    ```sh
-   git clone https://github.com/Peerhub/Peerhub-client.git
-   cd Peerhub-client
+   git clone https://github.com/Peerup/Peerup-client.git
+   cd Peerup-client
    ```
 
 2. **Install Dependencies**
@@ -203,7 +203,7 @@ Environment variables must be configured in the Amplify console to match your pr
 
 ## API Integration
 
-The client communicates with the Peerhub server API for:
+The client communicates with the Peerup server API for:
 
 - User authentication and profile management
 - Tutor discovery and booking
@@ -216,7 +216,7 @@ All API calls are handled through the services layer with React Query for cachin
 
 ## Support & Contact
 
-For technical support or business inquiries, please contact the Peerhub team via the official website.
+For technical support or business inquiries, please contact the Peerup team via the official website.
 
 ---
 

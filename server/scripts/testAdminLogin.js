@@ -13,7 +13,7 @@ async function testLogin() {
     console.log("🔄 Testing admin login...\n");
     
     const adminUser = await User.findOne({
-      where: { email: "admin@peerhub.com" },
+      where: { email: "admin@peerup.com" },
       attributes: ["id", "email", "passwordHash", "role", "isVerified"],
     });
 

@@ -14,6 +14,9 @@ const definers = [
   require("@features/events/events.model"),
   require("@features/booking/booking.model"),
   require("@features/reviews/review.model"),
+  require("@features/quiz/quiz.model"),
+  require("@features/broadcast/broadcast.model"),
+  require("@features/course/course.model"),
 ];
 
 ///Add models
@@ -49,6 +52,10 @@ module.exports = {
   Booking: sequelize.models.Booking,
   Review: sequelize.models.Review,
   TutorStat: sequelize.models.TutorStat,
+  Quiz: sequelize.models.Quiz,
+  QuizAttempt: sequelize.models.QuizAttempt,
+  BroadcastMessage: sequelize.models.BroadcastMessage,
+  Course: sequelize.models.Course,
 
   // StudentExam: sequelize.models.StudentExam,
 };

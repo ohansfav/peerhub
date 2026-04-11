@@ -5,6 +5,10 @@ const cloudinary = require("cloudinary").v2;
  * @param {string} publicId - Cloudinary public_id (not full URL!)
  */
 function getProfilePicUrls(publicId) {
+  if (!publicId) {
+    return null;
+  }
+
   return {
     small: cloudinary.url(publicId, {
       width: 100,

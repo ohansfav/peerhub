@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Replit startup script for Peerhub
+# Replit startup script for Peerup
 # This script builds the frontend and starts the backend to serve it
 
-echo "🚀 Starting Peerhub on Replit..."
+echo "🚀 Starting Peerup on Replit..."
 
 # Install dependencies
 echo "📦 Installing server dependencies..."

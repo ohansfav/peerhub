@@ -96,17 +96,49 @@ export const getAllAdmins = async () => {
   return data.data;
 };
 
-// export const suspendUser = async (id) => {
-//   const { data } = await axiosInstance.put(`/admin/users/${id}/suspend`);
-//   return data.data;
-// };
+export const suspendUser = async (id, reason) => {
+  const { data } = await axiosInstance.patch(`/admin/users/${id}/suspend`, { reason });
+  return data.data;
+};
 
-// export const unsuspendUser = async (id) => {
-//   const { data } = await axiosInstance.put(`/admin/users/${id}/unsuspend`);
-//   return data.data;
-// };
+export const unsuspendUser = async (id) => {
+  const { data } = await axiosInstance.patch(`/admin/users/${id}/unsuspend`);
+  return data.data;
+};
 
-// export const deleteUser = async (id) => {
-//   const { data } = await axiosInstance.delete(`/admin/users/${id}`);
-//   return data.data;
-// };
+export const deleteUser = async (id) => {
+  const { data } = await axiosInstance.delete(`/admin/users/${id}`);
+  return data.data;
+};
+
+export const updateUser = async (id, userData) => {
+  const { data } = await axiosInstance.put(`/admin/users/${id}`, userData);
+  return data.data;
+};
+
+// =====================
+// Admin Course Routes
+// =====================
+
+export const getAdminCourses = async (query = {}) => {
+  const params = {};
+  if (query.page) params.page = query.page;
+  if (query.limit) params.limit = query.limit;
+  const { data } = await axiosInstance.get("/admin/courses", { params });
+  return data.data;
+};
+
+export const createAdminCourse = async (courseData) => {
+  const { data } = await axiosInstance.post("/admin/courses", courseData);
+  return data.data;
+};
+
+export const updateAdminCourse = async (id, courseData) => {
+  const { data } = await axiosInstance.put(`/admin/courses/${id}`, courseData);
+  return data.data;
+};
+
+export const deleteAdminCourse = async (id) => {
+  const { data } = await axiosInstance.delete(`/admin/courses/${id}`);
+  return data.data;
+};

@@ -64,8 +64,8 @@ const Sidebar = ({ isOpen, onClose, links = [] }) => {
         <div className="flex items-center justify-center gap-3 p-5 ">
           <Link to="/" className="flex items-center space-x-2">
             <Logo className="hidden md:block size-10" />
-            <h1 className="hidden md:block text-2xl font-bold text-gray-900">
-              Peerhub
+            <h1 className="hidden md:block text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+              Peerup
             </h1>
           </Link>
 

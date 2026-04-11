@@ -63,7 +63,7 @@ const NotificationDropdown = ({
                     : n.type === "request"
                     ? "bg-yellow-100 text-yellow-600"
                     : n.type === "success"
-                    ? "bg-green-100 text-green-600"
+                    ? "bg-blue-100 text-blue-500"
                     : n.type === "warning"
                     ? "bg-red-100 text-red-600"
                     : n.type === "alert"

@@ -6,8 +6,8 @@ const Button = ({
   disabled = false,
   loading = false,
 }) => {
-  const baseStyles = "px-4 py-2 rounded-full font-medium w-full";
-  const enabledStyles = "bg-blue-500 text-white hover:bg-blue-600";
+  const baseStyles = "px-4 py-2 rounded-full font-medium w-full transition-all duration-200";
+  const enabledStyles = "bg-gradient-to-r from-blue-600 to-blue-500 text-white hover:from-blue-500 hover:to-blue-400 shadow-sm hover:shadow-md";
   const disabledStyles = "bg-gray-400 text-white cursor-not-allowed";
 
   return (

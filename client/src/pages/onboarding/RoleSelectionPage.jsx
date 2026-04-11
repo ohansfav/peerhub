@@ -21,14 +21,14 @@ const RoleSelectionPage = () => {
       id: "tutor",
       role: "I'm a Tutor",
       description:
-        "I want to share my expertise and coach students to succeed in crucial exams like WAEC and JAMB.",
+        "I want to share my expertise and help fellow students excel in their university courses and exams.",
       image: Tutor,
     },
     {
       id: "student",
       role: "I'm a Student",
       description:
-        "I want to find qualified tutors to help me prepare for WAEC, JAMB and other important exams.",
+        "I want to find knowledgeable peer tutors to help me understand difficult courses and prepare for exams.",
       image: Student,
     },
   ];
@@ -39,12 +39,12 @@ const RoleSelectionPage = () => {
         {/* Header */}
         <div className="text-center mb-6 md:mb-12">
           <h1 className="text-2xl md:text-5xl font-bold text-gray-800 mb-2 md:mb-4">
-            What would you use <span className="text-primary">Peerhub</span>{" "}
+            What would you use <span className="text-primary">Peerup</span>{" "}
             for?
           </h1>
           <p className="text-sm md:text-lg text-gray-600 max-w-2xl mx-auto">
-            Connecting Nigerian students with qualified tutors fro WAEC, JAMB
-            and exam preparation.
+            Connecting university students with knowledgeable peer tutors for
+            course support and exam preparation.
           </p>
         </div>
 

@@ -1,8 +1,8 @@
-# Peerhub Integration Guide
+# Peerup Integration Guide
 
 ## Overview
 
-Peerhub is a full-stack tutoring platform consisting of:
+Peerup is a full-stack tutoring platform consisting of:
 - **Backend (Server)**: Node.js/Express API running on port 3000
 - **Frontend (Client)**: React/Vite app running on port 5173
 
@@ -102,7 +102,7 @@ DB_DIALECT=postgres
 DB_HOST=localhost
 DB_USER=postgres
 DB_PASS=your_password
-DB_NAME=edupeerhub_db
+DB_NAME=edupeerup_db
 DB_SSL=false
 ```
 
@@ -118,7 +118,7 @@ VITE_STREAM_API_KEY=your-stream-api-key
 
 If using PostgreSQL, create the database:
 ```bash
-createdb edupeerhub_db
+createdb edupeerup_db
 ```
 
 Then run migrations (from server directory):

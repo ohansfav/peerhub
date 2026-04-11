@@ -84,6 +84,13 @@ module.exports = () => {
       // foreignKey: "studentId",
       as: "exams",
     });
+
+    Student.belongsToMany(models.Course, {
+      through: "student_courses",
+      as: "courses",
+      foreignKey: "studentId",
+      otherKey: "courseId",
+    });
   };
 
   return Student;

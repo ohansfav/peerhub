@@ -89,8 +89,8 @@ const CustomChannelHeader = ({ channel, authUser }) => {
           <div className="flex items-center space-x-2 mt-1">
             {otherUser.online ? (
               <>
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <p className="text-sm text-green-600">Online</p>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+                <p className="text-sm text-blue-500">Online</p>
               </>
             ) : (
               <>

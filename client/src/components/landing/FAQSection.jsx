@@ -5,19 +5,19 @@ import { FAQ_ITEMS } from "../../config/assets";
 
 const AccordionItem = ({ item, isOpen, onClick }) => {
   return (
-    <div className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+    <div className={`border rounded-xl overflow-hidden bg-white transition-all duration-300 ${isOpen ? 'border-blue-200 shadow-md' : 'border-gray-200 shadow-sm'}`}>
       <button
         onClick={onClick}
-        className="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-6 text-left hover:bg-blue-50/50 transition-colors"
       >
         <div className="flex items-center space-x-4 flex-1">
-          <CheckCircle className="w-6 h-6 text-blue-600 flex-shrink-0" />
+          <CheckCircle className={`w-6 h-6 flex-shrink-0 transition-colors ${isOpen ? 'text-blue-600' : 'text-blue-400'}`} />
           <span className="text-lg font-semibold text-gray-900">
             {item.question}
           </span>
         </div>
         <ChevronDown
-          className={`w-6 h-6 text-blue-600 transition-transform duration-300 flex-shrink-0 ml-4 ${
+          className={`w-6 h-6 text-blue-500 transition-transform duration-300 flex-shrink-0 ml-4 ${
             isOpen ? "transform rotate-180" : ""
           }`}
         />
@@ -47,7 +47,7 @@ const FAQSection = () => {
     <Section id="faq" background="light">
       <div className="text-center mb-12 md:mb-16">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-          Frequently Asked <span className="text-blue-600">Questions</span>
+          Frequently Asked <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">Questions</span>
         </h2>
         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
           Here are answers to some of the most common things students and tutors

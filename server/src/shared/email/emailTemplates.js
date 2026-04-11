@@ -6,10 +6,10 @@ const emailHeader = (color = "#E7F6FB") => `
         <table border="0" cellspacing="0" cellpadding="0" align="center">
           <tr>
             <td align="center" valign="middle" style="padding-right: 10px;">
-              <img src="https://peerhub.com/images/logo.png?v=2" alt="Logo" width="40" height="40" style="display:block;" />
+              <img src="https://peerup.com/images/logo.png?v=2" alt="Logo" width="40" height="40" style="display:block;" />
             </td>
             <td align="center" valign="middle" style="font-family: Poppins, Arial, sans-serif; font-size: 30px; font-weight: bold; color: #000000; text-decoration: none;">
-              Peerhub
+              Peerup
             </td>
           </tr>
         </table>
@@ -23,7 +23,7 @@ const emailFooter = `
   <div style="text-align: center; margin-top: 20px; 
               color: #2C3A47; font-size: 0.8em; font-family: Roboto, Arial, sans-serif;">
     <p style="margin: 0;">This is an automated message, please do not reply.</p>
-    <p style="margin: 0;">© ${new Date().getFullYear()} Peerhub</p>
+    <p style="margin: 0;">© ${new Date().getFullYear()} Peerup</p>
   </div>
 `;
 
@@ -64,7 +64,7 @@ exports.VERIFICATION_EMAIL_TEMPLATE = (verificationCode) =>
       <p style="font-family: Roboto, Arial, sans-serif;">Enter this code on the verification page to complete your registration.</p>
       <p style="font-family: Roboto, Arial, sans-serif;">This code will expire in 1 hour for security reasons.</p>
       <p style="font-family: Roboto, Arial, sans-serif;">If you didn't create an account with us, please ignore this email.</p>
-      <p style="font-family: Roboto, Arial, sans-serif;">Best regards,<br>Peerhub</p>
+      <p style="font-family: Roboto, Arial, sans-serif;">Best regards,<br>Peerup</p>
     `
   );
 
@@ -79,7 +79,7 @@ exports.PASSWORD_RESET_REQUEST_TEMPLATE = (resetURL) =>
         <a href="${resetURL}" style="background-color: #4CA1F0; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; font-family: Poppins, Arial, sans-serif; display: inline-block;">Reset Password</a>
       </div>
       <p style="font-family: Roboto, Arial, sans-serif;">This link will expire in 15 minutes for security reasons.</p>
-      <p style="font-family: Roboto, Arial, sans-serif;">Best regards,<br>Peerhub</p>
+      <p style="font-family: Roboto, Arial, sans-serif;">Best regards,<br>Peerup</p>
     `
   );
 
@@ -152,13 +152,13 @@ exports.UNREAD_MESSAGE_TEMPLATE = (
 
 exports.TUTOR_APPROVAL_TEMPLATE = (name) =>
   emailWrapper(
-    "Welcome to Peerhub!",
+    "Welcome to Peerup!",
     `
         <p style="font-family: Roboto, Arial, sans-serif;">Hi ${name},</p>
         <p style="font-family: Roboto, Arial, sans-serif;">Congratulations! 🎉 Your tutor application has been reviewed and <strong>approved</strong>.</p>
         <p style="font-family: Roboto, Arial, sans-serif;">You can now log in to your account and start connecting with students.</p>
         <div style="text-align: center; margin: 30px 0;">
-          <a href="https://peerhub.com/tutor" style="background-color: #4CA1F0; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; font-family: Poppins, Arial, sans-serif; display: inline-block;">Go to Dashboard</a>
+          <a href="https://peerup.com/tutor" style="background-color: #4CA1F0; color: white; padding: 12px 20px; text-decoration: none; border-radius: 6px; font-weight: bold; font-family: Poppins, Arial, sans-serif; display: inline-block;">Go to Dashboard</a>
         </div>
         <p style="font-family: Roboto, Arial, sans-serif;">We're excited to have you on board and can't wait to see the impact you'll make!</p>
         <p style="font-family: Roboto, Arial, sans-serif;">Best regards,<br>Peerhub Team</p>
@@ -170,7 +170,7 @@ exports.TUTOR_REJECTION_TEMPLATE = (name, reason) =>
     "Application Update",
     `
           <p style="font-family: Roboto, Arial, sans-serif;">Hi ${name},</p>
-          <p style="font-family: Roboto, Arial, sans-serif;">We appreciate your interest in becoming a tutor at Peerhub. After careful review, we regret to inform you that your application has not been approved at this time.</p>
+          <p style="font-family: Roboto, Arial, sans-serif;">We appreciate your interest in becoming a tutor at Peerup. After careful review, we regret to inform you that your application has not been approved at this time.</p>
           <p style="font-family: Roboto, Arial, sans-serif;"><strong>Reason provided:</strong></p>
           <blockquote style="background: #fff; border-left: 4px solid #e53935; margin: 15px 0; padding: 10px 15px; color: #555;">
             ${reason || "No specific reason provided."}

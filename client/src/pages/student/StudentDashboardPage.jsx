@@ -2,7 +2,6 @@ import Calendar from "../../components/Calendar";
 import streakIcon from "../../assets/Student-icon/streak.svg";
 import quizIcon from "../../assets/Student-icon/quiz.svg";
 import scoreIcon from "../../assets/Student-icon/score.svg";
-import greaterThanIcon from "../../assets/Student-icon/greater-than.svg";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getRecommendedTutors } from "../../lib/api/tutor/tutorApi";
 import { Link } from "react-router-dom";
@@ -13,6 +12,7 @@ import {
   getUpcomingSession,
   getAllStudentBookings,
 } from "../../lib/api/common/bookingApi";
+import { getStudentStats } from "../../lib/api/quiz/quizApi";
 import Spinner from "../../components/common/Spinner";
 import HorizontalScrollTutors from "../../components/student/HorizontalScrollTutors";
 import UpcomingSessionsCard from "../../components/student/UpcomingSessionCard";
@@ -24,6 +24,8 @@ import {
 } from "../../utils/toastDisplayHandler";
 import { formatCalendarDate, formatDate } from "../../utils/time";
 import { useUserProfile } from "../../hooks/profile/useUserProfile";
+import { getMyCourses } from "../../lib/api/course/courseApi";
+import { BookOpen, GraduationCap } from "lucide-react";
 
 const StudentDashboardPage = () => {
   const { data: user } = useUserProfile();
@@ -66,6 +68,20 @@ const StudentDashboardPage = () => {
   } = useQuery({
     queryKey: ["studentUpcomingSession"],
     queryFn: getUpcomingSession,
+  });
+
+  // Student stats query (streak, quizzes, avg score)
+  const { data: stats } = useQuery({
+    queryKey: ["studentStats"],
+    queryFn: getStudentStats,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  // Registered courses query
+  const { data: myCourses = [], isLoading: coursesLoading } = useQuery({
+    queryKey: ["myCourses"],
+    queryFn: getMyCourses,
+    staleTime: 1000 * 60 * 5,
   });
 
   const cancelMutation = useMutation({
@@ -156,9 +172,9 @@ const StudentDashboardPage = () => {
                 Overview
               </h2> */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4">
-                <OverviewPanel icon={streakIcon} text="Daily Streak" />
-                <OverviewPanel icon={quizIcon} text="Quizzes" />
-                <OverviewPanel icon={scoreIcon} text="Average Score" />
+                <OverviewPanel icon={streakIcon} text="Daily Streak" value={stats?.streak ? `${stats.streak} 🔥` : "0"} />
+                <OverviewPanel icon={quizIcon} text="Quizzes" value={stats?.quizzesTaken ?? 0} />
+                <OverviewPanel icon={scoreIcon} text="Average Score" value={stats?.averageScore ? `${stats.averageScore}%` : "0%"} />
               </div>
             </div>
 
@@ -219,34 +235,127 @@ const StudentDashboardPage = () => {
 
             <hr className="border-t border-gray-300" />
 
-            {/* Currently Enrolled */}
+            {/* Learning Progress */}
             <div className="flex-none px-2 sm:px-0">
-              <h3 className="font-semibold text-lg mb-4">Currently Enrolled</h3>
-              <div className="flex items-center justify-between w-full">
-                <p className="text-gray-500 text-sm font-semibold">
-                  No subject
-                </p>
-                <img
-                  src={greaterThanIcon}
-                  alt=">"
-                  className="w-3 h-3 opacity-70"
-                />
+              <h3 className="font-semibold text-lg mb-4">Learning Progress</h3>
+              
+              {/* Course Progress Items */}
+              <div className="space-y-3">
+                <div>
+                  <div className="flex items-center justify-between w-full">
+                    <p className="text-gray-700 text-sm font-semibold">
+                      Sessions Completed
+                    </p>
+                    <span className="text-xs text-blue-600 font-medium">
+                      {upcomingSessions ? "1+" : "0"} sessions
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: upcomingSessions ? "15%" : "0%" }}></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between w-full">
+                    <p className="text-gray-700 text-sm font-semibold">
+                      Course Materials
+                    </p>
+                    <span className="text-xs text-blue-600 font-medium">
+                      Explore
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                    <div className="bg-blue-500 h-2 rounded-full w-0"></div>
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between w-full">
+                    <p className="text-gray-700 text-sm font-semibold">
+                      Overall Progress
+                    </p>
+                    <span className="text-xs text-gray-500 font-medium">
+                      0%
+                    </span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
+                    <div className="bg-yellow-500 h-2 rounded-full w-0"></div>
+                  </div>
+                </div>
               </div>
 
-              <p className="text-sm text-gray-500 mt-1">Progress 0%</p>
-              <div className="w-full bg-gray-200 rounded-full h-2 mt-1">
-                <div className="bg-blue-600 h-2 rounded-full w-0"></div>
-              </div>
               <div className="flex justify-center mt-4">
-                <button
-                  disabled
-                  className="bg-blue-600 text-white px-4 py-1 border rounded-xl font-medium w-full disabled:opacity-50 disabled:cursor-not-allowed italic"
+                <Link
+                  to="/student/library"
+                  className="bg-blue-600 text-white px-4 py-2 border rounded-xl font-medium w-full text-center hover:bg-blue-700 transition-colors text-sm"
                 >
-                  Coming Soon
-                </button>
+                  Browse Course Materials
+                </Link>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Registered Courses */}
+        <div className="bg-white rounded-lg border shadow p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-lg flex items-center gap-2">
+              <GraduationCap className="w-5 h-5 text-blue-600" />
+              My Registered Courses
+            </h3>
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-gray-500">
+                {myCourses.length} course{myCourses.length !== 1 ? "s" : ""}
+              </span>
+              <Link
+                to="/student/my-courses"
+                className="text-blue-600 text-sm font-medium hover:underline"
+              >
+                View All
+              </Link>
+            </div>
+          </div>
+
+          {coursesLoading ? (
+            <div className="flex justify-center py-6">
+              <Spinner />
+            </div>
+          ) : myCourses.length === 0 ? (
+            <div className="text-center py-6">
+              <BookOpen className="w-10 h-10 text-gray-300 mx-auto mb-2" />
+              <p className="text-gray-500 text-sm">No courses registered yet</p>
+              <Link
+                to="/student/courses"
+                className="text-blue-600 text-sm font-medium hover:underline mt-1 inline-block"
+              >
+                Browse Course Catalog
+              </Link>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+              {myCourses.slice(0, 6).map((course) => (
+                <div
+                  key={course.id}
+                  className="border rounded-lg p-3 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-bold text-blue-700 text-xs">
+                      {course.courseCode}
+                    </span>
+                    <span className="text-xs text-gray-400">
+                      {course.creditUnits} CU
+                    </span>
+                  </div>
+                  <p className="text-sm font-medium text-gray-800 line-clamp-1">
+                    {course.title}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-1 capitalize">
+                    {course.level}L · {course.semester} Semester
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Recommended Tutors */}

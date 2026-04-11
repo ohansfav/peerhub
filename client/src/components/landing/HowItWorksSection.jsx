@@ -23,15 +23,15 @@ const StepCard = ({ step, isLast, isThird }) => {
 
   return (
     <div className="relative">
-      <div className="bg-blue-600 text-white rounded-full p-4 md:p-8 lg:p-10 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+      <div className="bg-gradient-to-br from-blue-600 to-blue-700 text-white rounded-2xl p-4 md:p-8 lg:p-10 shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:from-blue-500 hover:to-blue-600">
         <div className="flex flex-col items-center text-center space-y-2 md:space-y-4">
-          <div className="bg-white/20 rounded-full p-2 md:p-3 lg:p-4">
+          <div className="bg-white/20 rounded-full p-2 md:p-3 lg:p-4 backdrop-blur-sm">
             <Icon className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10" />
           </div>
           <h3 className="text-sm md:text-lg lg:text-xl font-bold">
             {step.title}
           </h3>
-          <p className="text-xs md:text-sm lg:text-base text-blue-50">
+          <p className="text-xs md:text-sm lg:text-base text-blue-100">
             {step.description}
           </p>
         </div>
@@ -40,9 +40,9 @@ const StepCard = ({ step, isLast, isThird }) => {
       {!isLast && !isThird && (
         <div className="hidden lg:block absolute top-1/2 -right-8 xl:-right-12 transform -translate-y-1/2">
           <div className="flex space-x-1">
-            <div className="w-2 h-2 rounded-full bg-blue-300"></div>
-            <div className="w-2 h-2 rounded-full bg-blue-300"></div>
-            <div className="w-2 h-2 rounded-full bg-blue-300"></div>
+            <div className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></div>
+            <div className="w-2 h-2 rounded-full bg-blue-300 animate-pulse" style={{animationDelay: '0.2s'}}></div>
+            <div className="w-2 h-2 rounded-full bg-blue-200 animate-pulse" style={{animationDelay: '0.4s'}}></div>
           </div>
         </div>
       )}
@@ -55,7 +55,7 @@ const HowItWorksSection = () => {
     <Section id="features" background="gray">
       <div className="text-center mb-12 md:mb-16">
         <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
-          How <span className="text-blue-600">Peerhub</span> Works
+          How <span className="bg-gradient-to-r from-blue-600 to-cyan-500 bg-clip-text text-transparent">Peerup</span> Works
         </h2>
         <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
           Your learning journey made simple, supportive, and powerful.

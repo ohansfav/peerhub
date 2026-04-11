@@ -14,7 +14,7 @@ const SelectableCardList = ({
           roundedFull ? "rounded-full" : "rounded-md"
         } ${
           selectedItems.includes(option.id)
-            ? "bg-blue-400 text-white border-blue-400"
+            ? "bg-blue-500 text-white border-blue-500"
             : "bg-white text-gray-700 border-gray-300"
         }`}
       >

@@ -68,7 +68,7 @@
 /* Loading animation */
 .loading-spinner {
   border: 2px solid #f3f3f3;
-  /* border-top: 2px solid #4ca1f0; */
+  /* border-top: 2px solid #2563EB; */
   border-radius: 50%;
   width: 20px;
   height: 20px;
@@ -165,8 +165,8 @@
 }
 
 .pagination-btn.active {
-  background-color: #4ca1f0;
-  border-color: #4ca1f0;
+  background-color: #2563EB;
+  border-color: #2563EB;
   color: white;
 }
 
@@ -178,7 +178,7 @@
 .search-input:focus {
   outline: none;
   ring: 2px;
-  ring-color: #4ca1f0;
+  ring-color: #2563EB;
   border-color: transparent;
 }
 
@@ -232,7 +232,7 @@
 
 /* Focus states for accessibility */
 .focus-ring:focus {
-  outline: 2px solid #4ca1f0;
+  outline: 2px solid #2563EB;
   outline-offset: 2px;
 }
 
@@ -252,7 +252,7 @@ input[type="range"]::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #4ca1f0;
+  background: #2563EB;
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -262,7 +262,7 @@ input[type="range"]::-moz-range-thumb {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #4ca1f0;
+  background: #2563EB;
   cursor: pointer;
   border: 2px solid white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -270,8 +270,8 @@ input[type="range"]::-moz-range-thumb {
 
 /* Checkbox styling */
 input[type="checkbox"]:checked {
-  background-color: #4ca1f0;
-  border-color: #4ca1f0;
+  background-color: #2563EB;
+  border-color: #2563EB;
 }
 
 /* Select dropdown styling */

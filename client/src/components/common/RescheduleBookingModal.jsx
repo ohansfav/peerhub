@@ -129,7 +129,7 @@ const RescheduleBookingModal = ({ booking, isOpen, onClose, onReschedule }) => {
           {/* Duration Display */}
           {formData.startTime && formData.endTime && (
             <div className="bg-blue-50 p-3 rounded-md">
-              <p className="text-sm text-blue-700">
+              <p className="text-sm text-blue-600">
                 Session Duration:{" "}
                 {calculateDuration(formData.startTime, formData.endTime)}{" "}
                 minutes

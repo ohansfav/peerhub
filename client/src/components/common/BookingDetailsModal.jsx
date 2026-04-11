@@ -98,7 +98,7 @@ const BookingDetailsModal = ({
                   aria-hidden
                   className={`absolute inset-0 ${
                     booking?.status === "confirmed"
-                      ? "bg-green-200"
+                      ? "bg-blue-200"
                       : "bg-yellow-200"
                   } opacity-50 rounded-full`}
                 ></span>

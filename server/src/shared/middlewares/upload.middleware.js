@@ -2,6 +2,8 @@ const multer = require("multer");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("@src/shared/config/cloudinary");
 const ApiError = require("@utils/apiError");
+const path = require("path");
+const fs = require("fs");
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
@@ -32,21 +34,12 @@ const uploadS3 = multer({
 });
 
 // ------------------
-// Cloudinary Uploads (User profile pics)
+// Profile Pic Uploads (Cloudinary with local fallback)
 // ------------------
-const folder =
-  process.env.NODE_ENV === "production" ? "user_profiles" : "dev_user_profiles";
-
-const cloudinaryStorage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: folder,
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
-    // transformation: [
-    //   { width: 400, height: 400, crop: "fill", gravity: "face" }, // square crop, focus on face
-    // ],
-  },
-});
+const isCloudinaryConfigured =
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET;
 
 const cloudinaryFileFilter = (req, file, cb) => {
   if (file.mimetype.startsWith("image/")) {
@@ -56,16 +49,55 @@ const cloudinaryFileFilter = (req, file, cb) => {
   }
 };
 
-const uploadCloudinary = multer({
-  storage: cloudinaryStorage,
-  fileFilter: cloudinaryFileFilter,
-  limits: { fileSize: MAX_FILE_SIZE },
-});
+let uploadProfilePic;
+
+if (isCloudinaryConfigured) {
+  // Use Cloudinary storage
+  const folder =
+    process.env.NODE_ENV === "production"
+      ? "user_profiles"
+      : "dev_user_profiles";
+
+  const cloudinaryStorage = new CloudinaryStorage({
+    cloudinary,
+    params: {
+      folder: folder,
+      allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    },
+  });
+
+  uploadProfilePic = multer({
+    storage: cloudinaryStorage,
+    fileFilter: cloudinaryFileFilter,
+    limits: { fileSize: MAX_FILE_SIZE },
+  });
+} else {
+  // Local disk fallback when Cloudinary is not configured
+  const LOCAL_PROFILE_DIR = path.join(__dirname, "../../../uploads/profiles");
+  fs.mkdirSync(LOCAL_PROFILE_DIR, { recursive: true });
+
+  const localStorage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, LOCAL_PROFILE_DIR);
+    },
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const safeName = `${Date.now()}-${Math.round(Math.random() * 1e6)}${ext}`;
+      cb(null, safeName);
+    },
+  });
+
+  uploadProfilePic = multer({
+    storage: localStorage,
+    fileFilter: cloudinaryFileFilter,
+    limits: { fileSize: MAX_FILE_SIZE },
+  });
+}
 
 // ------------------
 // Exports
 // ------------------
 module.exports = {
   uploadSingleS3: uploadS3.single("file"), // Tutor docs → S3
-  uploadSingleProfilePic: uploadCloudinary.single("file"), // User profile pics → Cloudinary
+  uploadSingleProfilePic: uploadProfilePic.single("file"), // User profile pics → Cloudinary or local
 };

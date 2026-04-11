@@ -5,7 +5,7 @@ const SelectableCardWithCheckbox = ({ options, selectedItems, onToggle }) => (
         key={option}
         className={`flex items-center gap-3 px-4 py-3 border rounded-md cursor-pointer ${
           selectedItems.includes(option)
-            ? "bg-blue-400 text-white border-blue-400"
+            ? "bg-blue-500 text-white border-blue-500"
             : "bg-white text-gray-700 border-gray-300"
         }`}
       >

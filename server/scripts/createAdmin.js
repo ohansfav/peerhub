@@ -20,12 +20,12 @@ async function createAdminUser() {
 
     // Check if admin already exists
     const existingAdmin = await User.findOne({
-      where: { email: "admin@peerhub.com" },
+      where: { email: "admin@peerup.com" },
     });
 
     if (existingAdmin) {
-      console.log("Admin user already exists with email: admin@peerhub.com");
-      console.log("👤 Email: admin@peerhub.com");
+      console.log("Admin user already exists with email: admin@peerup.com");
+      console.log("👤 Email: admin@peerup.com");
       console.log("🔐 Password: admin123");
       process.exit(0);
     }
@@ -38,7 +38,7 @@ async function createAdminUser() {
     // Create admin user
     console.log("👤 Creating admin user...");
     const adminUser = await User.create({
-      email: "admin@peerhub.com",
+      email: "admin@peerup.com",
       firstName: "Admin",
       lastName: "User",
       passwordHash: passwordHash,
@@ -51,7 +51,7 @@ async function createAdminUser() {
 
     console.log("\n✅ Admin user created successfully!");
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-    console.log("📧 Email:    admin@peerhub.com");
+    console.log("📧 Email:    admin@peerup.com");
     console.log("🔐 Password: admin123");
     console.log("👤 Role:     admin");
     console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n");

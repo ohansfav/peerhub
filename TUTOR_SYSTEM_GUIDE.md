@@ -1,7 +1,7 @@
 # Tutor & Class System - Already Implemented
 
 ## Overview
-The Peerhub system already has a complete tutor and class booking system built in. You don't need to implement it from scratch!
+The Peerup system already has a complete tutor and class booking system built in. You don't need to implement it from scratch!
 
 ## System Architecture
 
@@ -160,7 +160,7 @@ The backend is complete, but the frontend needs pages for:
 ### 8. **Test the System**
 
 You can test with:
-- **Admin account** (already created): admin@peerhub.com / admin123
+- **Admin account** (already created): admin@peerup.com / admin123
 - **Create a tutor account test**
 - **Create a student account test**
 - Use API testing tools (Postman, Insomnia) to test endpoints

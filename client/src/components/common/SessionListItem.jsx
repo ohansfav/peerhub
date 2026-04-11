@@ -10,7 +10,7 @@ const SessionListItem = ({ session, userType, onViewDetails }) => {
   const getStatusClass = (status) => {
     switch (status) {
       case "confirmed":
-        return "bg-green-100 text-green-700";
+        return "bg-blue-100 text-blue-600";
       case "completed":
         return "bg-gray-100 text-gray-700";
       case "pending":

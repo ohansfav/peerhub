@@ -86,7 +86,7 @@ const UpcomingSessionsCard = ({
                 to={`/student/call/${firstSession.id}`}
                 className="w-full sm:w-auto"
               >
-                <button className="bg-green-500 text-white px-4 py-2 rounded-full font-semibold w-full sm:w-auto">
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-full font-semibold w-full sm:w-auto">
                   Join
                 </button>
               </Link>

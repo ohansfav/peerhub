@@ -1,10 +1,10 @@
 @echo off
-REM Peerhub Quick Start Script for Windows
+REM Peerup Quick Start Script for Windows
 REM This script starts both the backend server and frontend in separate terminals
 
 echo.
 echo ╔════════════════════════════════════════════════════════════╗
-echo ║         Peerhub - Quick Start Script                    ║
+echo ║         Peerup - Quick Start Script                    ║
 echo ║                                                            ║
 echo ║  Starting Backend (Port 3000) and Frontend (Port 5173)    ║
 echo ╚════════════════════════════════════════════════════════════╝

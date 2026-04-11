@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const AuthIntro = ({ heading, subText, linkText, linkTo }) => (
   <div className="text-center">
-    <img src={logo} alt="Peerhub" className="mx-auto mb-1 h-11" />
+    <img src={logo} alt="Peerup" className="mx-auto mb-1 h-11" />
     <h2 className="text-xl font-bold">{heading}</h2>
     <p className="text-sm mt-1 text-gray-400">
       {subText}{" "}

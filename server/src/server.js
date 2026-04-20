@@ -15,6 +15,7 @@ if (fs.existsSync(envFilePath)) {
 
 const app = require("./app");
 const sequelize = require("@src/shared/database/index");
+const ensureTutorSubjectsSchema = require("@src/shared/database/ensureTutorSubjectsSchema");
 const reminderService = require("@features/notification/reminderSingleton");
 
 const PORT = process.env.PORT || 3000;
@@ -27,6 +28,7 @@ const startServer = async () => {
     }
 
     if (NODE_ENV === "development") {
+      await ensureTutorSubjectsSchema(sequelize, logger);
       await sequelize.sync({ alter: false, force: false });
       logger.info("✅ Database synced (development only)");
     }

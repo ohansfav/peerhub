@@ -17,12 +17,10 @@ const useSignUp = () => {
   const { mutate, isPending } = useMutation({
     mutationFn: signup,
     onSuccess: () => {
-      handleToastSuccess("Signup successful! Redirecting to login...");
+      queryClient.removeQueries({ queryKey: ["authUser"] });
+      handleToastSuccess("Account created successfully. Please sign in.");
       setRetryAfter(null);
-      // Redirect to login page
-      setTimeout(() => {
-        navigate("/login");
-      }, 1000);
+      navigate("/login", { replace: true });
     },
     onError: (error) => {
       const responseData = error.response?.data;

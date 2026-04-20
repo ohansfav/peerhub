@@ -4,6 +4,7 @@ import Spinner from "../../components/common/Spinner";
 import ErrorAlert from "../../components/common/ErrorAlert";
 import {
   useApproveTutor,
+  useDeleteUser,
   usePendingTutors,
   useRejectTutor,
   useUsers,
@@ -56,6 +57,7 @@ export default function AdminTutorsPage() {
 
   const approveTutorMutation = useApproveTutor();
   const rejectTutorMutation = useRejectTutor();
+  const deleteUserMutation = useDeleteUser();
 
   const handleApproveClick = (tutor) => {
     setSelectedTutor(tutor);
@@ -65,6 +67,16 @@ export default function AdminTutorsPage() {
   const handleRejectClick = (tutor) => {
     setSelectedTutor(tutor);
     setShowRejectModal(true);
+  };
+
+  const handleDeleteClick = (tutor) => {
+    if (!tutor?.id) return;
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${getUserName(tutor)}? This action cannot be undone.`
+    );
+
+    if (!confirmed) return;
+    deleteUserMutation.mutate(tutor.id);
   };
 
   const handleApprove = () => {
@@ -111,7 +123,7 @@ export default function AdminTutorsPage() {
       cell: (tutor) => (
         <div className="flex items-center gap-3 min-w-[150px]">
           <img
-            src={tutor.profileImageUrl}
+            src={tutor?.profileImageUrl || "https://via.placeholder.com/48x48?text=T"}
             alt={getUserName(tutor)}
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0"
           />
@@ -132,7 +144,7 @@ export default function AdminTutorsPage() {
     <div className="border rounded-lg p-4 space-y-3">
       <div>
         <img
-          src={tutor.profileImageUrl}
+          src={tutor?.profileImageUrl || "https://via.placeholder.com/48x48?text=T"}
           alt={getUserName(tutor)}
           className="w-12 h-12 rounded-full object-cover flex-shrink-0"
         />
@@ -167,6 +179,14 @@ export default function AdminTutorsPage() {
             Reject
           </button>
         </div>
+        <button
+          type="button"
+          className="w-full px-3 py-2 bg-red-600 text-white rounded-full text-sm disabled:opacity-60"
+          disabled={deleteUserMutation.isPending}
+          onClick={() => handleDeleteClick(tutor)}
+        >
+          Delete
+        </button>
       </div>
     </div>
   );
@@ -177,7 +197,7 @@ export default function AdminTutorsPage() {
       cell: (tutor) => (
         <div className="flex items-center gap-3 min-w-[150px]">
           <img
-            src={tutor.profileImageUrl}
+            src={tutor?.profileImageUrl || "https://via.placeholder.com/48x48?text=T"}
             alt={getUserName(tutor)}
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0"
           />
@@ -214,7 +234,7 @@ export default function AdminTutorsPage() {
       <div className="border rounded-lg p-4 space-y-3">
         <div>
           <img
-            src={tutor.profileImageUrl}
+            src={tutor?.profileImageUrl || "https://via.placeholder.com/48x48?text=T"}
             alt={getUserName(tutor)}
             className="w-12 h-12 rounded-full object-cover flex-shrink-0"
           />
@@ -224,7 +244,7 @@ export default function AdminTutorsPage() {
             Since: {formatDate(tutor?.createdAt)}
           </p>
         </div>
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex flex-col gap-2 pt-2 sm:flex-row sm:items-center sm:justify-between">
           <span
             className={`inline-block px-3 py-1 text-xs rounded-full ${
               status === "approved"
@@ -234,12 +254,22 @@ export default function AdminTutorsPage() {
           >
             {status}
           </span>
-          <Link
-            className="px-4 py-2 bg-white border rounded-full text-blue-600 text-sm"
-            to={`/admin/tutors/${tutor?.id}`}
-          >
-            View
-          </Link>
+          <div className="flex flex-wrap gap-2 justify-end">
+            <Link
+              className="px-4 py-2 bg-white border rounded-full text-blue-600 text-sm"
+              to={`/admin/tutors/${tutor?.id}`}
+            >
+              View
+            </Link>
+            <button
+              type="button"
+              className="px-4 py-2 bg-red-600 text-white rounded-full text-sm disabled:opacity-60"
+              disabled={deleteUserMutation.isPending}
+              onClick={() => handleDeleteClick(tutor)}
+            >
+              Delete
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -251,7 +281,7 @@ export default function AdminTutorsPage() {
       cell: (tutor) => (
         <div className="flex items-center gap-3 min-w-[150px]">
           <img
-            src={tutor.profileImageUrl}
+            src={tutor?.profileImageUrl || "https://via.placeholder.com/48x48?text=T"}
             alt={getUserName(tutor)}
             className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0"
           />
@@ -276,27 +306,34 @@ export default function AdminTutorsPage() {
     <div className="border rounded-lg p-4 space-y-3">
       <div>
         <img
-          src={tutor.profileImageUrl}
+          src={tutor?.profileImageUrl || "https://via.placeholder.com/48x48?text=T"}
           alt={getUserName(tutor)}
           className="w-12 h-12 rounded-full object-cover flex-shrink-0"
         />
         <p className="font-medium text-gray-900">{getUserName(tutor)}</p>
         <p className="text-sm text-gray-500 mt-1">{tutor?.email ?? "—"}</p>
-        {/* <p className="text-xs text-gray-400 mt-1">
-          Rejected: {formatDate(tutor?.tutor?.updatedAt)}
-        </p> */}
         {tutor?.tutor?.rejectionReason && (
           <p className="text-xs text-red-500 mt-2">
             Reason: {tutor?.tutor?.rejectionReason}
           </p>
         )}
       </div>
-      <Link
-        className="block w-full text-center px-3 py-2 bg-white border rounded-full text-blue-600 text-sm"
-        to={`/admin/tutors/${tutor?.id}`}
-      >
-        View
-      </Link>
+      <div className="flex flex-col gap-2">
+        <Link
+          className="block w-full text-center px-3 py-2 bg-white border rounded-full text-blue-600 text-sm"
+          to={`/admin/tutors/${tutor?.id}`}
+        >
+          View
+        </Link>
+        <button
+          type="button"
+          className="block w-full text-center px-3 py-2 bg-red-600 text-white rounded-full text-sm disabled:opacity-60"
+          disabled={deleteUserMutation.isPending}
+          onClick={() => handleDeleteClick(tutor)}
+        >
+          Delete
+        </button>
+      </div>
     </div>
   );
 
@@ -325,6 +362,25 @@ export default function AdminTutorsPage() {
         columns={pendingTutorColumns}
         renderCard={renderPendingTutorCard}
         getLink={(tutor) => `/admin/tutors/${tutor.id}`}
+        renderActions={(tutor) => (
+          <div className="flex items-center justify-end gap-2">
+            <Link
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white border rounded-full shadow-sm text-blue-600 text-xs sm:text-sm"
+              to={`/admin/tutors/${tutor?.id}`}
+            >
+              View
+            </Link>
+            <button
+              type="button"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-red-600 text-white rounded-full text-xs sm:text-sm disabled:opacity-60"
+              disabled={deleteUserMutation.isPending}
+              onClick={() => handleDeleteClick(tutor)}
+            >
+              Delete
+            </button>
+          </div>
+        )}
+        actionHeader="Actions"
         isLoading={isLoadingPending}
         error={pendingError}
         emptyMessage="No pending tutor applications."
@@ -336,6 +392,25 @@ export default function AdminTutorsPage() {
         columns={activeTutorColumns}
         renderCard={renderActiveTutorCard}
         getLink={(tutor) => `/admin/tutors/${tutor.id}`}
+        renderActions={(tutor) => (
+          <div className="flex items-center justify-end gap-2">
+            <Link
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white border rounded-full shadow-sm text-blue-600 text-xs sm:text-sm"
+              to={`/admin/tutors/${tutor?.id}`}
+            >
+              View
+            </Link>
+            <button
+              type="button"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-red-600 text-white rounded-full text-xs sm:text-sm disabled:opacity-60"
+              disabled={deleteUserMutation.isPending}
+              onClick={() => handleDeleteClick(tutor)}
+            >
+              Delete
+            </button>
+          </div>
+        )}
+        actionHeader="Actions"
         isLoading={isLoadingTutors}
         error={tutorsError}
         emptyMessage="No active tutors found."
@@ -347,6 +422,25 @@ export default function AdminTutorsPage() {
         columns={rejectedTutorColumns}
         renderCard={renderRejectedTutorCard}
         getLink={(tutor) => `/admin/tutors/${tutor.id}`}
+        renderActions={(tutor) => (
+          <div className="flex items-center justify-end gap-2">
+            <Link
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white border rounded-full shadow-sm text-blue-600 text-xs sm:text-sm"
+              to={`/admin/tutors/${tutor?.id}`}
+            >
+              View
+            </Link>
+            <button
+              type="button"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 bg-red-600 text-white rounded-full text-xs sm:text-sm disabled:opacity-60"
+              disabled={deleteUserMutation.isPending}
+              onClick={() => handleDeleteClick(tutor)}
+            >
+              Delete
+            </button>
+          </div>
+        )}
+        actionHeader="Actions"
         isLoading={isLoadingTutors}
         error={tutorsError}
         emptyMessage="No rejected tutors found."

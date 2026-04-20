@@ -22,8 +22,12 @@ const errorHandler = (error, req, res, next) => {
   else if (error instanceof UniqueConstraintError) {
     const field = error.errors[0].path;
     const value = error.errors[0].value;
-    const message = `${field.charAt(0).toUpperCase() + field.slice(1)} '${value}' already exists`;
-    error = new ApiError("Duplicate resource", 409, message, error);
+    const issue =
+      field === "email"
+        ? "Email already exists. Please sign in instead."
+        : `${field.charAt(0).toUpperCase() + field.slice(1)} '${value}' already exists`;
+
+    error = new ApiError(issue, 409, [{ field, issue, value }], error);
   }
 
   // Sequelize validation errors (e.g., notNull, len, isEmail, etc.)

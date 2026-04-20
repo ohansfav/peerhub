@@ -16,6 +16,7 @@ const definers = [
   require("@features/reviews/review.model"),
   require("@features/quiz/quiz.model"),
   require("@features/broadcast/broadcast.model"),
+  require("@features/localChat/localChat.model"),
   require("@features/course/course.model"),
 ];
 
@@ -55,6 +56,7 @@ module.exports = {
   Quiz: sequelize.models.Quiz,
   QuizAttempt: sequelize.models.QuizAttempt,
   BroadcastMessage: sequelize.models.BroadcastMessage,
+  LocalChatMessage: sequelize.models.LocalChatMessage,
   Course: sequelize.models.Course,
 
   // StudentExam: sequelize.models.StudentExam,

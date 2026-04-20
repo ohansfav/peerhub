@@ -282,6 +282,46 @@ describe("Booking API", () => {
           })
         );
       });
+
+      it("should allow tutor to create multiple non-overlapping slots on the same day", async () => {
+        await createTutorAndLogin();
+
+        const now = new Date();
+        const firstStart = new Date(now.getTime() + 3 * 60 * 60 * 1000).toISOString();
+        const firstEnd = new Date(now.getTime() + 4 * 60 * 60 * 1000).toISOString();
+        const secondStart = new Date(now.getTime() + 5 * 60 * 60 * 1000).toISOString();
+        const secondEnd = new Date(now.getTime() + 6 * 60 * 60 * 1000).toISOString();
+
+        const firstResponse = await tutorSession
+          .post("/api/booking/availability")
+          .send({
+            scheduledStart: firstStart,
+            scheduledEnd: firstEnd,
+            tutorNotes: "First class slot",
+          });
+
+        expect(firstResponse.statusCode).toBe(201);
+
+        const secondResponse = await tutorSession
+          .post("/api/booking/availability")
+          .send({
+            scheduledStart: secondStart,
+            scheduledEnd: secondEnd,
+            tutorNotes: "Second class slot",
+          });
+
+        expect(secondResponse.statusCode).toBe(201);
+        expect(secondResponse.body).toMatchObject({
+          success: true,
+          message: "Availability created successfully",
+        });
+
+        const allSlotsResponse = await tutorSession
+          .get("/api/booking/availability?status=open")
+          .expect(200);
+
+        expect(allSlotsResponse.body.data.length).toBeGreaterThanOrEqual(2);
+      });
     });
 
     describe("GET /api/booking/availability", () => {

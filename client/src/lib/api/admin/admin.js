@@ -44,6 +44,11 @@ export const getUserCounts = async () => {
   return data.data;
 };
 
+export const getAdminDashboardSummary = async () => {
+  const { data } = await axiosInstance.get("/admin/dashboard/summary");
+  return data.data;
+};
+
 // =====================
 // Pending Tutor Routes
 // =====================

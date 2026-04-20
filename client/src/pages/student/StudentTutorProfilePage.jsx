@@ -38,8 +38,8 @@ const StudentTutorProfilePage = () => {
               <div className="avatar avatar-online shrink-0 self-center">
                 <div className="w-20 sm:w-24 rounded-full">
                   <img
-                    src={profile?.user.profileImageUrl}
-                    alt={`${profile?.user.firstName} ${profile?.user.lastName}`}
+                    src={profile?.user?.profileImageUrl || "https://via.placeholder.com/96x96?text=Tutor"}
+                    alt={`${profile?.user?.firstName || "Tutor"} ${profile?.user?.lastName || ""}`.trim()}
                     className="w-auto sm:w-full h-full object-cover"
                   />
                 </div>

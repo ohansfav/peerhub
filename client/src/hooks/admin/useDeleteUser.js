@@ -3,6 +3,7 @@ import { deleteUser } from "../../lib/api/admin/admin";
 import { handleToastError, handleToastSuccess } from "../../utils/toastDisplayHandler";
 import { USERS_QUERY_KEY } from "./useUsers";
 import { USER_COUNTS_QUERY_KEY } from "./useUserCounts";
+import { PENDING_TUTORS_QUERY_KEY } from "./usePendingTutors";
 
 export function useDeleteUser(options = {}) {
   const queryClient = useQueryClient();
@@ -12,6 +13,7 @@ export function useDeleteUser(options = {}) {
     onSuccess: (data, userId, context) => {
       queryClient.invalidateQueries({ queryKey: USERS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: USER_COUNTS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: PENDING_TUTORS_QUERY_KEY });
       handleToastSuccess("User deleted successfully.");
       options?.onSuccess?.(data, userId, context);
     },

@@ -8,7 +8,10 @@
     "start": "cd server && npm start",
     "start:prod": "cd client && npm install && npm run build && cd ../server && npm install && npm start",
     "dev": "concurrently \"cd client && npm run dev\" \"cd server && npm start\"",
-    "install:all": "npm install && cd client && npm install && cd ../server && npm install"
+    "install:all": "npm install && cd client && npm install && cd ../server && npm install",
+    "lan:build": "cd client && npm run build",
+    "lan:serve": "cd server && npm start",
+    "lan:start": "cd client && npm run build && cd ../server && npm start"
   },
   "keywords": ["tutoring", "peerup", "education"],
   "author": "Peerup Team",

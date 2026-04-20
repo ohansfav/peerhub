@@ -84,7 +84,7 @@ export default function AdminStudentsProfilePage() {
           <section className="bg-white border rounded-xl shadow-sm p-6">
             <div className="flex flex-wrap gap-6">
               <img
-                src={student.profileImageUrl}
+                src={student?.profileImageUrl || "https://via.placeholder.com/112x112?text=S"}
                 alt={`${student.firstName} ${student.lastName}`}
                 className="w-28 h-28 rounded-full object-cover"
               />

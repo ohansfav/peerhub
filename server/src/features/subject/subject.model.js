@@ -44,14 +44,9 @@ module.exports = () => {
 
     Subject.belongsToMany(models.Tutor, {
       through: "tutor_subjects",
-      as: "subjects",
-      // uniqueKey: "subjectId",
-      // otherKey: "userId",
-    });
-
-    models.Tutor.belongsToMany(Subject, {
-      through: "tutor_subjects",
-      as: "subjects",
+      as: "tutors",
+      foreignKey: "subject_id",
+      otherKey: "tutor_user_id",
     });
     //Student associations
     // models.Student.belongsToMany(Subject, {

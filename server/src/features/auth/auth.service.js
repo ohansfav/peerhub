@@ -20,25 +20,20 @@ exports.createUser = async ({ firstName, lastName, email, password }) => {
     throw new ApiError(
       "Email already exists, please use a different one",
       409,
-      [{ field: "email", message: "Email already exists", value: email }]
+      [{ field: "email", issue: "Email already exists", value: email }]
     );
   }
 
   const randomAvatar = generateRandomAvatar(firstName, lastName);
-  const { code, expiresAt } = generateVerificationCode();
-
-  // In development mode, auto-verify users for easier testing
-  const isDevMode = process.env.NODE_ENV === "development";
-
   const newUser = await User.create({
     email,
     firstName: firstName,
     lastName: lastName,
     passwordHash: password,
     profileImageUrl: randomAvatar,
-    verificationToken: isDevMode ? null : code,
-    verificationTokenExpiresAt: isDevMode ? null : expiresAt,
-    isVerified: isDevMode ? true : false, // Auto-verify in dev mode
+    verificationToken: null,
+    verificationTokenExpiresAt: null,
+    isVerified: true, // Auto-verify all new users
     isOnboarded: false,
   });
 
@@ -46,6 +41,7 @@ exports.createUser = async ({ firstName, lastName, email, password }) => {
   await newUser.save();
 
   return newUser;
+
 };
 
 exports.loginUser = async ({ email, password }) => {

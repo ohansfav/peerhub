@@ -1,3 +1,22 @@
+// Create user (student or tutor)
+exports.createUser = async (req, res, next) => {
+  try {
+    const user = await adminService.createUser(req.body);
+    sendResponse(res, 201, "User created successfully", user);
+  } catch (error) {
+    next(error);
+  }
+};
+
+// Update user (student or tutor)
+exports.updateUser = async (req, res, next) => {
+  try {
+    const user = await adminService.updateUser(req.params.id, req.body);
+    sendResponse(res, 200, "User updated successfully", user);
+  } catch (error) {
+    next(error);
+  }
+};
 const sendResponse = require("@utils/sendResponse");
 const {
   sendApprovalEmail,
@@ -41,6 +60,24 @@ exports.getUserSummaryCounts = async (req, res, next) => {
   try {
     const counts = await adminService.getUserCounts();
     sendResponse(res, 200, "User summary counts fetched successfully", counts);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getDashboardSummary = async (req, res, next) => {
+  try {
+    const [counts, pendingTutors, students] = await Promise.all([
+      adminService.getUserCounts(),
+      adminService.getAllPendingTutors(),
+      adminService.getUsers({ role: "student", page: 1, limit: 5 }),
+    ]);
+
+    sendResponse(res, 200, "Admin dashboard summary fetched successfully", {
+      counts,
+      pendingTutors,
+      students,
+    });
   } catch (error) {
     next(error);
   }

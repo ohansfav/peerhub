@@ -1,6 +1,12 @@
 const ApiError = require("@utils/apiError");
 const { User, Student, Subject, Exam } = require("@models");
 const { where, Op } = require("sequelize");
+const sequelize = require("@src/shared/database");
+
+const sanitizeIdList = (list) => {
+  if (!Array.isArray(list)) return [];
+  return [...new Set(list.map((id) => Number(id)).filter((id) => Number.isInteger(id) && id > 0))];
+};
 
 module.exports = {
   // get all
@@ -22,27 +28,64 @@ module.exports = {
   // onboarding
   async createStudentForUser(userId, data) {
     const user = await User.findByPk(userId);
+    if (!user) {
+      throw new ApiError("User not found", 404);
+    }
 
     const payload = data || {};
-    const existing = await Student.findByPk(userId);
-    if (existing) {
-      throw new ApiError("Student profile already exists", 409);
+    const subjectIds = sanitizeIdList(payload.subjects);
+    const examIds = sanitizeIdList(payload.exams);
+
+    if (subjectIds.length === 0) {
+      throw new ApiError("Please select at least one valid subject", 400);
     }
 
-    await user.update({ isOnboarded: true, role: "student" });
+    if (examIds.length === 0) {
+      throw new ApiError("Please select at least one valid exam", 400);
+    }
 
-    const student = await Student.create({
-      userId,
-      gradeLevel: payload.gradeLevel,
-      learningGoals: payload.learningGoals,
+    const selectedSubjects = await Subject.findAll({ where: { id: subjectIds } });
+    if (selectedSubjects.length !== subjectIds.length) {
+      throw new ApiError("One or more selected subjects are invalid", 400);
+    }
+
+    const selectedExams = await Exam.findAll({ where: { id: examIds } });
+    if (selectedExams.length !== examIds.length) {
+      throw new ApiError("One or more selected exams are invalid", 400);
+    }
+
+    await sequelize.transaction(async (transaction) => {
+      const existing = await Student.findByPk(userId, { transaction });
+
+      if (existing) {
+        // Update existing student profile instead of throwing error
+        await existing.update(
+          {
+            gradeLevel: payload.gradeLevel,
+            learningGoals: payload.learningGoals,
+          },
+          { transaction }
+        );
+
+        await existing.setSubjects(subjectIds, { transaction });
+        await existing.setExams(examIds, { transaction });
+      } else {
+        const student = await Student.create(
+          {
+            userId,
+            gradeLevel: payload.gradeLevel,
+            learningGoals: payload.learningGoals,
+          },
+          { transaction }
+        );
+
+        await student.setSubjects(subjectIds, { transaction });
+        await student.setExams(examIds, { transaction });
+      }
+
+      // Only mark onboarding complete if all profile + association writes succeeded.
+      await user.update({ isOnboarded: true, role: "student" }, { transaction });
     });
-
-    if (payload.subjects) {
-      await student.setSubjects(payload.subjects);
-    }
-    if (payload.exams) {
-      await student.setExams(payload.exams);
-    }
 
     return this.getStudentById(userId);
   },

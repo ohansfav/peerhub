@@ -1,3 +1,65 @@
+// Create user (student or tutor)
+exports.createUser = async (userData) => {
+  const { firstName, lastName, email, password, role } = userData;
+  if (!role || !["student", "tutor"].includes(role)) {
+    throw new ApiError("Role must be 'student' or 'tutor'", 400);
+  }
+  const existingUser = await User.findOne({ where: { email } });
+  if (existingUser) throw new ApiError("User with this email already exists", 400);
+
+  const randomAvatar = generateRandomAvatar(firstName, lastName);
+
+  const newUser = await User.create({
+    firstName,
+    lastName,
+    email,
+    passwordHash: password,
+    profileImageUrl: randomAvatar,
+    role,
+    isVerified: true,
+    isOnboarded: true,
+  });
+
+  // Optionally create profile in Student/Tutor table
+  if (role === "student") {
+    await Student.create({ userId: newUser.id, gradeLevel: "", learningGoals: [] });
+  }
+  if (role === "tutor") {
+    await Tutor.create({ userId: newUser.id, bio: "", education: "" });
+  }
+
+  return newUser;
+};
+
+// Update user (student or tutor)
+exports.updateUser = async (id, updateData) => {
+  const user = await User.findByPk(id);
+  if (!user) throw new ApiError("User not found", 404);
+
+  const allowedFields = ["firstName", "lastName", "email", "profileImageUrl", "role", "isVerified", "isOnboarded", "accountStatus"];
+  for (const key of Object.keys(updateData)) {
+    if (allowedFields.includes(key)) {
+      user[key] = updateData[key];
+    }
+  }
+  await user.save();
+
+  // Optionally update Student/Tutor profile
+  if (user.role === "student" && updateData.student) {
+    const student = await Student.findOne({ where: { userId: user.id } });
+    if (student) {
+      await student.update(updateData.student);
+    }
+  }
+  if (user.role === "tutor" && updateData.tutor) {
+    const tutor = await Tutor.findOne({ where: { userId: user.id } });
+    if (tutor) {
+      await tutor.update(updateData.tutor);
+    }
+  }
+
+  return user;
+};
 const { User, Tutor, Student, Admin, Course } = require("@src/shared/database/models");
 const { Op } = require("sequelize");
 const { getSignedFileUrl } = require("@src/shared/S3/s3Service");
@@ -57,7 +119,7 @@ exports.getUsers = async (query) => {
     includes.push(...STUDENT_INCLUDES);
   }
 
-  const users = await User.scope("includeDeleted").findAll({
+  const users = await User.findAll({
     where: filter,
     include: includes.length > 0 ? includes : undefined,
     limit: Number(limit),
@@ -65,7 +127,7 @@ exports.getUsers = async (query) => {
     order: [[sort_by, order.toLowerCase() === "asc" ? "ASC" : "DESC"]],
   });
 
-  const totalUsers = await User.scope("includeDeleted").count({
+  const totalUsers = await User.count({
     where: filter,
   });
   const totalPages = Math.ceil(totalUsers / Number(limit));
@@ -274,6 +336,7 @@ exports.getAllPendingTutors = async () => {
       {
         model: User,
         as: "user",
+        required: true,
         attributes: [
           "id",
           "firstName",
@@ -288,6 +351,7 @@ exports.getAllPendingTutors = async () => {
         ],
       },
     ],
+    order: [["createdAt", "DESC"]],
   });
   return pendingTutors;
 };

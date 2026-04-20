@@ -30,7 +30,11 @@ export const tutorSidebarLinks = [
     label: "Booking Requests",
     icon: StudentsIcon,
   },
-  { path: "/tutor/sessions", label: "My Sessions", icon: SessionIcon },
+  {
+    path: "/tutor/virtual-classes",
+    label: "Virtual Classes",
+    icon: SessionIcon,
+  },
   {
     path: "/tutor/availability",
     label: "Availability",

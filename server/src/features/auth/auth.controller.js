@@ -32,9 +32,6 @@ exports.signup = async (req, res, next) => {
       password,
     });
 
-    await sendVerificationEmail(newUser.email, newUser.verificationToken).catch(
-      (err) => logger.warn("Failed to send verification email:", err.message)
-    );
     await addStreamUser(newUser);
 
     await trackEvent(eventTypes.USER_SIGNED_UP, {
@@ -43,13 +40,15 @@ exports.signup = async (req, res, next) => {
       fullName: `${newUser.firstName} ${newUser.lastName}`,
     }).catch((err) => logger.warn("Failed to track signup event:", err.message));
 
-    // In development mode, don't auto-login - let user go to login page
-    const isDevMode = process.env.NODE_ENV === "development";
-    sendResponse(res, 201, "User registered successfully. Please log in.", {
+    sendResponse(res, 201, "Account created successfully. Please sign in.", {
       id: newUser.id,
       email: newUser.email,
       firstName: newUser.firstName,
       lastName: newUser.lastName,
+      role: newUser.role || null,
+      isVerified: newUser.isVerified,
+      isOnboarded: newUser.isOnboarded,
+      profileImageUrl: newUser.profileImageUrl,
     });
   } catch (error) {
     next(error);

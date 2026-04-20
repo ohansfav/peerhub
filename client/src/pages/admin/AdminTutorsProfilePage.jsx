@@ -177,8 +177,8 @@ export default function AdminTutorsProfilePage() {
           <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 shadow-sm">
             <div className="flex flex-col sm:flex-row gap-6">
               <img
-                src={tutor.user.profileImageUrl}
-                alt={`${tutor.user.firstName} ${tutor.user.lastName}`}
+                src={tutor.user?.profileImageUrl || "https://via.placeholder.com/96x96?text=T"}
+                alt={`${tutor.user?.firstName || "Tutor"} ${tutor.user?.lastName || ""}`.trim()}
                 className="w-24 h-24 rounded-full object-cover mx-auto sm:mx-0 flex-shrink-0 border-2 border-gray-100"
               />
 

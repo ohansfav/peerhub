@@ -14,7 +14,8 @@
 export const ASSETS = {
   // Hero Section
   hero: {
-    backgroundImage: "/images/hero.png",
+    backgroundImage: "/images/hero-optimized.jpg",
+    fallbackImage: "/images/hero.png",
     alt: "University students collaborating in lecture hall",
   },
 

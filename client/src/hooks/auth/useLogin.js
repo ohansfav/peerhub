@@ -16,7 +16,7 @@ const useLogin = () => {
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: login,
-    onSuccess: async () => {
+    onSuccess: async (loginData) => {
       await queryClient.prefetchQuery({
         queryKey: ["userProfile"],
         queryFn: getUserProfile,
@@ -24,6 +24,31 @@ const useLogin = () => {
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       handleToastSuccess("Login successful! Welcome back!");
       setRetryAfter(null);
+
+      // Prefer canonical auth response; fallback to fetched profile if needed.
+      const userProfile = queryClient.getQueryData(["userProfile"]);
+      const resolvedUser = loginData || userProfile;
+
+      if (!resolvedUser) return;
+
+      if (!resolvedUser.isOnboarded || !resolvedUser.role) {
+        window.location.href = "/role-selection";
+      } else if (resolvedUser.role === "student") {
+        window.location.href = "/student/dashboard";
+      } else if (resolvedUser.role === "tutor") {
+        window.location.href = "/tutor/dashboard";
+      } else if (resolvedUser.role === "admin") {
+        const { getAdminDashboardSummary } = await import(
+          "../../lib/api/admin/admin"
+        );
+
+        await queryClient.prefetchQuery({
+          queryKey: ["admin", "dashboardSummary"],
+          queryFn: getAdminDashboardSummary,
+        });
+
+        window.location.href = "/admin/dashboard";
+      }
     },
     onError: (error) => {
       const responseData = error.response?.data;

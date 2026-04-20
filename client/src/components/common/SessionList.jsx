@@ -4,6 +4,7 @@ const SessionList = ({
   sessions,
   userType,
   onViewDetails,
+  onStartVirtualClass,
   noSessionsMessage,
 }) => {
   return (
@@ -32,6 +33,7 @@ const SessionList = ({
               session={session}
               userType={userType}
               onViewDetails={onViewDetails}
+              onStartVirtualClass={onStartVirtualClass}
             />
           ))
         )}

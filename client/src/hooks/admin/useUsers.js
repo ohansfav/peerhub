@@ -62,6 +62,9 @@ export function useUsers({
     queryFn: () => getAllUsers(role, { page, limit, search }),
     enabled,
     select: customSelect ?? defaultSelect,
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
     ...restOptions,
   });
 }

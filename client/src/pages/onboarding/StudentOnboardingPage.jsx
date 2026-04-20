@@ -13,6 +13,7 @@ import { handleToastError } from "../../utils/toastDisplayHandler";
 const StudentOnboardingPage = () => {
   const [subjectInfo, setSubjectInfo] = useState(null);
   const [examInfo, setExamInfo] = useState(null);
+  const [localError, setLocalError] = useState("");
 
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
@@ -31,29 +32,48 @@ const StudentOnboardingPage = () => {
         : [...prev.learningGoals, goal],
     }));
 
-  const toggleSubject = (subject) =>
-    setFormData((prev) => ({
-      ...prev,
-      subjects: prev.subjects.includes(subject)
-        ? prev.subjects.filter((s) => s !== subject)
-        : [...prev.subjects, subject],
-    }));
+  const toggleSubject = (subject) => {
+    const subjectId = Number(subject);
+    if (!Number.isInteger(subjectId) || subjectId <= 0) return;
 
-  const toggleExam = (exam) =>
     setFormData((prev) => ({
       ...prev,
-      exams: prev.exams.includes(exam)
-        ? prev.exams.filter((e) => e !== exam)
-        : [...prev.exams, exam],
+      subjects: prev.subjects.includes(subjectId)
+        ? prev.subjects.filter((s) => s !== subjectId)
+        : [...prev.subjects, subjectId],
     }));
+  };
+
+  const toggleExam = (exam) => {
+    const examId = Number(exam);
+    if (!Number.isInteger(examId) || examId <= 0) return;
+
+    setFormData((prev) => ({
+      ...prev,
+      exams: prev.exams.includes(examId)
+        ? prev.exams.filter((e) => e !== examId)
+        : [...prev.exams, examId],
+    }));
+  };
 
   useEffect(() => {
     try {
       async function fetchData() {
         const subjects = await getSubjects();
-        setSubjectInfo(subjects);
+        const safeSubjects = Array.isArray(subjects)
+          ? subjects.filter(
+              (subject) =>
+                Number.isInteger(Number(subject?.id)) && Number(subject.id) > 0
+            )
+          : [];
+        setSubjectInfo(safeSubjects);
         const exams = await getExams();
-        setExamInfo(exams);
+        const safeExams = Array.isArray(exams)
+          ? exams.filter(
+              (exam) => Number.isInteger(Number(exam?.id)) && Number(exam.id) > 0
+            )
+          : [];
+        setExamInfo(safeExams);
       }
 
       fetchData();
@@ -78,8 +98,35 @@ const StudentOnboardingPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const safeSubjects = [...new Set(
+      formData.subjects
+        .map((id) => Number(id))
+        .filter((id) => Number.isInteger(id) && id > 0)
+    )];
+    const safeExams = [...new Set(
+      formData.exams
+        .map((id) => Number(id))
+        .filter((id) => Number.isInteger(id) && id > 0)
+    )];
+
+    if (safeSubjects.length === 0) {
+      setLocalError("Please select at least one valid subject.");
+      return;
+    }
+
+    if (safeExams.length === 0) {
+      setLocalError("Please select at least one valid exam.");
+      return;
+    }
+
+    setLocalError("");
     clearErrors();
-    createStudentMutation(formData);
+    createStudentMutation({
+      ...formData,
+      subjects: safeSubjects,
+      exams: safeExams,
+    });
   };
 
   // Step Components
@@ -134,7 +181,7 @@ const StudentOnboardingPage = () => {
       <div className="flex flex-col justify-between md:h-[90vh] space-y-1">
         <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
-        <ErrorAlert error={generalError} />
+        <ErrorAlert error={generalError || localError} />
 
         <div className="flex-1">{steps[currentStep - 1]}</div>
 

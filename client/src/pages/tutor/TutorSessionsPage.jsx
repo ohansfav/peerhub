@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   fetchTutorBookings,
@@ -16,8 +17,11 @@ import SessionStats from "../../components/common/SessionStats";
 import SessionList from "../../components/common/SessionList";
 import ViewModal from "../../components/tutor/ViewModal";
 import RescheduleBookingModal from "../../components/common/RescheduleBookingModal";
+import { createBroadcastMessage } from "../../lib/api/broadcast/broadcastApi";
+import { startOfflineClass } from "../../lib/api/common/offlineClassApi";
 
 const TutorSessionsPage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("upcoming");
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
@@ -70,6 +74,24 @@ const TutorSessionsPage = () => {
     },
   });
 
+  const startVirtualClassMutation = useMutation({
+    mutationFn: createBroadcastMessage,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["broadcastMessages"] });
+      handleToastSuccess("Virtual class started. Everyone online has been alerted.");
+    },
+    onError: (error) => {
+      handleToastError(error, "Failed to alert users about class start.");
+    },
+  });
+
+  const startOpenOfflineClassMutation = useMutation({
+    mutationFn: startOfflineClass,
+    onError: (error) => {
+      handleToastError(error, "Failed to start open offline class.");
+    },
+  });
+
   const upcomingSessions =
     tutorBookingsData?.filter((b) => b.status === "confirmed") || [];
   const completedSessions =
@@ -113,6 +135,35 @@ const TutorSessionsPage = () => {
   const handleCloseRescheduleModal = () => {
     setIsRescheduleModalOpen(false);
     setSelectedSession(null);
+  };
+
+  const handleStartVirtualClass = async (session) => {
+    const studentName = session?.student?.user?.firstName || "student";
+    const subjectName = session?.subject?.name || "class";
+
+    await startVirtualClassMutation.mutateAsync({
+      title: "Virtual class is live now",
+      message: `A tutor has started a live ${subjectName} class with ${studentName}. Join now with class ID ${session.id}.`,
+      targetRole: null,
+    });
+
+    navigate(`/tutor/call/${session.id}`);
+  };
+
+  const handleStartOpenOfflineClass = async () => {
+    const liveClass = await startOpenOfflineClassMutation.mutateAsync({
+      title: "Open Offline Class",
+    });
+
+    if (liveClass.createdNew) {
+      await startVirtualClassMutation.mutateAsync({
+        title: "Open offline class is live now",
+        message: `A tutor has started an open offline class. Join now with offline class ID ${liveClass.id}.`,
+        targetRole: null,
+      });
+    }
+
+    navigate(`/tutor/live-class/${liveClass.id}`);
   };
 
   if (isLoadingTutorBookings) {
@@ -169,7 +220,16 @@ const TutorSessionsPage = () => {
   return (
     <>
       <div className="max-w-6xl mx-auto p-4 sm:p-0">
-        <h1 className="text-2xl font-bold mb-4">My Sessions</h1>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <h1 className="text-2xl font-bold">My Sessions</h1>
+          <button
+            onClick={handleStartOpenOfflineClass}
+            disabled={startOpenOfflineClassMutation.isPending || startVirtualClassMutation.isPending}
+            className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 disabled:opacity-60"
+          >
+            Start Open Offline Class
+          </button>
+        </div>
         <SessionStats stats={stats} isCompact={true} />
 
         <div className="border-b border-gray-200 mb-6">
@@ -221,6 +281,9 @@ const TutorSessionsPage = () => {
           sessions={sessionsToDisplay}
           userType="tutor"
           onViewDetails={handleViewDetails}
+          onStartVirtualClass={
+            activeTab === "upcoming" ? handleStartVirtualClass : undefined
+          }
           noSessionsMessage={noSessionsMessages[activeTab]}
         />
       </div>

@@ -1,43 +1,69 @@
 const ApiError = require("@utils/apiError");
-const { where, Op, literal } = require("sequelize");
+const { where, Op, literal, UniqueConstraintError } = require("sequelize");
 const { Subject, User, Tutor, Student, TutorStat } = require("@models");
 const sequelize = require("@src/shared/database");
 const { required } = require("joi");
 const parseDataWithMeta = require("@src/shared/utils/meta");
 
 exports.createTutor = async ({ profile, userId, documentKey }) => {
-  const existing = await Tutor.findByPk(userId);
-  
-  if (existing) {
-    // Update existing tutor profile instead of throwing error
-    await existing.update({
-      ...profile,
-      documentKey: documentKey || existing.documentKey,
-    });
-    
-    // Update subjects
-    await addSubjectsToProfile({
-      profile: existing,
-      subjectIds: profile.subjects,
-    });
-    
-    return this.getTutor(userId);
+  console.log("createTutor called with profile:", profile, "userId:", userId);
+
+  // Guard against duplicate insert races by checking first and recovering on unique conflicts.
+  let tutor = await Tutor.findOne({ where: { userId } });
+  let created = false;
+
+  if (!tutor) {
+    try {
+      tutor = await Tutor.create({
+        ...profile,
+        documentKey: documentKey || null,
+      });
+      created = true;
+    } catch (error) {
+      if (!(error instanceof UniqueConstraintError)) {
+        throw error;
+      }
+
+      tutor = await Tutor.findOne({ where: { userId } });
+      if (!tutor) {
+        throw error;
+      }
+    }
   }
 
-  const newTutor = await Tutor.create({
-    ...profile,
-    documentKey: documentKey || null,
-  });
+  if (created) {
+    console.log("Creating new tutor profile");
+    // New tutor created
+    await addSubjectsToProfile({
+      profile: tutor,
+      subjectIds: profile.subjects,
+      requireAtLeastOne: true,
+    });
 
-  await addSubjectsToProfile({
-    profile: newTutor,
-    subjectIds: profile.subjects,
-  });
+    await User.update(
+      { role: "tutor", isOnboarded: true },
+      { where: { id: userId } }
+    );
+  } else {
+    console.log("Updating existing tutor profile");
+    // Existing tutor found, update it
+    await tutor.update({
+      ...profile,
+      documentKey: documentKey || tutor.documentKey,
+    });
 
-  await User.update(
-    { role: "tutor", isOnboarded: true },
-    { where: { id: userId } }
-  );
+    await addSubjectsToProfile({
+      profile: tutor,
+      subjectIds: profile.subjects,
+      requireAtLeastOne: true,
+    });
+
+    // Ensure user is properly onboarded and has tutor role
+    await User.update(
+      { role: "tutor", isOnboarded: true },
+      { where: { id: userId } }
+    );
+  }
 
   return this.getTutor(userId);
 };
@@ -70,6 +96,11 @@ exports.getTutors = async ({
     {
       model: Subject.scope("join"),
       as: "subjects",
+    },
+    {
+      model: User,
+      as: "user",
+      required: true, // Only include tutors that have a valid user relationship
     },
   ];
 
@@ -163,6 +194,11 @@ exports.getTutorRecommendations = async ({ userId, limit = 10, page = 1 }) => {
         as: "subjects",
         where: { id: { [Op.in]: subjectIds } },
       },
+      {
+        model: User,
+        as: "user",
+        required: true, // Only include tutors that have a valid user relationship
+      },
     ],
     limit: limit,
     offset: (page - 1) * limit,
@@ -175,7 +211,14 @@ exports.getTutorRecommendations = async ({ userId, limit = 10, page = 1 }) => {
         approvalStatus: "approved",
         profileVisibility: "active",
       },
-      include: [{ model: Subject, as: "subjects" }],
+      include: [
+        { model: Subject, as: "subjects" },
+        {
+          model: User,
+          as: "user",
+          required: true, // Only include tutors that have a valid user relationship
+        },
+      ],
       limit: limit,
       offset: (page - 1) * limit,
       distinct: true,
@@ -235,28 +278,57 @@ exports.updateTutorProfile = async ({ id, tutorProfile }) => {
   return await this.getTutor(id);
 };
 
-async function addSubjectsToProfile({ profile, subjectIds }) {
-  if (!Array.isArray(subjectIds) || subjectIds.length === 0) {
+async function addSubjectsToProfile({
+  profile,
+  subjectIds,
+  requireAtLeastOne = false,
+}) {
+  console.log("addSubjectsToProfile called with subjectIds:", subjectIds);
+
+  const validSubjectIds = Array.isArray(subjectIds) 
+    ? [...new Set(
+        subjectIds
+          .filter((id) => id != null && id !== '' && id !== undefined)
+          .map(id => Number(id))
+          .filter(id => !isNaN(id) && id > 0)
+      )]
+    : [];
+
+  console.log("validSubjectIds after filtering:", validSubjectIds);
+
+  if (validSubjectIds.length === 0) {
+    if (requireAtLeastOne) {
+      throw new ApiError(
+        "Please select at least one valid subject.",
+        400,
+        "Invalid subject selection"
+      );
+    }
+
+    console.log("No valid subject IDs found, clearing subjects");
+    await profile.setSubjects([]);
     return;
   }
 
   const selectedSubjects = await Subject.findAll({
     where: {
       id: {
-        [Op.in]: subjectIds,
+        [Op.in]: validSubjectIds,
       },
     },
   });
 
-  // Remove all existing subject associations first, then add new ones
-  try {
-    await profile.removeSubjects(await profile.getSubjects());
-  } catch (err) {
-    // Ignore if no existing subjects
+  console.log("Found subjects:", selectedSubjects.length, "out of", validSubjectIds.length);
+
+  if (selectedSubjects.length !== validSubjectIds.length) {
+    throw new ApiError(
+      "One or more selected subjects are invalid.",
+      400,
+      "Invalid subject selection"
+    );
   }
-  
-  // Add the new subjects
-  if (selectedSubjects.length > 0) {
-    await profile.addSubjects(selectedSubjects);
-  }
+
+  // Replace existing subjects with the validated selection
+  await profile.setSubjects(selectedSubjects);
+  console.log("Successfully set subjects for profile");
 }

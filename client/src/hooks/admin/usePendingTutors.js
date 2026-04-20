@@ -43,8 +43,11 @@ export function usePendingTutors(options = {}) {
     queryKey: PENDING_TUTORS_QUERY_KEY,
     queryFn: getPendingTutors,
     select: customSelect ?? defaultSelect,
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
     ...rest,
-    refetchInterval: 30000, // Poll every 30 seconds
+    refetchInterval: 60000, // Poll every 60 seconds
     refetchIntervalInBackground: true, // Stop polling when tab is not visible (default)
   });
 }

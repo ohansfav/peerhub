@@ -2,6 +2,9 @@
 REM Peerup Quick Start Script for Windows
 REM This script starts both the backend server and frontend in separate terminals
 
+set "PROJECT_ROOT=%~dp0"
+if "%PROJECT_ROOT:~-1%"=="\" set "PROJECT_ROOT=%PROJECT_ROOT:~0,-1%"
+
 echo.
 echo ╔════════════════════════════════════════════════════════════╗
 echo ║         Peerup - Quick Start Script                    ║
@@ -10,16 +13,16 @@ echo ║  Starting Backend (Port 3000) and Frontend (Port 5173)    ║
 echo ╚════════════════════════════════════════════════════════════╝
 echo.
 
-REM Check if we're in the right directory
-if not exist ".\server" (
-    echo ERROR: Cannot find 'server' folder. Please run this script from the project root.
-    echo Expected: C:\Users\ohanu\OneDrive\Desktop\final year project 3\
+REM Resolve paths from script location (works even when launched from another folder)
+if not exist "%PROJECT_ROOT%\server" (
+    echo ERROR: Cannot find 'server' folder next to this script.
+    echo Expected: %PROJECT_ROOT%\server
     pause
     exit /b 1
 )
 
-if not exist ".\client" (
-    echo ERROR: Cannot find 'client' folder. Please run this script from the project root.
+if not exist "%PROJECT_ROOT%\client" (
+    echo ERROR: Cannot find 'client' folder next to this script.
     pause
     exit /b 1
 )
@@ -27,13 +30,13 @@ if not exist ".\client" (
 echo ✓ Found both server and client directories
 echo.
 echo Starting Backend Server (http://localhost:3000)...
-start cmd /k "cd server && npm run dev"
+start "Peerup Backend" cmd /k "cd /d ""%PROJECT_ROOT%\server"" && npm run dev"
 
 echo Waiting 3 seconds before starting frontend...
 timeout /t 3 /nobreak
 
 echo Starting Frontend Application (http://localhost:5173)...
-start cmd /k "cd client && npm run dev"
+start "Peerup Frontend" cmd /k "cd /d ""%PROJECT_ROOT%\client"" && npm run dev"
 
 echo.
 echo ╔════════════════════════════════════════════════════════════╗
@@ -44,6 +47,8 @@ echo ║  Frontend: http://localhost:5173                          ║
 echo ║                                                            ║
 echo ║  Open your browser and go to:                             ║
 echo ║  http://localhost:5173                                    ║
+echo ║                                                            ║
+echo ║  For ngrok sharing, use: START_NGROK.bat                  ║
 echo ╚════════════════════════════════════════════════════════════╝
 echo.
 

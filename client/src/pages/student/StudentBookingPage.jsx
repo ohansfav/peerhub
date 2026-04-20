@@ -355,7 +355,7 @@ export default function BookingSession() {
             {/* Tutor Info */}
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg mb-4">
               <img
-                src={tutorProfile.user.profileImageUrl}
+                src={tutorProfile?.user?.profileImageUrl || "https://via.placeholder.com/48x48?text=Tutor"}
                 alt="Tutor"
                 className="w-12 h-12 rounded-full object-cover"
               />
@@ -446,7 +446,7 @@ export default function BookingSession() {
             {/* Booking Summary */}
             <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg mb-4">
               <img
-                src={tutorProfile.user.profileImageUrl}
+                src={tutorProfile?.user?.profileImageUrl || "https://via.placeholder.com/48x48?text=Tutor"}
                 alt="Tutor"
                 className="w-12 h-12 rounded-full object-cover"
               />

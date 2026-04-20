@@ -31,6 +31,7 @@ import ActiveLayout from "../../layouts/tutor/ActiveLayout";
 import { useNotifications } from "../../hooks/notifications/useNotfications";
 import { useTutorStatus } from "../../hooks/auth/useUserRoles";
 import { useTutorDashboard } from "../../hooks/tutor/useTutorProfile";
+import useCallAccess from "../../hooks/booking/useCallAccess";
 
 const TutorDashboardPage = () => {
   const [selectedSession, setSelectedSession] = useState(null);
@@ -420,6 +421,8 @@ const TutorDashboardPage = () => {
 export default TutorDashboardPage;
 
 function SessionCard({ session, onClick }) {
+  const { canAccess, reason } = useCallAccess(session);
+
   return (
     <div
       className="flex items-center justify-between border rounded-lg p-3 w-full cursor-pointer"
@@ -439,12 +442,32 @@ function SessionCard({ session, onClick }) {
           </p>
         </div>
       </div>
-      <button
-        className="btn btn-sm rounded-full"
-        style={{ backgroundColor: "#E6F4EA", color: "#34A853" }}
-      >
-        Confirmed
-      </button>
+      <div className="flex items-center gap-2">
+        {canAccess ? (
+          <Link
+            to={`/tutor/call/${session.id}`}
+            onClick={(event) => event.stopPropagation()}
+            className="btn btn-sm rounded-full bg-primary hover:bg-primary-focus text-white"
+          >
+            Start Class
+          </Link>
+        ) : (
+          <button
+            type="button"
+            onClick={(event) => event.stopPropagation()}
+            className="btn btn-sm rounded-full btn-disabled"
+            title={reason || "Class is not available yet"}
+          >
+            Start Class
+          </button>
+        )}
+        <button
+          className="btn btn-sm rounded-full"
+          style={{ backgroundColor: "#E6F4EA", color: "#34A853" }}
+        >
+          Confirmed
+        </button>
+      </div>
     </div>
   );
 }

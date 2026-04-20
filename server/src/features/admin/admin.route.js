@@ -13,9 +13,11 @@ router.use(requireAdmin);
 // =====================
 // User Routes
 // =====================
+router.get("/dashboard/summary", adminController.getDashboardSummary);
 router.get("/users", adminController.getAllUsers);
 router.get("/users/counts", adminController.getUserSummaryCounts);
 router.get("/users/:id", adminController.getUserById);
+router.post("/users", adminController.createUser);
 router.put("/users/:id", adminController.updateUser);
 router.patch("/users/:id/restore", adminController.restoreUser);
 router.patch("/users/:id/suspend", adminController.suspendUser);

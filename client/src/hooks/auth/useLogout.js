@@ -4,7 +4,6 @@ import {
   handleToastSuccess,
 } from "../../utils/toastDisplayHandler";
 import { logout } from "../../lib/api/auth/authApi";
-import { disconnectStreamClients } from "../../lib/stream/streamClientManager";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
@@ -23,6 +22,9 @@ const useLogout = () => {
       setIsLoggingOut(true);
     },
     onSuccess: async () => {
+      const { disconnectStreamClients } = await import(
+        "../../lib/stream/streamClientManager"
+      );
       await disconnectStreamClients();
       queryClient.removeQueries({ queryKey: ["streamToken"] });
       queryClient.removeQueries({ queryKey: ["userProfile"] });

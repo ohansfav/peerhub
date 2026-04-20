@@ -158,12 +158,20 @@ const BookingDetailsModal = ({
                 Message Tutor
               </Link>
             ) : (
-              <button
-                onClick={onReschedule}
-                className="btn btn-primary flex-1 text-white"
-              >
-                Reschedule Booking
-              </button>
+              <>
+                <Link
+                  to={`/tutor/chat/${booking.student?.user?.id}`}
+                  className="btn bg-primary hover:bg-primary-focus text-white flex-1 text-center"
+                >
+                  Message Student
+                </Link>
+                <button
+                  onClick={onReschedule}
+                  className="btn btn-primary flex-1 text-white"
+                >
+                  Reschedule Booking
+                </button>
+              </>
             )}
           </div>
         )}

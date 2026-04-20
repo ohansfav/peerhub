@@ -12,6 +12,7 @@ import { getSubjects } from "../../lib/api/common/subjectsApi";
 
 const TutorOnboardingPage = () => {
   const [subjectInfo, setSubjectInfo] = useState(null);
+  const [localError, setLocalError] = useState("");
 
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 3;
@@ -22,18 +23,28 @@ const TutorOnboardingPage = () => {
     credentials: null,
   });
 
-  const toggleSubject = (subject) =>
+  const toggleSubject = (subject) => {
+    const subjectId = Number(subject);
+    if (!Number.isInteger(subjectId) || subjectId <= 0) return;
+
     setFormData((prev) => ({
       ...prev,
-      subjects: prev.subjects.includes(subject)
-        ? prev.subjects.filter((s) => s !== subject)
-        : [...prev.subjects, subject],
+      subjects: prev.subjects.includes(subjectId)
+        ? prev.subjects.filter((s) => s !== subjectId)
+        : [...prev.subjects, subjectId],
     }));
+  };
 
   useEffect(() => {
     async function fetchSubjects() {
       const subjects = await getSubjects();
-      setSubjectInfo(subjects);
+      const safeSubjects = Array.isArray(subjects)
+        ? subjects.filter(
+            (subject) =>
+              Number.isInteger(Number(subject?.id)) && Number(subject.id) > 0
+          )
+        : [];
+      setSubjectInfo(safeSubjects);
     }
     fetchSubjects();
   }, []);
@@ -53,9 +64,26 @@ const TutorOnboardingPage = () => {
 
   const handleSubmit = (e) => {
     e?.preventDefault?.();
+    if (isPending) return;
+
+    const safeSubjects = [...new Set(
+      formData.subjects
+        .map((id) => Number(id))
+        .filter((id) => Number.isInteger(id) && id > 0)
+    )];
+
+    if (safeSubjects.length === 0) {
+      setLocalError("Please select at least one valid subject.");
+      return;
+    }
+
+    setLocalError("");
     clearErrors();
 
-    createTutorMutation(formData);
+    createTutorMutation({
+      ...formData,
+      subjects: safeSubjects,
+    });
   };
 
   const steps = [
@@ -107,7 +135,7 @@ const TutorOnboardingPage = () => {
       <div className="flex flex-col justify-between md:min-h-[90vh] space-y-2">
         <ProgressBar currentStep={currentStep} totalSteps={totalSteps} />
 
-        <ErrorAlert error={generalError} />
+        <ErrorAlert error={generalError || localError} />
         <div className="flex-1 overflow-y-auto">{steps[currentStep - 1]}</div>
 
         {currentStep === 1 && formData.subjects.length === 0 && (
@@ -133,6 +161,7 @@ const TutorOnboardingPage = () => {
             <button
               type="button"
               onClick={() => handleSubmit()}
+              disabled={isPending}
               className="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition font-medium"
             >
               Skip & Complete Onboarding

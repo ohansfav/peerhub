@@ -30,6 +30,8 @@ export function useStudentNotifications(enabled = true) {
     queryFn: getBroadcastMessages,
     staleTime: 1000 * 60 * 5,
     cacheTime: 1000 * 60 * 10,
+    refetchInterval: enabled ? 5000 : false,
+    refetchIntervalInBackground: true,
     enabled,
   });
 
@@ -87,6 +89,13 @@ export function useStudentNotifications(enabled = true) {
           ? `${msg.sender.firstName} ${msg.sender.lastName}`
           : "System";
 
+        const offlineClassIdMatch = msg.message?.match(
+          /offline class ID ([a-f0-9-]{8,})/i,
+        );
+        const classIdMatch = msg.message?.match(/class ID ([a-f0-9-]{8,})/i);
+        const offlineClassId = offlineClassIdMatch?.[1];
+        const classId = classIdMatch?.[1];
+
         result.push({
           id: `broadcast-${String(msg.id)}`,
           type: "announcement",
@@ -94,6 +103,14 @@ export function useStudentNotifications(enabled = true) {
           message: `${msg.title}: ${msg.message}`,
           timestamp: msg.createdAt,
           priority: "medium",
+          ...((offlineClassId || classId) && {
+            action: {
+              label: "Join Live Class",
+              link: offlineClassId
+                ? `/student/live-class/${offlineClassId}`
+                : `/student/call/${classId}`,
+            },
+          }),
         });
       });
     }

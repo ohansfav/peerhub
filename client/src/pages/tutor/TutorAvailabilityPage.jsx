@@ -205,6 +205,10 @@ const TutorAvailabilityPage = () => {
               Set your schedule to let students know when you're available for
               tutoring.
             </p>
+            <p className="text-sm text-gray-500 mt-2">
+              You can add multiple class slots in the same day as long as the
+              times do not overlap.
+            </p>
           </div>
 
           {/* Create/Edit Form */}

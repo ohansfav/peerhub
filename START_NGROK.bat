@@ -1,0 +1,58 @@
+@echo off
+REM Peerup Ngrok Start Script for Windows
+REM Builds client and serves it from backend (port 3000) for stable ngrok sharing
+
+echo.
+echo ============================================================
+echo                 Peerup - Ngrok Share Mode
+echo ============================================================
+echo.
+
+if not exist ".\server" (
+  echo ERROR: Cannot find 'server' folder. Run from project root.
+  pause
+  exit /b 1
+)
+
+if not exist ".\client" (
+  echo ERROR: Cannot find 'client' folder. Run from project root.
+  pause
+  exit /b 1
+)
+
+echo [1/4] Installing/updating client dependencies...
+call cmd /c "cd client && npm install"
+if errorlevel 1 (
+  echo ERROR: Failed to install client dependencies.
+  pause
+  exit /b 1
+)
+
+echo [2/4] Building frontend for production serving...
+call cmd /c "cd client && npm run build"
+if errorlevel 1 (
+  echo ERROR: Client build failed.
+  pause
+  exit /b 1
+)
+
+echo [3/4] Starting backend server on http://localhost:3000 ...
+start cmd /k "cd server && npm run dev"
+
+echo Waiting 4 seconds for backend boot...
+timeout /t 4 /nobreak >nul
+
+echo [4/4] Start ngrok in a new terminal (tunnel backend port 3000)
+start cmd /k "ngrok http 3000"
+
+echo.
+echo ============================================================
+echo Backend is served at:  http://localhost:3000
+echo Ngrok should tunnel:   http://localhost:3000
+echo.
+echo Share the HTTPS ngrok URL shown in the ngrok terminal.
+echo If users see a warning page, they must click through once.
+echo ============================================================
+echo.
+
+pause

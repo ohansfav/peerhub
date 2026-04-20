@@ -3,7 +3,15 @@ import PropTypes from "prop-types";
 import ErrorAlert from "../common/ErrorAlert";
 import Spinner from "../common/Spinner";
 
-const ResponsiveDataTable = ({ data, columns, getLink, getRowKey }) => (
+const ResponsiveDataTable = ({
+  data,
+  columns,
+  getLink,
+  getRowKey,
+  renderActions,
+  actionHeader = "Action",
+  columnProps,
+}) => (
   <div className="hidden sm:block overflow-x-auto">
     <table className="w-full max-w-full table-auto text-sm">
       <thead>
@@ -11,13 +19,13 @@ const ResponsiveDataTable = ({ data, columns, getLink, getRowKey }) => (
           {columns.map((col) => (
             <th
               key={col.header}
-              className={`p-3 sm:p-4 whitespace-nowrap text-left ${col.headerClassName || ""
-                }`}
+              className={`p-3 sm:p-4 whitespace-nowrap text-left ${col.headerClassName || ""}
+                `}
             >
               {col.header}
             </th>
           ))}
-          <th className="p-3 sm:p-4 text-right whitespace-nowrap">Action</th>
+          <th className="p-3 sm:p-4 text-right whitespace-nowrap">{actionHeader}</th>
         </tr>
       </thead>
       <tbody>
@@ -29,19 +37,23 @@ const ResponsiveDataTable = ({ data, columns, getLink, getRowKey }) => (
             {columns.map((col) => (
               <td
                 key={col.header}
-                className={`p-3 sm:p-4 text-gray-600 ${col.cellClassName || ""
-                  }`}
+                className={`p-3 sm:p-4 text-gray-600 ${col.cellClassName || ""}
+                  `}
               >
-                {col.cell ? col.cell(item) : item[col.accessor]}
+                {col.cell ? col.cell(item, columnProps) : item[col.accessor]}
               </td>
             ))}
             <td className="p-3 sm:p-4 text-right whitespace-nowrap">
-              <Link
-                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white border rounded-full shadow-sm text-blue-600 text-xs sm:text-sm"
-                to={getLink(item)}
-              >
-                View
-              </Link>
+              {renderActions ? (
+                renderActions(item)
+              ) : (
+                <Link
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-white border rounded-full shadow-sm text-blue-600 text-xs sm:text-sm"
+                  to={getLink(item)}
+                >
+                  View
+                </Link>
+              )}
             </td>
           </tr>
         ))}
@@ -63,12 +75,15 @@ ResponsiveDataTable.propTypes = {
   ).isRequired,
   getLink: PropTypes.func.isRequired,
   getRowKey: PropTypes.func.isRequired,
+  renderActions: PropTypes.func,
+  actionHeader: PropTypes.string,
+  columnProps: PropTypes.object,
 };
 
-const ResponsiveDataCard = ({ data, renderCard, getRowKey }) => (
+const ResponsiveDataCard = ({ data, renderCard, getRowKey, columnProps }) => (
   <div className="sm:hidden space-y-4">
     {data.map((item, index) => (
-      <div key={getRowKey(item, index)}>{renderCard(item)}</div>
+      <div key={getRowKey(item, index)}>{renderCard(item, columnProps)}</div>
     ))}
   </div>
 );
@@ -85,6 +100,9 @@ const ResponsiveDataSection = ({
   columns,
   renderCard,
   getLink,
+  renderActions,
+  actionHeader,
+  columnProps,
   isLoading,
   error,
   viewAllLink,
@@ -116,11 +134,15 @@ const ResponsiveDataSection = ({
             data={data}
             renderCard={renderCard}
             getRowKey={getRowKey}
+            columnProps={columnProps}
           />
           <ResponsiveDataTable
             data={data}
             columns={columns}
             getLink={getLink}
+            renderActions={renderActions}
+            actionHeader={actionHeader}
+            columnProps={columnProps}
             getRowKey={getRowKey}
           />
         </>
@@ -135,6 +157,9 @@ ResponsiveDataSection.propTypes = {
   columns: PropTypes.arrayOf(PropTypes.object).isRequired,
   renderCard: PropTypes.func.isRequired,
   getLink: PropTypes.func.isRequired,
+  renderActions: PropTypes.func,
+  actionHeader: PropTypes.string,
+  columnProps: PropTypes.object,
   isLoading: PropTypes.bool,
   error: PropTypes.object,
   viewAllLink: PropTypes.string,

@@ -1,22 +1,13 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import HomePage from "./pages/landing/HomePage";
-import StudentOnboardingPage from "./pages/onboarding/StudentOnboardingPage";
-import TutorOnboardingPage from "./pages/onboarding/TutorOnboardingPage";
-import SignupPage from "./pages/auth/SignupPage";
-import LoginPage from "./pages/auth/LoginPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
-import EmailVerificationPage from "./pages/auth/EmailVerificationPage";
-import RoleSelectionPage from "./pages/onboarding/RoleSelectionPage";
-import StudentDashboardPage from "./pages/student/StudentDashboardPage";
-import TutorDashboardPage from "./pages/tutor/TutorDashboardPage";
 import { Toaster } from "react-hot-toast";
 import PublicOnlyRoute from "./components/routes/PublicRoute";
 import EmailVerificationRoute from "./components/routes/EmailVerificationRoute";
 import AdminRoute from "./components/routes/AdminRoute";
 import OnboardingRoute from "./components/routes/OnboardingRoute";
-import NotFoundPage from "./pages/general/NotFoundPage";
 import Layout from "./layouts/Layout";
+import PageLoader from "./components/common/PageLoader";
 import {
   adminSidebarLinks,
   studentSidebarLinks,
@@ -24,34 +15,52 @@ import {
 } from "./utils/sideBarLinks";
 import StudentRoute from "./components/routes/StudentRoute";
 import TutorRoute from "./components/routes/TutorRoute";
-import StudentLibraryPage from "./pages/student/StudentLibraryPage";
-import StudentTutorsPage from "./pages/student/StudentTutorsPage";
-import StudentQuizPage from "./pages/student/StudentQuizPage";
-import FAQPage from "./pages/general/FAQPage";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import AdminManageAdminsPage from "./pages/admin/AdminManageAdminsPage";
-import StudentBookingPage from "./pages/student/StudentBookingPage";
-import AdminTutorsPage from "./pages/admin/AdminTutorsPage";
-import TutorSessionsPage from "./pages/tutor/TutorSessionsPage";
-import TutorAvailabilityPage from "./pages/tutor/TutorAvailabilityPage";
-import AdminReportsPage from "./pages/admin/AdminReportsPage";
-import AdminStudentsPage from "./pages/admin/AdminStudentsPage";
-import AdminTutorsProfilePage from "./pages/admin/AdminTutorsProfilePage";
-import AdminStudentsProfilePage from "./pages/admin/AdminStudentsProfilePage";
-import ChatPage from "./pages/messaging/ChatPage";
-import CallPage from "./pages/messaging/CallPage";
-import RecentChatsPage from "./pages/messaging/RecentChatsPage";
-import TutorPrivateProfilePage from "./pages/tutor/TutorPrivateProfilePage";
-import TutorQuizPage from "./pages/tutor/TutorQuizPage";
-import BookingRequestsPage from "./pages/tutor/BookingRequestsPage";
-import StudentSessionsPage from "./pages/student/StudentSessionsPage";
-import StudentTutorProfilePage from "./pages/student/StudentTutorProfilePage";
-import StudentCourseCatalogPage from "./pages/student/StudentCourseCatalogPage";
-import StudentMyCoursesPage from "./pages/student/StudentMyCoursesPage";
-import AccountSettingsPage from "./pages/general/AccountSettingsPage";
+
+const StudentOnboardingPage = lazy(() => import("./pages/onboarding/StudentOnboardingPage"));
+const TutorOnboardingPage = lazy(() => import("./pages/onboarding/TutorOnboardingPage"));
+const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
+const EmailVerificationPage = lazy(() => import("./pages/auth/EmailVerificationPage"));
+const RoleSelectionPage = lazy(() => import("./pages/onboarding/RoleSelectionPage"));
+const StudentDashboardPage = lazy(() => import("./pages/student/StudentDashboardPage"));
+const TutorDashboardPage = lazy(() => import("./pages/tutor/TutorDashboardPage"));
+const NotFoundPage = lazy(() => import("./pages/general/NotFoundPage"));
+const StudentLibraryPage = lazy(() => import("./pages/student/StudentLibraryPage"));
+const StudentTutorsPage = lazy(() => import("./pages/student/StudentTutorsPage"));
+const StudentQuizPage = lazy(() => import("./pages/student/StudentQuizPage"));
+const FAQPage = lazy(() => import("./pages/general/FAQPage"));
+const AdminDashboardPage = lazy(() => import("./pages/admin/AdminDashboardPage"));
+const AdminManageAdminsPage = lazy(() => import("./pages/admin/AdminManageAdminsPage"));
+const StudentBookingPage = lazy(() => import("./pages/student/StudentBookingPage"));
+const AdminTutorsPage = lazy(() => import("./pages/admin/AdminTutorsPage"));
+const TutorSessionsPage = lazy(() => import("./pages/tutor/TutorSessionsPage"));
+const TutorAvailabilityPage = lazy(() => import("./pages/tutor/TutorAvailabilityPage"));
+const AdminReportsPage = lazy(() => import("./pages/admin/AdminReportsPage"));
+const AdminStudentsPage = lazy(() => import("./pages/admin/AdminStudentsPage"));
+const AdminTutorsProfilePage = lazy(() => import("./pages/admin/AdminTutorsProfilePage"));
+const AdminStudentsProfilePage = lazy(() => import("./pages/admin/AdminStudentsProfilePage"));
+const ChatPage = lazy(() => import("./pages/messaging/ChatPage"));
+const CallPage = lazy(() => import("./pages/messaging/CallPage"));
+const RecentChatsPage = lazy(() => import("./pages/messaging/RecentChatsPage"));
+const OfflineLiveClassPage = lazy(() => import("./pages/messaging/OfflineLiveClassPage"));
+const TutorPrivateProfilePage = lazy(() => import("./pages/tutor/TutorPrivateProfilePage"));
+const TutorQuizPage = lazy(() => import("./pages/tutor/TutorQuizPage"));
+const BookingRequestsPage = lazy(() => import("./pages/tutor/BookingRequestsPage"));
+const StudentSessionsPage = lazy(() => import("./pages/student/StudentSessionsPage"));
+const StudentTutorProfilePage = lazy(() => import("./pages/student/StudentTutorProfilePage"));
+const StudentCourseCatalogPage = lazy(() => import("./pages/student/StudentCourseCatalogPage"));
+const StudentMyCoursesPage = lazy(() => import("./pages/student/StudentMyCoursesPage"));
+const AccountSettingsPage = lazy(() => import("./pages/general/AccountSettingsPage"));
 
 export default function App() {
   const location = useLocation();
+  const renderLazy = (Component, props = {}) => (
+    <Suspense fallback={<PageLoader />}>
+      <Component {...props} />
+    </Suspense>
+  );
 
   return (
     <>
@@ -61,12 +70,12 @@ export default function App() {
 
         {/* Public-only routes: accessible only if NOT logged in */}
         <Route element={<PublicOnlyRoute />}>
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/signup" element={renderLazy(SignupPage)} />
+          <Route path="/login" element={renderLazy(LoginPage)} />
+          <Route path="/forgot-password" element={renderLazy(ForgotPasswordPage)} />
           <Route
             path="/reset-password/:token"
-            element={<ResetPasswordPage />}
+            element={renderLazy(ResetPasswordPage)}
           />
         </Route>
 
@@ -75,19 +84,19 @@ export default function App() {
           path="/verify-email"
           element={
             <EmailVerificationRoute>
-              <EmailVerificationPage />
+              {renderLazy(EmailVerificationPage)}
             </EmailVerificationRoute>
           }
         />
 
         {/* Onboarding routes: accessible only if logged in, verified, but NOT onboarded */}
         <Route element={<OnboardingRoute />}>
-          <Route path="/role-selection" element={<RoleSelectionPage />} />
+          <Route path="/role-selection" element={renderLazy(RoleSelectionPage)} />
           <Route
             path="/student/onboarding"
-            element={<StudentOnboardingPage />}
+            element={renderLazy(StudentOnboardingPage)}
           />
-          <Route path="/tutor/onboarding" element={<TutorOnboardingPage />} />
+          <Route path="/tutor/onboarding" element={renderLazy(TutorOnboardingPage)} />
         </Route>
 
         {/* Student protected routes: require login, verified, onboarded, role = student */}
@@ -100,32 +109,36 @@ export default function App() {
           }
         >
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<StudentDashboardPage />} />
-          <Route path="library" element={<StudentLibraryPage />} />
-          <Route path="quizzes" element={<StudentQuizPage />} />
-          <Route path="tutors" element={<StudentTutorsPage />} />
+          <Route path="dashboard" element={renderLazy(StudentDashboardPage)} />
+          <Route path="library" element={renderLazy(StudentLibraryPage)} />
+          <Route path="quizzes" element={renderLazy(StudentQuizPage)} />
+          <Route path="tutors" element={renderLazy(StudentTutorsPage)} />
           <Route
             path="tutor-profile/:id"
-            element={<StudentTutorProfilePage />}
+            element={renderLazy(StudentTutorProfilePage)}
           />
           <Route
             path="chats"
-            element={<RecentChatsPage key={location.pathname} />}
+            element={renderLazy(RecentChatsPage, { key: location.pathname })}
           />
           <Route
             path="chat/:id"
-            element={<ChatPage key={location.pathname} />}
+            element={renderLazy(ChatPage, { key: location.pathname })}
           />
           <Route
             path="call/:id"
-            element={<CallPage key={location.pathname} />}
+            element={renderLazy(CallPage, { key: location.pathname })}
           />
-          <Route path="booking/:id" element={<StudentBookingPage />} />
-          <Route path="sessions" element={<StudentSessionsPage />} />
-          <Route path="courses" element={<StudentCourseCatalogPage />} />
-          <Route path="my-courses" element={<StudentMyCoursesPage />} />
-          <Route path="faq" element={<FAQPage />} />
-          <Route path="settings" element={<AccountSettingsPage />} />
+          <Route
+            path="live-class/:id"
+            element={renderLazy(OfflineLiveClassPage, { key: location.pathname })}
+          />
+          <Route path="booking/:id" element={renderLazy(StudentBookingPage)} />
+          <Route path="sessions" element={renderLazy(StudentSessionsPage)} />
+          <Route path="courses" element={renderLazy(StudentCourseCatalogPage)} />
+          <Route path="my-courses" element={renderLazy(StudentMyCoursesPage)} />
+          <Route path="faq" element={renderLazy(FAQPage)} />
+          <Route path="settings" element={renderLazy(AccountSettingsPage)} />
         </Route>
 
         {/* Tutor protected routes: require login, verified, onboarded, role = tutor */}
@@ -138,26 +151,31 @@ export default function App() {
           }
         >
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<TutorDashboardPage />} />
-          <Route path="sessions" element={<TutorSessionsPage />} />
-          <Route path="availability" element={<TutorAvailabilityPage />} />
-          <Route path="quizzes" element={<TutorQuizPage />} />
+          <Route path="dashboard" element={renderLazy(TutorDashboardPage)} />
+          <Route path="virtual-classes" element={renderLazy(TutorSessionsPage)} />
+          <Route path="sessions" element={renderLazy(TutorSessionsPage)} />
+          <Route path="availability" element={renderLazy(TutorAvailabilityPage)} />
+          <Route path="quizzes" element={renderLazy(TutorQuizPage)} />
           <Route
             path="chats"
-            element={<RecentChatsPage key={location.pathname} />}
+            element={renderLazy(RecentChatsPage, { key: location.pathname })}
           />
           <Route
             path="chat/:id"
-            element={<ChatPage key={location.pathname} />}
+            element={renderLazy(ChatPage, { key: location.pathname })}
           />
           <Route
             path="call/:id"
-            element={<CallPage key={location.pathname} />}
+            element={renderLazy(CallPage, { key: location.pathname })}
           />
-          <Route path="settings" element={<AccountSettingsPage />} />
-          <Route path="profile" element={<TutorPrivateProfilePage />} />
-          <Route path="faq" element={<FAQPage />} />
-          <Route path="booking-requests" element={<BookingRequestsPage />} />
+          <Route
+            path="live-class/:id"
+            element={renderLazy(OfflineLiveClassPage, { key: location.pathname })}
+          />
+          <Route path="settings" element={renderLazy(AccountSettingsPage)} />
+          <Route path="profile" element={renderLazy(TutorPrivateProfilePage)} />
+          <Route path="faq" element={renderLazy(FAQPage)} />
+          <Route path="booking-requests" element={renderLazy(BookingRequestsPage)} />
         </Route>
 
         {/* Admin protected routes: require login, verified, onboarded, role = admin */}
@@ -170,16 +188,16 @@ export default function App() {
           }
         >
           <Route index element={<Navigate to="dashboard" replace />} />
-          <Route path="dashboard" element={<AdminDashboardPage />} />
-          <Route path="tutors" element={<AdminTutorsPage />} />
-          <Route path="tutors/:id" element={<AdminTutorsProfilePage />} />
-          <Route path="students" element={<AdminStudentsPage />} />
-          <Route path="students/:id" element={<AdminStudentsProfilePage />} />
-          <Route path="report" element={<AdminReportsPage />} />
-          <Route path="settings" element={<AccountSettingsPage />} />
-          <Route path="manage-admins" element={<AdminManageAdminsPage />} />
+          <Route path="dashboard" element={renderLazy(AdminDashboardPage)} />
+          <Route path="tutors" element={renderLazy(AdminTutorsPage)} />
+          <Route path="tutors/:id" element={renderLazy(AdminTutorsProfilePage)} />
+          <Route path="students" element={renderLazy(AdminStudentsPage)} />
+          <Route path="students/:id" element={renderLazy(AdminStudentsProfilePage)} />
+          <Route path="report" element={renderLazy(AdminReportsPage)} />
+          <Route path="settings" element={renderLazy(AccountSettingsPage)} />
+          <Route path="manage-admins" element={renderLazy(AdminManageAdminsPage)} />
         </Route>
-        <Route path="*" element={<NotFoundPage />} />
+        <Route path="*" element={renderLazy(NotFoundPage)} />
       </Routes>
       <Toaster />
     </>

@@ -22,6 +22,8 @@ const sendResponse = require("@utils/sendResponse");
 const reviewRoutes = require("@features/reviews/review.route");
 const quizRoutes = require("@features/quiz/quiz.route");
 const broadcastRoutes = require("@features/broadcast/broadcast.route");
+const offlineClassRoutes = require("@features/offlineClass/offlineClass.route");
+const localChatRoutes = require("@features/localChat/localChat.route");
 const studentStatsRoutes = require("@features/student/studentStats.route");
 const courseRoutes = require("@features/course/course.route");
 
@@ -31,30 +33,25 @@ const allowedOrigins = (
   process.env.CLIENT_URL || "http://localhost:5173"
 ).split(",").map(o => o.trim());
 
-const isDevMode = process.env.NODE_ENV === "development";
+const currentEnv = String(process.env.NODE_ENV || "development").trim().toLowerCase();
+const isDevMode = currentEnv !== "production";
+const isPrivateLanOrigin = (origin) =>
+  /^https?:\/\/(10\.\d+\.\d+\.\d+|192\.168\.\d+\.\d+|172\.(1[6-9]|2\d|3[0-1])\.\d+\.\d+)(:\d+)?$/i.test(origin);
+const isTunnelOrigin = (origin) =>
+  /^https?:\/\/([a-z0-9-]+\.)?(trycloudflare\.com|ngrok\.io|ngrok-free\.app|ngrok-free\.dev)(:\d+)?$/i.test(origin);
 
 // Trust first proxy
 app.set("trust proxy", 1);
 
 // Middleware
 app.use(helmet());
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // Allow requests with no origin (e.g., mobile apps, Postman)
-      if (!origin) return callback(null, true);
-      // In development, allow all localhost origins regardless of port
-      if (isDevMode && /^https?:\/\/localhost(:\d+)?$/.test(origin)) {
-        return callback(null, true);
-      }
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-  })
-);
+const apiCorsOptions = {
+  // Reflect request origin so browser credentialed requests succeed from tunnel URLs.
+  origin: true,
+  credentials: true,
+};
+
+app.use("/api", cors(apiCorsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -80,6 +77,8 @@ app.use("/api/events", eventsRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/quiz", quizRoutes);
 app.use("/api/broadcast", broadcastRoutes);
+app.use("/api/offline-class", offlineClassRoutes);
+app.use("/api/local-chat", localChatRoutes);
 app.use("/api/student-stats", studentStatsRoutes);
 app.use("/api/course", courseRoutes);
 

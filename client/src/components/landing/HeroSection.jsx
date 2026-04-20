@@ -14,6 +14,14 @@ const HeroSection = () => {
         src={ASSETS.hero.backgroundImage}
         alt={ASSETS.hero.alt}
         className="absolute inset-0 w-full h-full object-cover object-top z-0"
+        fetchPriority="high"
+        decoding="async"
+        loading="eager"
+        onError={(e) => {
+          if (ASSETS.hero.fallbackImage) {
+            e.currentTarget.src = ASSETS.hero.fallbackImage;
+          }
+        }}
       />
 
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900/95 via-blue-900/80 to-slate-900/70"></div>

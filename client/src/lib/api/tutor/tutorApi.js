@@ -1,13 +1,23 @@
 import { axiosInstance } from "../axios";
 
 export const createTutor = async (data) => {
+  console.log("createTutor API called with data:", data);
+
   const formData = new FormData();
+  const safeSubjects = [...new Set(
+    (Array.isArray(data.subjects) ? data.subjects : [])
+      .map((id) => Number(id))
+      .filter((id) => Number.isInteger(id) && id > 0)
+  )];
 
   formData.append("education", data.education);
   // Subjects → stringify so backend can JSON.parse
-  formData.append("subjects", JSON.stringify(data.subjects));
+  formData.append("subjects", JSON.stringify(safeSubjects));
+  console.log("Subjects being sent:", safeSubjects);
 
-  formData.append("file", data.credentials);
+  if (data.credentials) {
+    formData.append("file", data.credentials);
+  }
 
   const res = await axiosInstance.post("/tutor", formData, {
     headers: {

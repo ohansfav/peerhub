@@ -1,5 +1,7 @@
 import { BellIcon, ChevronDown } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import ProfileDropdown from "../navbar/ProfileDropdown";
 import useLogout from "../../hooks/auth/useLogout";
 import NotificationDropdown from "../navbar/NotificationDropdown";
@@ -9,10 +11,23 @@ import { useUserProfile } from "../../hooks/profile/useUserProfile";
 import PageLoader from "../common/PageLoader";
 import LogoutPageLoader from "../ui/LogoutPageLoader";
 import { getAvatarUrl } from "../../utils/getAvatarUrl";
+import { useStreamContext } from "../../hooks/messaging/useStreamContext";
+import { getActiveOfflineClasses } from "../../lib/api/common/offlineClassApi";
 
 const Navbar = ({ onToggleSidebar }) => {
+  const navigate = useNavigate();
   const { authUser } = useAuth();
   const { data: user } = useUserProfile();
+  const { isReady, isInitializing, streamError } = useStreamContext();
+
+  const { data: activeOfflineClasses } = useQuery({
+    queryKey: ["activeOfflineClasses"],
+    queryFn: getActiveOfflineClasses,
+    refetchInterval: 5000,
+    enabled: Boolean(authUser),
+  });
+
+  const topOfflineClass = activeOfflineClasses?.[0];
 
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] =
@@ -30,6 +45,18 @@ const Navbar = ({ onToggleSidebar }) => {
   } = useNotifications(authUser?.role);
 
   const { logoutMutation, isPending } = useLogout();
+
+  const modeLabel = streamError
+    ? "Live Offline Mode"
+    : isReady
+      ? "Online Stream"
+      : isInitializing
+        ? "Connecting..."
+        : "Live Offline Mode";
+
+  const modeClassName = streamError || !isReady
+    ? "bg-amber-50 text-amber-700 border border-amber-200"
+    : "bg-emerald-50 text-emerald-700 border border-emerald-200";
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -91,6 +118,24 @@ const Navbar = ({ onToggleSidebar }) => {
 
             {/* Right side */}
             <div className="flex items-center gap-2">
+              {topOfflineClass && (
+                <button
+                  onClick={() =>
+                    navigate(`/${authUser?.role}/live-class/${topOfflineClass.id}`)
+                  }
+                  className="hidden md:inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
+                >
+                  Join Live Offline Class
+                </button>
+              )}
+
+              <span
+                className={`hidden md:inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${modeClassName}`}
+                title={streamError || "Communication mode"}
+              >
+                {modeLabel}
+              </span>
+
               <div className="relative" ref={notificationDropdownRef}>
                 <button
                   onClick={handleNotificationMenuClick}

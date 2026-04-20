@@ -44,8 +44,28 @@ exports.getTutor = async (req, res) => {
 
 exports.createTutor = async (req, res) => {
   const userId = req.user.id;
+  
+  // Parse subjects if it's a string (from FormData)
+  const parsedSubjects =
+    typeof req.body.subjects === "string"
+      ? JSON.parse(req.body.subjects)
+      : req.body.subjects;
+
+  const subjects = [
+    ...new Set(
+      (Array.isArray(parsedSubjects) ? parsedSubjects : [])
+        .map((id) => Number(id))
+        .filter((id) => Number.isInteger(id) && id > 0)
+    ),
+  ];
+
+  if (subjects.length === 0) {
+    throw new ApiError("Please select at least one valid subject", 400);
+  }
+  
   const profile = {
     ...req.body,
+    subjects,
     approvalStatus: "pending",
     userId: req.user.id,
   };

@@ -11,6 +11,14 @@ let videoClient = null;
  * Initialize or reuse existing chat + video clients.
  */
 export async function initStreamClients(user, token) {
+  if (!STREAM_API_KEY) {
+    throw new Error("VITE_STREAM_API_KEY is missing in the client environment.");
+  }
+
+  if (!token || token === "dummy-stream-token") {
+    throw new Error("Valid Stream token is unavailable. Check backend Stream configuration.");
+  }
+
   // Chat
   if (!chatClient) {
     chatClient = StreamChat.getInstance(STREAM_API_KEY);

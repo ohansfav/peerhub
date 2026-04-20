@@ -21,7 +21,7 @@ const adminColumns = [
     cell: (admin) => (
       <div className="flex items-center gap-2">
         <img
-          src={admin.user.profileImageUrl}
+          src={admin.user?.profileImageUrl || "https://via.placeholder.com/32x32?text=A"}
           alt={getUserName(admin)}
           className="w-8 h-8 rounded-full object-cover"
         />
@@ -68,7 +68,7 @@ const renderAdminCard = (admin) => (
   <div className="border rounded-lg p-4 space-y-3">
     <div className="flex items-center gap-3">
       <img
-        src={admin.user.profileImageUrl}
+        src={admin.user?.profileImageUrl || "https://via.placeholder.com/40x40?text=A"}
         alt={getUserName(admin)}
         className="w-10 h-10 rounded-full object-cover"
       />

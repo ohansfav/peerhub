@@ -7,6 +7,9 @@ export function useUserCounts(options = {}) {
   return useQuery({
     queryKey: USER_COUNTS_QUERY_KEY,
     queryFn: getUserCounts,
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
     ...options,
   });
 }

@@ -44,10 +44,36 @@ cd client
 npm run dev
 ```
 
+### Option 3: LAN Offline Classroom Mode (Same Network)
+
+Use this when one machine should host the app and everyone on the same Wi-Fi/LAN joins through it.
+
+**One command from project root:**
+```bash
+npm run lan:start
+```
+
+Or use helper scripts:
+```bash
+START_LAN.bat
+```
+
+```powershell
+powershell -ExecutionPolicy Bypass -File START_LAN.ps1
+```
+
+Then share the host URL:
+```text
+http://HOST_LAN_IP:3000
+```
+
+Everyone should open that URL and log in there.
+
 ### Access the Application
 
 - 🌐 Frontend: http://localhost:5173
 - 🔌 Backend API: http://localhost:3000/api
+- 🧑‍🏫 LAN Offline Classroom Host URL: http://HOST_LAN_IP:3000
 - 📚 API Documentation: http://localhost:3000/api/docs (if available)
 
 ---

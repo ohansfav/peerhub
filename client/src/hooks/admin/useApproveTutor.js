@@ -13,6 +13,8 @@ export function useApproveTutor(options = {}) {
     mutationFn: (tutorId) => approveTutor(tutorId),
     onSuccess: (data, tutorId, context) => {
       queryClient.invalidateQueries({ queryKey: PENDING_TUTORS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
+      queryClient.invalidateQueries({ queryKey: ["authUser"] });
       handleToastSuccess("Tutor approved successfully.");
       options?.onSuccess?.(data, tutorId, context);
     },

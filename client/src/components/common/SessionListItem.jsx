@@ -1,8 +1,17 @@
 import { formatDate, formatTimeRange } from "../../utils/time";
+import { Link } from "react-router-dom";
+import useCallAccess from "../../hooks/booking/useCallAccess";
 
-const SessionListItem = ({ session, userType, onViewDetails }) => {
+const SessionListItem = ({
+  session,
+  userType,
+  onViewDetails,
+  onStartVirtualClass,
+}) => {
   const isTutor = userType === "tutor";
   const user = isTutor ? session.student?.user : session.tutor?.user;
+  const { canAccess, reason } = useCallAccess(session);
+  const showStartClass = isTutor && session.status === "confirmed";
   const profileImageUrl =
     user?.profileImageUrl ||
     `https://ui-avatars.com/api/?name=${user?.firstName}+${user?.lastName}&background=random&color=fff`;
@@ -52,13 +61,47 @@ const SessionListItem = ({ session, userType, onViewDetails }) => {
           {formatTimeRange(session.scheduledStart, session.scheduledEnd)}
         </div>
         <div className="flex items-center justify-between">
-          <span
-            className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(
-              session.status
-            )}`}
-          >
-            {session.status}
-          </span>
+          <div className="flex items-center gap-2">
+            <span
+              className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusClass(
+                session.status
+              )}`}
+            >
+              {session.status}
+            </span>
+            {showStartClass &&
+              (canAccess ? (
+                onStartVirtualClass ? (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onStartVirtualClass(session);
+                    }}
+                    className="px-3 py-1 text-xs font-medium rounded-full bg-primary text-white hover:bg-primary-focus"
+                  >
+                    Start Virtual Class
+                  </button>
+                ) : (
+                  <Link
+                    to={`/tutor/call/${session.id}`}
+                    onClick={(e) => e.stopPropagation()}
+                    className="px-3 py-1 text-xs font-medium rounded-full bg-primary text-white hover:bg-primary-focus"
+                  >
+                    Start Virtual Class
+                  </Link>
+                )
+              ) : (
+                <button
+                  type="button"
+                  onClick={(e) => e.stopPropagation()}
+                  className="px-3 py-1 text-xs font-medium rounded-full bg-gray-200 text-gray-500 cursor-not-allowed"
+                  title={reason || "Class is not available yet"}
+                >
+                  Start Virtual Class
+                </button>
+              ))}
+          </div>
           <button
             onClick={(e) => {
               e.stopPropagation();
@@ -111,6 +154,38 @@ const SessionListItem = ({ session, userType, onViewDetails }) => {
           </div>
         </div>
         <div className="mt-4 flex justify-end">
+          {showStartClass &&
+            (canAccess ? (
+              onStartVirtualClass ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onStartVirtualClass(session);
+                  }}
+                  className="mr-3 px-3 py-1 text-xs font-medium rounded-full bg-primary text-white hover:bg-primary-focus"
+                >
+                  Start Virtual Class
+                </button>
+              ) : (
+                <Link
+                  to={`/tutor/call/${session.id}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="mr-3 px-3 py-1 text-xs font-medium rounded-full bg-primary text-white hover:bg-primary-focus"
+                >
+                  Start Virtual Class
+                </Link>
+              )
+            ) : (
+              <button
+                type="button"
+                onClick={(e) => e.stopPropagation()}
+                className="mr-3 px-3 py-1 text-xs font-medium rounded-full bg-gray-200 text-gray-500 cursor-not-allowed"
+                title={reason || "Class is not available yet"}
+              >
+                Start Virtual Class
+              </button>
+            ))}
           <button
             onClick={(e) => {
               e.stopPropagation();

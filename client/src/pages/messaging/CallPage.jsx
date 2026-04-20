@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams, Link } from "react-router-dom";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   StreamVideo,
   StreamCall,
@@ -17,7 +17,7 @@ import PageLoader, {
   PageLoaderMessage,
 } from "../../components/common/PageLoader";
 import FeedbackModal from "../../components/messaging/FeedbackModal";
-import { handleToastError } from "../../utils/toastDisplayHandler";
+import { handleToastError, handleToastSuccess } from "../../utils/toastDisplayHandler";
 import { fetchBookingById } from "../../lib/api/common/bookingApi";
 import { useAuth } from "../../hooks/useAuthContext";
 import useCreateReview from "../../hooks/review/useCreateReview";
@@ -27,6 +27,7 @@ import {
   trackSessionStart,
 } from "../../lib/api/analytics/trackEventApi";
 import { useStreamContext } from "../../hooks/messaging/useStreamContext";
+import { createBroadcastMessage } from "../../lib/api/broadcast/broadcastApi";
 
 const CallPage = () => {
   const { id: bookingId } = useParams();
@@ -34,7 +35,7 @@ const CallPage = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const { videoClient, isReady } = useStreamContext();
+  const { videoClient, isReady, isInitializing, streamError } = useStreamContext();
 
   const [call, setCall] = useState(null);
   const [isConnecting, setIsConnecting] = useState(false);
@@ -59,7 +60,10 @@ const CallPage = () => {
     const joinCall = async () => {
       try {
         setIsConnecting(true);
-        await callInstance.camera.disable();
+        // Tutor starts class with camera on by default; others can still join muted/video-off.
+        if (authUser.role !== "tutor") {
+          await callInstance.camera.disable();
+        }
         // await callInstance.microphone.disable();
 
         await callInstance.join({
@@ -102,7 +106,7 @@ const CallPage = () => {
     };
   }, [isReady, videoClient, authUser, bookingId, canAccess]);
 
-  if (isBookingLoading || isConnecting || !isReady) return <PageLoader />;
+  if (isBookingLoading || isInitializing || isConnecting) return <PageLoader />;
 
   if (!canAccess) {
     return (
@@ -116,6 +120,16 @@ const CallPage = () => {
           Go to Dashboard
         </Link>
       </div>
+    );
+  }
+
+  if (streamError) {
+    return (
+      <OfflineClassRoom
+        authUser={authUser}
+        bookingData={bookingData}
+        dashboardLink={dashboardLink}
+      />
     );
   }
 
@@ -144,6 +158,123 @@ const CallPage = () => {
   );
 };
 
+const OfflineClassRoom = ({ authUser, bookingData, dashboardLink }) => {
+  const videoRef = useRef(null);
+  const streamRef = useRef(null);
+
+  const classAlertMutation = useMutation({
+    mutationFn: createBroadcastMessage,
+    onSuccess: () => {
+      handleToastSuccess("Class alert sent successfully");
+    },
+    onError: (error) => {
+      handleToastError(error, "Failed to send class alert");
+    },
+  });
+
+  const startCamera = async () => {
+    try {
+      if (streamRef.current) return;
+      const mediaStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      streamRef.current = mediaStream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = mediaStream;
+      }
+    } catch (error) {
+      handleToastError(error, "Could not start camera/microphone");
+    }
+  };
+
+  const stopCamera = () => {
+    if (!streamRef.current) return;
+    streamRef.current.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopCamera();
+    };
+  }, []);
+
+  const sendClassAlert = (type) => {
+    const tutorName = `${authUser?.firstName || "Tutor"} ${authUser?.lastName || ""}`.trim();
+    const subjectName = bookingData?.subject?.name || "class";
+
+    const payload =
+      type === "starting"
+        ? {
+            title: "Class is starting now",
+            message: `${tutorName} has started the ${subjectName} virtual class. Join now if you are attending.`,
+          }
+        : {
+            title: "Class already in progress",
+            message: `${tutorName}'s ${subjectName} virtual class is currently in progress. Join now to catch up live.`,
+          };
+
+    classAlertMutation.mutate(payload);
+  };
+
+  const isTutor = authUser?.role === "tutor";
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow border p-4 sm:p-6 space-y-4">
+        <h2 className="text-2xl font-semibold text-gray-900">Offline Virtual Class Mode</h2>
+        <p className="text-sm text-amber-700 bg-amber-50 border border-amber-200 rounded-md p-3">
+          Live network call is unavailable right now. You can still start your camera locally and send class alerts.
+        </p>
+
+        <div className="rounded-lg overflow-hidden border bg-black">
+          <video ref={videoRef} autoPlay playsInline muted className="w-full max-h-[60vh] object-cover" />
+        </div>
+
+        {isTutor ? (
+          <div className="flex flex-wrap gap-2">
+            <button type="button" className="btn bg-primary text-white hover:bg-primary-focus" onClick={startCamera}>
+              Start Camera
+            </button>
+            <button type="button" className="btn btn-outline" onClick={stopCamera}>
+              Stop Camera
+            </button>
+            <button
+              type="button"
+              className="btn btn-sm bg-primary text-white hover:bg-primary-focus"
+              onClick={() => sendClassAlert("starting")}
+              disabled={classAlertMutation.isPending}
+            >
+              Alert Everyone: Class Starting
+            </button>
+            <button
+              type="button"
+              className="btn btn-sm btn-outline"
+              onClick={() => sendClassAlert("ongoing")}
+              disabled={classAlertMutation.isPending}
+            >
+              Alert Everyone: Class Ongoing
+            </button>
+          </div>
+        ) : (
+          <p className="text-gray-600">Your tutor may be running in offline mode. Watch for class alerts in notifications.</p>
+        )}
+
+        <Link
+          to={dashboardLink}
+          className="inline-flex px-4 py-2 rounded-full border border-gray-300 hover:bg-gray-50"
+        >
+          Back to Dashboard
+        </Link>
+      </div>
+    </div>
+  );
+};
+
 const CallContent = ({
   call,
   authUser,
@@ -160,6 +291,15 @@ const CallContent = ({
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const { createReviewMutation, isCreatingReview } = useCreateReview();
+  const classAlertMutation = useMutation({
+    mutationFn: createBroadcastMessage,
+    onSuccess: () => {
+      handleToastSuccess("Class alert sent successfully");
+    },
+    onError: (error) => {
+      handleToastError(error, "Failed to send class alert");
+    },
+  });
 
   const storedReviewee =
     authUser.role === "student"
@@ -192,6 +332,24 @@ const CallContent = ({
       },
       { onSettled: handleCloseModal }
     );
+  };
+
+  const sendClassAlert = (type) => {
+    const tutorName = `${authUser?.firstName || "Tutor"} ${authUser?.lastName || ""}`.trim();
+    const subjectName = bookingData?.subject?.name || "class";
+
+    const payload =
+      type === "starting"
+        ? {
+            title: "Class is starting now",
+            message: `${tutorName} has started the ${subjectName} virtual class. Join now if you are attending.`,
+          }
+        : {
+            title: "Class already in progress",
+            message: `${tutorName}'s ${subjectName} virtual class is currently in progress. Join now to catch up live.`,
+          };
+
+    classAlertMutation.mutate(payload);
   };
 
   // ✅ Track when call starts
@@ -259,6 +417,26 @@ const CallContent = ({
       )}
 
       <SpeakerLayout />
+      {authUser.role === "tutor" && (
+        <div className="px-4 pb-2 flex flex-wrap justify-center gap-2">
+          <button
+            type="button"
+            className="btn btn-sm bg-primary text-white hover:bg-primary-focus"
+            onClick={() => sendClassAlert("starting")}
+            disabled={classAlertMutation.isPending}
+          >
+            Alert Everyone: Class Starting
+          </button>
+          <button
+            type="button"
+            className="btn btn-sm btn-outline"
+            onClick={() => sendClassAlert("ongoing")}
+            disabled={classAlertMutation.isPending}
+          >
+            Alert Everyone: Class Ongoing
+          </button>
+        </div>
+      )}
       <CallControls
         onLeave={async () => {
           try {

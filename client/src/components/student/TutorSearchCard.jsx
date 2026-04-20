@@ -9,15 +9,15 @@ const TutorSearchCard = ({ tutor, compact = false }) => (
     <div className="flex items-center gap-4 mb-3 flex-shrink-0">
       <div className="w-20 h-20 rounded-full overflow-hidden flex-shrink-0">
         <img
-          src={tutor.user.profileImageUrl}
-          alt={`${tutor?.user.firstName} ${tutor?.user.lastName}`}
+          src={tutor.user?.profileImageUrl || "https://via.placeholder.com/80x80?text=Tutor"}
+          alt={`${tutor?.user?.firstName || "Tutor"} ${tutor?.user?.lastName || ""}`}
           className="w-full h-full object-cover"
         />
       </div>
 
       <div className="flex-1 min-w-0">
         <h3 className="font-semibold text-lg truncate">
-          {tutor?.user.firstName} {tutor?.user.lastName}
+          {tutor?.user?.firstName || "Tutor"} {tutor?.user?.lastName || ""}
         </h3>
 
         <p

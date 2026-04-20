@@ -1,8 +1,9 @@
 import React, { useMemo } from "react";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import Spinner from "../../components/common/Spinner";
 import ErrorAlert from "../../components/common/ErrorAlert";
-import { usePendingTutors, useUserCounts, useUsers } from "../../hooks/admin";
+import { getAdminDashboardSummary } from "../../lib/api/admin/admin";
 import ResponsiveDataSection from "../../components/admin/ResponsiveDataSection";
 
 const PREVIEW_LIMIT = 5;
@@ -44,7 +45,7 @@ const tutorColumns = [
     cell: (tutor) => (
       <div className="flex items-center gap-3 min-w-[150px]">
         <img
-          src={tutor.user.profileImageUrl}
+          src={tutor.user?.profileImageUrl || "https://via.placeholder.com/48x48?text=T"}
           alt={getUserName(tutor)}
           className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover flex-shrink-0"
         />
@@ -62,7 +63,7 @@ const tutorColumns = [
   {
     header: "Date Applied",
     cellClassName: "text-gray-600 whitespace-nowrap",
-    cell: (tutor) => formatDate(tutor?.user.createdAt),
+    cell: (tutor) => formatDate(tutor?.user?.createdAt),
   },
 ];
 
@@ -70,7 +71,7 @@ const renderTutorCard = (tutor) => (
   <div className="border rounded-lg p-4 space-y-3">
     <div className="flex items-center gap-3">
       <img
-        src={tutor.user.profileImageUrl}
+        src={tutor.user?.profileImageUrl || "https://via.placeholder.com/48x48?text=T"}
         alt={getUserName(tutor)}
         className="w-12 h-12 rounded-full object-cover flex-shrink-0"
       />
@@ -79,7 +80,7 @@ const renderTutorCard = (tutor) => (
           {getUserName(tutor)}
         </p>
         <p className="text-xs text-gray-500 mt-0.5">
-          {formatDate(tutor?.user.createdAt)}
+          {formatDate(tutor?.user?.createdAt)}
         </p>
       </div>
     </div>
@@ -105,7 +106,7 @@ const studentColumns = [
     cell: (student) => (
       <div className="flex items-center gap-3">
         <img
-          src={student.profileImageUrl}
+          src={student?.profileImageUrl || "https://via.placeholder.com/48x48?text=S"}
           alt={getUserName(student)}
           className="w-10 h-10 sm:w-12 sm:h-12 rounded-full object-cover"
         />
@@ -147,7 +148,7 @@ const renderStudentCard = (student) => {
     <div className="border rounded-lg p-4 space-y-3">
       <div className="flex items-center gap-3">
         <img
-          src={student.profileImageUrl}
+          src={student?.profileImageUrl || "https://via.placeholder.com/48x48?text=S"}
           alt={getUserName(student)}
           className="w-12 h-12 rounded-full object-cover flex-shrink-0"
         />
@@ -184,24 +185,17 @@ const renderStudentCard = (student) => {
 };
 
 export default function AdminDashboardPage() {
-  const {
-    data: counts,
-    isLoading: isLoadingCounts,
-    isError: isCountsError,
-    error: countsError,
-  } = useUserCounts();
-  const {
-    data: pendingTutors,
-    isLoading: isLoadingPendingTutors,
-    isError: isPendingTutorsError,
-    error: pendingTutorsError,
-  } = usePendingTutors();
-  const {
-    data: studentsData,
-    isLoading: isLoadingStudents,
-    isError: isStudentsError,
-    error: studentsError,
-  } = useUsers({ role: "student", limit: PREVIEW_LIMIT });
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["admin", "dashboardSummary"],
+    queryFn: getAdminDashboardSummary,
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: false,
+  });
+
+  const counts = data?.counts;
+  const pendingTutors = data?.pendingTutors ?? [];
+  const studentsData = data?.students ?? { users: [], meta: null };
 
   const pendingTutorPreview = (pendingTutors ?? []).slice(0, PREVIEW_LIMIT);
   const studentPreview = (studentsData?.users ?? []).slice(0, PREVIEW_LIMIT);
@@ -246,9 +240,9 @@ export default function AdminDashboardPage() {
     <div className="space-y-8 p-2 sm:p-0">
       {/* --- Stats cards --- */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {isCountsError ? (
+        {error ? (
           <div className="sm:col-span-3">
-            <ErrorAlert error={countsError} />
+            <ErrorAlert error={error} />
           </div>
         ) : null}
 
@@ -258,7 +252,7 @@ export default function AdminDashboardPage() {
             className="bg-white rounded-xl p-5 shadow-sm border min-h-[120px] flex flex-col justify-between"
           >
             <div className="text-sm text-gray-500">{card.title}</div>
-            {isLoadingCounts ? (
+            {isLoading ? (
               <div className="py-4">
                 <Spinner />
               </div>
@@ -281,8 +275,8 @@ export default function AdminDashboardPage() {
         columns={tutorColumns}
         renderCard={renderTutorCard}
         getLink={(tutor) => `/admin/tutors/${tutor.id}`}
-        isLoading={isLoadingPendingTutors}
-        error={pendingTutorsError}
+        isLoading={isLoading}
+        error={error}
         viewAllLink="/admin/tutors"
         emptyMessage="No pending tutors at the moment."
         getRowKey={(tutor) => tutor.id}
@@ -295,8 +289,8 @@ export default function AdminDashboardPage() {
         columns={studentColumns}
         renderCard={renderStudentCard}
         getLink={(student) => `/admin/students/${student.id}`}
-        isLoading={isLoadingStudents}
-        error={studentsError}
+        isLoading={isLoading}
+        error={error}
         viewAllLink="/admin/students"
         emptyMessage="No students found."
         getRowKey={(student) => student.id}

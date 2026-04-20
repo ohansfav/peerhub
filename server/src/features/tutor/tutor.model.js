@@ -76,10 +76,12 @@ module.exports = () => {
       as: "user",
     });
 
-    // Tutor.belongsToMany(models.Subject, {
-    //   through: "TutorSubject",
-    //   as: "subjects",
-    // });
+    Tutor.belongsToMany(models.Subject, {
+      through: "tutor_subjects",
+      as: "subjects",
+      foreignKey: "tutor_user_id",
+      otherKey: "subject_id",
+    });
 
     Tutor.hasMany(models.Booking, {
       foreignKey: "tutorId",

@@ -36,6 +36,18 @@ module.exports = () => {
         type: DataTypes.ENUM("first", "second"),
         allowNull: false,
       },
+      tutorUserId: {
+        type: DataTypes.UUID,
+        allowNull: true,
+      },
+      materialKey: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      materialName: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       isActive: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
@@ -50,6 +62,7 @@ module.exports = () => {
         { fields: ["course_code"] },
         { fields: ["level"] },
         { fields: ["semester"] },
+        { fields: ["tutor_user_id"] },
       ],
     }
   );
@@ -60,6 +73,11 @@ module.exports = () => {
       as: "students",
       foreignKey: "courseId",
       otherKey: "studentId",
+    });
+
+    Course.belongsTo(models.User, {
+      foreignKey: "tutorUserId",
+      as: "tutorUploader",
     });
   };
 

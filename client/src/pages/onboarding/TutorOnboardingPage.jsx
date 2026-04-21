@@ -73,7 +73,7 @@ const TutorOnboardingPage = () => {
     )];
 
     if (safeSubjects.length === 0) {
-      setLocalError("Please select at least one valid subject.");
+      setLocalError("Please select at least one valid course.");
       return;
     }
 
@@ -140,7 +140,7 @@ const TutorOnboardingPage = () => {
 
         {currentStep === 1 && formData.subjects.length === 0 && (
           <p className="text-sm text-red-500 mt-2">
-            Please select at least one subject.
+            Please select at least one course.
           </p>
         )}
 

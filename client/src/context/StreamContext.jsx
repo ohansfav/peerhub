@@ -3,6 +3,22 @@ import { useGetStreamToken } from "../hooks/messaging/useGetStream";
 import { useAuth } from "../hooks/useAuthContext";
 import { StreamContext } from "../hooks/messaging/useStreamContext";
 
+const isInvalidStreamApiKey = (value) => {
+  const apiKey = String(value || "").trim();
+  if (!apiKey) return true;
+
+  const blockedPlaceholders = [
+    "your-stream-api-key",
+    "stream-api-key",
+    "changeme",
+    "example",
+  ];
+
+  if (blockedPlaceholders.includes(apiKey.toLowerCase())) return true;
+
+  return false;
+};
+
 export function StreamProvider({ children }) {
   const { authUser } = useAuth();
   const {
@@ -15,7 +31,8 @@ export function StreamProvider({ children }) {
   const [isInitializing, setIsInitializing] = useState(false);
   const [streamError, setStreamError] = useState(null);
 
-  const hasStreamConfig = Boolean(import.meta.env.VITE_STREAM_API_KEY);
+  const streamApiKey = import.meta.env.VITE_STREAM_API_KEY;
+  const hasValidStreamConfig = !isInvalidStreamApiKey(streamApiKey);
 
   useEffect(() => {
     let cancelled = false;
@@ -29,10 +46,12 @@ export function StreamProvider({ children }) {
         return;
       }
 
-      if (!hasStreamConfig) {
+      if (!hasValidStreamConfig) {
         setIsReady(false);
         setIsInitializing(false);
-        setStreamError("Messaging and virtual classes are not configured for this deployment.");
+        setStreamError(
+          "VITE_STREAM_API_KEY is missing or still set to placeholder value. Add your real Stream Chat API key in client/.env and restart Vite."
+        );
         return;
       }
 
@@ -84,7 +103,16 @@ export function StreamProvider({ children }) {
         if (!cancelled) {
           setClients({ chatClient: null, videoClient: null });
           setIsReady(false);
-          setStreamError(error.message || "Failed to connect to messaging services.");
+          const rawMessage = String(error?.message || "");
+          const isApiKeyError =
+            rawMessage.includes("api_key not valid") ||
+            rawMessage.includes("WS failed with code 2");
+
+          setStreamError(
+            isApiKeyError
+              ? "Stream rejected your API key. Ensure VITE_STREAM_API_KEY matches the same Stream app used by STREAM_API_KEY and STREAM_API_SECRET on the server."
+              : error.message || "Failed to connect to messaging services."
+          );
         }
       } finally {
         if (!cancelled) {
@@ -100,7 +128,7 @@ export function StreamProvider({ children }) {
     };
   }, [
     authUser?.id,
-    hasStreamConfig,
+    hasValidStreamConfig,
     isTokenLoading,
     tokenData?.token,
     tokenError,

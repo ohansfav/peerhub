@@ -41,7 +41,9 @@ const ChatPage = () => {
     queryKey: ["localChat", "thread", targetUserId],
     queryFn: () => getLocalThread(targetUserId),
     enabled: isOfflineMode && !!targetUserId,
-    refetchInterval: 3000,
+    staleTime: 1000 * 3,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
   });
 
   const sendOfflineMessageMutation = useMutation({

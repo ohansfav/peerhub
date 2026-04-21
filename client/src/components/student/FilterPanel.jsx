@@ -56,9 +56,9 @@ const FilterPanel = ({
 
           {/* Filter Content */}
           <div className="space-y-6">
-            {/* Subjects */}
+            {/* Courses */}
             <div>
-              <h4 className="font-medium mb-3">Subjects</h4>
+              <h4 className="font-medium mb-3">Courses</h4>
               <div className="space-y-2 max-h-48 overflow-y-auto">
                 {allSubjects.map((subject) => (
                   <label key={subject} className="flex items-center gap-2">

@@ -55,7 +55,7 @@ const ProgressIndicator = ({ currentStep, totalSteps }) => {
   );
 };
 
-// Subject Selection Card
+// Course Selection Card
 const SubjectCard = ({ subject, isSelected, onClick }) => {
   return (
     <button
@@ -212,15 +212,15 @@ export default function BookingSession() {
 
         <ProgressIndicator currentStep={step} totalSteps={4} />
 
-        {/* Step 1: Subject Selection */}
+        {/* Step 1: Course Selection */}
         {step === 1 && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
             <div className="mb-4">
               <h2 className="text-lg font-semibold text-gray-900">
-                What subject do you need help with?
+                What course do you need help with?
               </h2>
               <p className="text-gray-600 text-sm">
-                Choose from {tutorProfile?.user?.firstName}'s available subjects
+                Choose from {tutorProfile?.user?.firstName}'s available courses
               </p>
             </div>
 
@@ -370,7 +370,7 @@ export default function BookingSession() {
             {/* Booking Details */}
             <div className="space-y-2 mb-6">
               <div className="flex justify-between py-2 border-b border-gray-200">
-                <span className="text-gray-600 text-sm">Subject</span>
+                <span className="text-gray-600 text-sm">Course</span>
                 <span className="font-medium text-gray-900 text-sm">
                   {selectedSubjectName}
                 </span>

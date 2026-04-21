@@ -17,17 +17,20 @@ const useLogin = () => {
   const { mutate, isPending, error } = useMutation({
     mutationFn: login,
     onSuccess: async (loginData) => {
-      await queryClient.prefetchQuery({
-        queryKey: ["userProfile"],
-        queryFn: getUserProfile,
-      });
       queryClient.invalidateQueries({ queryKey: ["authUser"] });
       handleToastSuccess("Login successful! Welcome back!");
       setRetryAfter(null);
 
-      // Prefer canonical auth response; fallback to fetched profile if needed.
-      const userProfile = queryClient.getQueryData(["userProfile"]);
-      const resolvedUser = loginData || userProfile;
+      // Prefer canonical auth response. Do not block login flow on profile prefetch.
+      const resolvedUser = loginData;
+
+      // Warm profile cache in background; failures here should not break login UX.
+      queryClient
+        .prefetchQuery({
+          queryKey: ["userProfile"],
+          queryFn: getUserProfile,
+        })
+        .catch(() => {});
 
       if (!resolvedUser) return;
 
@@ -38,14 +41,18 @@ const useLogin = () => {
       } else if (resolvedUser.role === "tutor") {
         window.location.href = "/tutor/dashboard";
       } else if (resolvedUser.role === "admin") {
-        const { getAdminDashboardSummary } = await import(
-          "../../lib/api/admin/admin"
-        );
+        try {
+          const { getAdminDashboardSummary } = await import(
+            "../../lib/api/admin/admin"
+          );
 
-        await queryClient.prefetchQuery({
-          queryKey: ["admin", "dashboardSummary"],
-          queryFn: getAdminDashboardSummary,
-        });
+          await queryClient.prefetchQuery({
+            queryKey: ["admin", "dashboardSummary"],
+            queryFn: getAdminDashboardSummary,
+          });
+        } catch {
+          // Ignore prefetch issues and continue to dashboard.
+        }
 
         window.location.href = "/admin/dashboard";
       }

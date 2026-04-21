@@ -14,7 +14,7 @@ const SessionList = ({
         <div className="col-span-2">
           {userType === "tutor" ? "Student" : "Tutor"}
         </div>
-        <div>Subject</div>
+        <div>Course</div>
         <div>Date</div>
         <div>Time</div>
         <div>Status</div>

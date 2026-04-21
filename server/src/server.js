@@ -16,7 +16,11 @@ if (fs.existsSync(envFilePath)) {
 const app = require("./app");
 const sequelize = require("@src/shared/database/index");
 const ensureTutorSubjectsSchema = require("@src/shared/database/ensureTutorSubjectsSchema");
+const ensureBookingSchema = require("@src/shared/database/ensureBookingSchema");
+const ensureCourseUploadSchema = require("@src/shared/database/ensureCourseUploadSchema");
+const ensureOfflineClassChatSchema = require("@src/shared/database/ensureOfflineClassChatSchema");
 const reminderService = require("@features/notification/reminderSingleton");
+const offlineClassCleanupService = require("@features/offlineClass/offlineClassCleanupSingleton");
 
 const PORT = process.env.PORT || 3000;
 
@@ -29,12 +33,16 @@ const startServer = async () => {
 
     if (NODE_ENV === "development") {
       await ensureTutorSubjectsSchema(sequelize, logger);
+      await ensureBookingSchema(sequelize, logger);
+      await ensureCourseUploadSchema(sequelize, logger);
+      await ensureOfflineClassChatSchema(sequelize, logger);
       await sequelize.sync({ alter: false, force: false });
       logger.info("✅ Database synced (development only)");
     }
 
     // Load unsent reminders (for all confirmed future bookings)
     await reminderService.loadUnsentReminders();
+    await offlineClassCleanupService.start();
 
     app.listen(PORT, () => {
       logger.info(`Server running on port ${PORT} [${process.env.NODE_ENV}]`);
@@ -49,6 +57,7 @@ const startServer = async () => {
 const gracefulExit = async (signal) => {
   logger.info(`${signal} received, shutting down gracefully...`);
   try {
+    offlineClassCleanupService.stop();
     await sequelize.close();
     logger.info("Database connection closed");
   } catch (error) {

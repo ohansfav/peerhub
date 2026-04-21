@@ -139,7 +139,7 @@ const StudentOnboardingPage = () => {
       <SelectableCardWithCheckbox
         options={[
           "Prepare for an upcoming exam",
-          "Get better at subjects I struggle with",
+          "Get better at courses I struggle with",
           "Get personalized help from tutors",
           "Build a consistent study routine",
         ]}
@@ -150,7 +150,7 @@ const StudentOnboardingPage = () => {
 
     <div key="step2">
       <StepHeader
-        title="What subjects are you interested in?"
+        title="What courses are you interested in?"
         subtitle="Choose all that apply"
       />
       <SelectableCardList
@@ -192,7 +192,7 @@ const StudentOnboardingPage = () => {
         )}
         {currentStep === 2 && formData.subjects.length === 0 && (
           <p className="text-sm text-red-500 mt-2">
-            Please select at least one subject to continue.
+            Please select at least one course to continue.
           </p>
         )}
         {currentStep === 3 && formData.exams.length === 0 && (

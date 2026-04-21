@@ -23,7 +23,9 @@ const RecentChatsPage = () => {
     queryKey: ["localChat", "conversations"],
     queryFn: getLocalConversations,
     enabled: isOfflineMode,
-    refetchInterval: 5000,
+    staleTime: 1000 * 5,
+    refetchInterval: 10000,
+    refetchIntervalInBackground: false,
   });
 
   if (isOfflineMode && localError) {

@@ -65,10 +65,10 @@ const FilterDropdown = forwardRef(
             </p>
 
             <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">Subjects</p>
+              <p className="text-sm text-gray-600 mb-2">Courses</p>
               <div className="space-y-1">
-                {subjectLoading && <p>Loading subjects...</p>}
-                {subjectError && <p>Error loading subjects.</p>}
+                {subjectLoading && <p>Loading courses...</p>}
+                {subjectError && <p>Error loading courses.</p>}
                 {!subjectLoading &&
                   !subjectError &&
                   SUBJECT_OPTIONS.map((subject) => (

@@ -59,7 +59,7 @@ const BookingDetailsModal = ({
               <p className="font-semibold">{otherPartyName}</p>
             </div>
             <div>
-              <p className="text-sm text-gray-500">Subject</p>
+              <p className="text-sm text-gray-500">Course</p>
               <p className="font-semibold">{booking?.subject?.name}</p>
             </div>
             <div>

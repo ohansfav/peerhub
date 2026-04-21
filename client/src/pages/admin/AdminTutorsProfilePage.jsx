@@ -250,7 +250,7 @@ export default function AdminTutorsProfilePage() {
             {tutor.subjects?.length > 0 && (
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h4 className="text-sm font-semibold text-gray-900 mb-3">
-                  Subjects
+                  Courses
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {tutor.subjects.map((subject) => (

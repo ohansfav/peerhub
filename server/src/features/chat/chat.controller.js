@@ -6,9 +6,57 @@ const ApiError = require("../../shared/utils/apiError");
 const sendResponse = require("../../shared/utils/sendResponse");
 const logger = require("@src/shared/utils/logger.js");
 
+const extractChannelData = (event) => {
+  if (event?.channel) return event.channel;
+  if (event?.channels && typeof event.channels === "object") {
+    const first = Object.values(event.channels)[0];
+    if (first) return first;
+  }
+  return {};
+};
+
+const isRepliesLocked = (channelData) =>
+  Boolean(
+    channelData?.repliesLocked ??
+      channelData?.data?.repliesLocked ??
+      channelData?.custom?.repliesLocked
+  );
+
+const getInstructorId = (channelData) =>
+  String(
+    channelData?.instructorId ??
+      channelData?.data?.instructorId ??
+      channelData?.custom?.instructorId ??
+      ""
+  );
+
+const getSenderId = (event) =>
+  String(event?.user?.id ?? event?.message?.user?.id ?? "");
+
 exports.handleStreamWebhook = async (req, res, next) => {
   try {
     const event = req.body;
+
+    if (event.type === "before_message_send") {
+      const channelData = extractChannelData(event);
+
+      const repliesLocked = isRepliesLocked(channelData);
+      if (!repliesLocked) {
+        return res.status(200).json({});
+      }
+
+      const instructorId = getInstructorId(channelData);
+      const senderId = getSenderId(event);
+
+      if (instructorId && senderId && instructorId !== senderId) {
+        return res.status(403).json({
+          message: "Classroom replies are locked by tutor.",
+        });
+      }
+
+      return res.status(200).json({});
+    }
+
     if (event.type !== "user.unread_message_reminder") {
       return sendResponse(res, 200, "Event ignored");
     }
@@ -17,7 +65,7 @@ exports.handleStreamWebhook = async (req, res, next) => {
 
     const { email, name: userName } = event.user;
 
-    const channel = Object.values(event.channels)[0];
+    const channel = extractChannelData(event);
 
     const unreadCount = channel?.messages?.length || 0;
 

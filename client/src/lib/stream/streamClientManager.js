@@ -4,6 +4,20 @@ import { StreamVideoClient } from "@stream-io/video-react-sdk";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
+const isInvalidStreamApiKey = (value) => {
+  const apiKey = String(value || "").trim();
+  if (!apiKey) return true;
+
+  const blockedPlaceholders = [
+    "your-stream-api-key",
+    "stream-api-key",
+    "changeme",
+    "example",
+  ];
+
+  return blockedPlaceholders.includes(apiKey.toLowerCase());
+};
+
 let chatClient = null;
 let videoClient = null;
 
@@ -11,8 +25,10 @@ let videoClient = null;
  * Initialize or reuse existing chat + video clients.
  */
 export async function initStreamClients(user, token) {
-  if (!STREAM_API_KEY) {
-    throw new Error("VITE_STREAM_API_KEY is missing in the client environment.");
+  if (isInvalidStreamApiKey(STREAM_API_KEY)) {
+    throw new Error(
+      "VITE_STREAM_API_KEY is missing or placeholder. Set the real Stream API key in client/.env and restart the frontend server."
+    );
   }
 
   if (!token || token === "dummy-stream-token") {

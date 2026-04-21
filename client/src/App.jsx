@@ -26,6 +26,7 @@ const EmailVerificationPage = lazy(() => import("./pages/auth/EmailVerificationP
 const RoleSelectionPage = lazy(() => import("./pages/onboarding/RoleSelectionPage"));
 const StudentDashboardPage = lazy(() => import("./pages/student/StudentDashboardPage"));
 const TutorDashboardPage = lazy(() => import("./pages/tutor/TutorDashboardPage"));
+const TutorCoursesPage = lazy(() => import("./pages/tutor/TutorCoursesPage"));
 const NotFoundPage = lazy(() => import("./pages/general/NotFoundPage"));
 const StudentLibraryPage = lazy(() => import("./pages/student/StudentLibraryPage"));
 const StudentTutorsPage = lazy(() => import("./pages/student/StudentTutorsPage"));
@@ -45,6 +46,7 @@ const ChatPage = lazy(() => import("./pages/messaging/ChatPage"));
 const CallPage = lazy(() => import("./pages/messaging/CallPage"));
 const RecentChatsPage = lazy(() => import("./pages/messaging/RecentChatsPage"));
 const OfflineLiveClassPage = lazy(() => import("./pages/messaging/OfflineLiveClassPage"));
+const ClassroomChatPage = lazy(() => import("./pages/messaging/ClassroomChatPage"));
 const TutorPrivateProfilePage = lazy(() => import("./pages/tutor/TutorPrivateProfilePage"));
 const TutorQuizPage = lazy(() => import("./pages/tutor/TutorQuizPage"));
 const BookingRequestsPage = lazy(() => import("./pages/tutor/BookingRequestsPage"));
@@ -53,6 +55,7 @@ const StudentTutorProfilePage = lazy(() => import("./pages/student/StudentTutorP
 const StudentCourseCatalogPage = lazy(() => import("./pages/student/StudentCourseCatalogPage"));
 const StudentMyCoursesPage = lazy(() => import("./pages/student/StudentMyCoursesPage"));
 const AccountSettingsPage = lazy(() => import("./pages/general/AccountSettingsPage"));
+const TutorPrivateClassPage = lazy(() => import("./pages/tutor/TutorPrivateClassPage"));
 
 export default function App() {
   const location = useLocation();
@@ -133,6 +136,10 @@ export default function App() {
             path="live-class/:id"
             element={renderLazy(OfflineLiveClassPage, { key: location.pathname })}
           />
+          <Route
+            path="classroom-chat/:id"
+            element={renderLazy(ClassroomChatPage, { key: location.pathname })}
+          />
           <Route path="booking/:id" element={renderLazy(StudentBookingPage)} />
           <Route path="sessions" element={renderLazy(StudentSessionsPage)} />
           <Route path="courses" element={renderLazy(StudentCourseCatalogPage)} />
@@ -152,8 +159,10 @@ export default function App() {
         >
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={renderLazy(TutorDashboardPage)} />
+          <Route path="courses" element={renderLazy(TutorCoursesPage)} />
           <Route path="virtual-classes" element={renderLazy(TutorSessionsPage)} />
           <Route path="sessions" element={renderLazy(TutorSessionsPage)} />
+          <Route path="private-class" element={renderLazy(TutorPrivateClassPage)} />
           <Route path="availability" element={renderLazy(TutorAvailabilityPage)} />
           <Route path="quizzes" element={renderLazy(TutorQuizPage)} />
           <Route
@@ -171,6 +180,10 @@ export default function App() {
           <Route
             path="live-class/:id"
             element={renderLazy(OfflineLiveClassPage, { key: location.pathname })}
+          />
+          <Route
+            path="classroom-chat/:id"
+            element={renderLazy(ClassroomChatPage, { key: location.pathname })}
           />
           <Route path="settings" element={renderLazy(AccountSettingsPage)} />
           <Route path="profile" element={renderLazy(TutorPrivateProfilePage)} />

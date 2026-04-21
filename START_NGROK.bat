@@ -6,6 +6,8 @@ echo.
 echo ============================================================
 echo                 Peerup - Ngrok Share Mode
 echo ============================================================
+echo NOTE: This script shares backend port 3000 and serves the built frontend snapshot.
+echo       For live frontend code updates, use START_NGROK_LIVE.bat instead.
 echo.
 
 if not exist ".\server" (
@@ -42,13 +44,27 @@ start cmd /k "cd server && npm run dev"
 echo Waiting 4 seconds for backend boot...
 timeout /t 4 /nobreak >nul
 
-echo [4/4] Start ngrok in a new terminal (tunnel backend port 3000)
+echo [4/4] Preparing plain ngrok tunnel on port 3000...
+where ngrok >nul 2>nul
+if errorlevel 1 (
+  echo ERROR: ngrok is not installed or not in PATH.
+  echo Install from https://ngrok.com/download and retry.
+  pause
+  exit /b 1
+)
+
+REM Avoid ERR_NGROK_334 from stale local ngrok process
+taskkill /F /IM ngrok.exe >nul 2>nul
+
+echo Starting ngrok in a new terminal (ngrok http 3000)
 start cmd /k "ngrok http 3000"
 
 echo.
 echo ============================================================
 echo Backend is served at:  http://localhost:3000
 echo Ngrok should tunnel:   http://localhost:3000
+echo This mode serves a built frontend snapshot from client/dist.
+echo Re-run this script after frontend changes, or use START_NGROK_LIVE.bat.
 echo.
 echo Share the HTTPS ngrok URL shown in the ngrok terminal.
 echo If users see a warning page, they must click through once.

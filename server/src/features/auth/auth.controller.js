@@ -80,7 +80,7 @@ exports.login = async (req, res, next) => {
       role: user.role,
       fullName: `${user.firstName} ${user.lastName}`,
       date: user.lastLogin,
-    });
+    }).catch((err) => logger.warn("Failed to track login event:", err.message));
 
     setAuthCookie(res, token);
 

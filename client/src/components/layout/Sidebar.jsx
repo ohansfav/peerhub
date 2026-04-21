@@ -1,4 +1,4 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import LogoutIcon from "../../assets/images/layout-icons/logout.svg?react";
 import Logo from "../../assets/logo/PeerubLogo.svg?react";
 import useLogout from "../../hooks/auth/useLogout";
@@ -9,6 +9,7 @@ import LogoutPageLoader from "../ui/LogoutPageLoader";
 const Sidebar = ({ isOpen, onClose, links = [] }) => {
   const { logoutMutation, isPending } = useLogout();
   const { authUser } = useAuth();
+  const location = useLocation();
 
   const tutorStatus = useTutorStatus();
   const isSuperAdmin = useIsSuperAdmin();
@@ -17,12 +18,27 @@ const Sidebar = ({ isOpen, onClose, links = [] }) => {
     (link) => !link.superAdminOnly || isSuperAdmin
   );
 
+  const topLevelLinks = sidebarLinks.filter((link) => !link.parentPath);
+  const childLinksByParent = sidebarLinks.reduce((acc, link) => {
+    if (!link.parentPath) {
+      return acc;
+    }
+
+    if (!acc[link.parentPath]) {
+      acc[link.parentPath] = [];
+    }
+    acc[link.parentPath].push(link);
+    return acc;
+  }, {});
+
   const isTutorAndRestricted =
     authUser?.role === "tutor" &&
     (tutorStatus === "pending" || tutorStatus === "rejected");
 
   const baseClasses =
-    "btn btn-ghost justify-start w-full gap-3 px-3 normal-case transition-colors duration-200";
+    "flex items-center w-full gap-3 px-3 py-2.5 rounded-lg transition-colors duration-200";
+  const childClasses =
+    "flex items-center w-full gap-2 px-3 py-2 rounded-lg transition-colors duration-200";
 
   const handleLinkClick = (e, label) => {
     if (isTutorAndRestricted && label !== "Dashboard") {
@@ -92,34 +108,87 @@ const Sidebar = ({ isOpen, onClose, links = [] }) => {
 
         {/* Navigation Links */}
         <nav className="flex-1 p-4 space-y-4 md:space-y-4 mt-1 overflow-y-auto">
-          {sidebarLinks.map(({ path, label, icon: Icon }) => {
+          {topLevelLinks.map(({ path, label, icon: Icon }) => {
             const isDisabled = isTutorAndRestricted && label !== "Dashboard";
+            const childLinks = childLinksByParent[path] || [];
+            const hasActiveChild = childLinks.some(
+              (child) => location.pathname === child.path
+            );
+
             return (
-              <NavLink
-                key={path}
-                to={isDisabled ? "#" : path}
-                onClick={(e) => handleLinkClick(e, label)}
-                className={({ isActive }) =>
-                  `${baseClasses} ${
-                    isActive && !isDisabled
-                      ? " text-[#0568FF] bg-[#CDE1FF]"
-                      : isDisabled
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-[#2C3A47] hover:text-[#0568FF] hover:bg-[#CDE1FF]"
-                  }`
-                }
-              >
-                {Icon && (
-                  <Icon
-                    className="size-5 opacity-70"
-                    style={{
-                      fill: "cuurrentColor",
-                      stroke: "currentColor",
-                    }}
-                  />
+              <div key={path} className="space-y-1">
+                <NavLink
+                  to={isDisabled ? "#" : path}
+                  onClick={(e) => handleLinkClick(e, label)}
+                  className={({ isActive }) =>
+                    `${baseClasses} ${
+                      (isActive || hasActiveChild) && !isDisabled
+                        ? " text-[#0568FF] bg-[#CDE1FF]"
+                        : isDisabled
+                        ? "text-gray-400 cursor-not-allowed"
+                        : "text-[#2C3A47] hover:text-[#0568FF] hover:bg-[#CDE1FF]"
+                    }`
+                  }
+                >
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center">
+                    {Icon && (
+                      <Icon
+                        className="h-5 w-5 opacity-70"
+                        style={{
+                          fill: "currentColor",
+                          stroke: "currentColor",
+                        }}
+                      />
+                    )}
+                  </span>
+                  <span className="truncate text-sm font-medium leading-5 whitespace-nowrap">
+                    {label}
+                  </span>
+                </NavLink>
+
+                {childLinks.length > 0 && (
+                  <div className="ml-8 space-y-1 border-l border-slate-200 pl-2">
+                    {childLinks.map(({ path: childPath, label: childLabel, icon: ChildIcon }) => {
+                      const childDisabled =
+                        isTutorAndRestricted && childLabel !== "Dashboard";
+
+                      return (
+                        <NavLink
+                          key={childPath}
+                          to={childDisabled ? "#" : childPath}
+                          onClick={(e) => handleLinkClick(e, childLabel)}
+                          className={({ isActive }) =>
+                            `${childClasses} ${
+                              isActive && !childDisabled
+                                ? " text-[#0568FF] bg-[#CDE1FF]"
+                                : childDisabled
+                                ? "text-gray-400 cursor-not-allowed"
+                                : "text-[#2C3A47] hover:text-[#0568FF] hover:bg-[#CDE1FF]"
+                            }`
+                          }
+                        >
+                          <span className="flex h-4 w-4 shrink-0 items-center justify-center">
+                            {ChildIcon ? (
+                              <ChildIcon
+                                className="h-4 w-4 opacity-70"
+                                style={{
+                                  fill: "currentColor",
+                                  stroke: "currentColor",
+                                }}
+                              />
+                            ) : (
+                              <span className="h-1.5 w-1.5 rounded-full bg-current opacity-60" />
+                            )}
+                          </span>
+                          <span className="truncate text-sm font-medium leading-5 whitespace-nowrap">
+                            {childLabel}
+                          </span>
+                        </NavLink>
+                      );
+                    })}
+                  </div>
                 )}
-                <span>{label}</span>
-              </NavLink>
+              </div>
             );
           })}
         </nav>

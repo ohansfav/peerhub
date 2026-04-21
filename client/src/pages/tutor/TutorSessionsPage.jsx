@@ -18,10 +18,16 @@ import SessionList from "../../components/common/SessionList";
 import ViewModal from "../../components/tutor/ViewModal";
 import RescheduleBookingModal from "../../components/common/RescheduleBookingModal";
 import { createBroadcastMessage } from "../../lib/api/broadcast/broadcastApi";
-import { startOfflineClass } from "../../lib/api/common/offlineClassApi";
+import {
+  startOfflineClass,
+  getActiveOfflineClasses,
+  endOfflineClass,
+} from "../../lib/api/common/offlineClassApi";
+import { useAuth } from "../../hooks/useAuthContext";
 
 const TutorSessionsPage = () => {
   const navigate = useNavigate();
+  const { authUser } = useAuth();
   const [activeTab, setActiveTab] = useState("upcoming");
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isPendingModalOpen, setIsPendingModalOpen] = useState(false);
@@ -40,6 +46,12 @@ const TutorSessionsPage = () => {
       fetchTutorBookings({
         status: ["confirmed", "completed", "cancelled", "pending"],
       }),
+  });
+
+  const { data: activeOfflineClasses = [] } = useQuery({
+    queryKey: ["activeOfflineClasses"],
+    queryFn: getActiveOfflineClasses,
+    refetchInterval: 10000,
   });
 
   const cancelMutation = useMutation({
@@ -89,6 +101,17 @@ const TutorSessionsPage = () => {
     mutationFn: startOfflineClass,
     onError: (error) => {
       handleToastError(error, "Failed to start open offline class.");
+    },
+  });
+
+  const endOpenOfflineClassMutation = useMutation({
+    mutationFn: endOfflineClass,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["activeOfflineClasses"] });
+      handleToastSuccess("Open class ended successfully.");
+    },
+    onError: (error) => {
+      handleToastError(error, "Failed to end open class.");
     },
   });
 
@@ -166,6 +189,56 @@ const TutorSessionsPage = () => {
     navigate(`/tutor/live-class/${liveClass.id}`);
   };
 
+  const handleStartClassroomChat = async () => {
+    const liveClass = await startOpenOfflineClassMutation.mutateAsync({
+      title: "Open Classroom Chat",
+    });
+
+    await startVirtualClassMutation.mutateAsync({
+      title: "Classroom chat is live now",
+      message: `A tutor has started a classroom chat. Join now with class ID ${liveClass.id}.`,
+      targetRole: "student",
+    });
+
+    navigate(`/tutor/classroom-chat/${liveClass.id}`);
+  };
+
+  const parseParticipantIds = (liveClass) => {
+    const raw = String(liveClass?.participantUserIdsJson || "").trim();
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) {
+          return parsed.filter(Boolean).map(String);
+        }
+      } catch {
+        // ignore invalid payloads
+      }
+    }
+
+    if (liveClass?.participantUserId) {
+      return [String(liveClass.participantUserId)];
+    }
+
+    return [];
+  };
+
+  const openClass = activeOfflineClasses.find((liveClass) => {
+    if (String(liveClass.tutorId) !== String(authUser?.id)) {
+      return false;
+    }
+    return parseParticipantIds(liveClass).length === 0;
+  });
+
+  const handleEndOpenClass = async () => {
+    if (!openClass?.id) {
+      handleToastError(null, "No active open class to end.");
+      return;
+    }
+
+    await endOpenOfflineClassMutation.mutateAsync(openClass.id);
+  };
+
   if (isLoadingTutorBookings) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -222,13 +295,29 @@ const TutorSessionsPage = () => {
       <div className="max-w-6xl mx-auto p-4 sm:p-0">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <h1 className="text-2xl font-bold">My Sessions</h1>
-          <button
-            onClick={handleStartOpenOfflineClass}
-            disabled={startOpenOfflineClassMutation.isPending || startVirtualClassMutation.isPending}
-            className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 disabled:opacity-60"
-          >
-            Start Open Offline Class
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={handleStartClassroomChat}
+              disabled={startOpenOfflineClassMutation.isPending || startVirtualClassMutation.isPending}
+              className="px-4 py-2 rounded-lg bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:opacity-60"
+            >
+              Start Classroom Chat
+            </button>
+            <button
+              onClick={handleStartOpenOfflineClass}
+              disabled={startOpenOfflineClassMutation.isPending || startVirtualClassMutation.isPending}
+              className="px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 disabled:opacity-60"
+            >
+              Start Open Offline Class
+            </button>
+            <button
+              onClick={handleEndOpenClass}
+              disabled={!openClass?.id || endOpenOfflineClassMutation.isPending}
+              className="px-4 py-2 rounded-lg bg-rose-600 text-white text-sm font-semibold hover:bg-rose-700 disabled:opacity-60"
+            >
+              End Open Class
+            </button>
+          </div>
         </div>
         <SessionStats stats={stats} isCompact={true} />
 

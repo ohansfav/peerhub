@@ -59,7 +59,7 @@ const FAQPage = () => {
       id: 7,
       question: "What Is A Rate?",
       answer:
-        "A rate refers to the amount you pay per tutoring session. This can vary depending on the tutor's expertise and subject.",
+        "A rate refers to the amount you pay per tutoring session. This can vary depending on the tutor's expertise and course.",
       roles: ["student"],
     },
 

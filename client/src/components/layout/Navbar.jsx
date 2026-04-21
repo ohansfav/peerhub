@@ -23,7 +23,9 @@ const Navbar = ({ onToggleSidebar }) => {
   const { data: activeOfflineClasses } = useQuery({
     queryKey: ["activeOfflineClasses"],
     queryFn: getActiveOfflineClasses,
-    refetchInterval: 5000,
+    staleTime: 1000 * 15,
+    refetchInterval: 15000,
+    refetchIntervalInBackground: false,
     enabled: Boolean(authUser),
   });
 
@@ -119,14 +121,24 @@ const Navbar = ({ onToggleSidebar }) => {
             {/* Right side */}
             <div className="flex items-center gap-2">
               {topOfflineClass && (
-                <button
-                  onClick={() =>
-                    navigate(`/${authUser?.role}/live-class/${topOfflineClass.id}`)
-                  }
-                  className="hidden md:inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
-                >
-                  Join Live Offline Class
-                </button>
+                <div className="hidden md:flex items-center gap-2">
+                  <button
+                    onClick={() =>
+                      navigate(`/${authUser?.role}/classroom-chat/${topOfflineClass.id}`)
+                    }
+                    className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100"
+                  >
+                    Join Class Chat
+                  </button>
+                  <button
+                    onClick={() =>
+                      navigate(`/${authUser?.role}/live-class/${topOfflineClass.id}`)
+                    }
+                    className="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
+                  >
+                    Join Live Offline Class
+                  </button>
+                </div>
               )}
 
               <span

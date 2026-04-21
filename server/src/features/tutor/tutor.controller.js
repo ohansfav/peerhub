@@ -45,7 +45,7 @@ exports.getTutor = async (req, res) => {
 exports.createTutor = async (req, res) => {
   const userId = req.user.id;
   
-  // Parse subjects if it's a string (from FormData)
+  // Parse courses if it's a string (from FormData)
   const parsedSubjects =
     typeof req.body.subjects === "string"
       ? JSON.parse(req.body.subjects)
@@ -60,7 +60,7 @@ exports.createTutor = async (req, res) => {
   ];
 
   if (subjects.length === 0) {
-    throw new ApiError("Please select at least one valid subject", 400);
+    throw new ApiError("Please select at least one valid course", 400);
   }
   
   const profile = {

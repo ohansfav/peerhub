@@ -9,7 +9,17 @@ import { AuthProvider } from "./context/AuthContext";
 import ErrorBoundary from "./components/ui/ErrorBoundary";
 import { StreamProvider } from "./context/StreamContext";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60,
+      gcTime: 1000 * 60 * 15,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: true,
+      retry: 1,
+    },
+  },
+});
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>

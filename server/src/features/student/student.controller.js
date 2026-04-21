@@ -10,9 +10,11 @@ module.exports = {
     try {
       const page = req.query?.page;
       const limit = req.query?.limit;
+      const search = req.query?.search;
       const students = await studentService.listStudents({
         page,
         limit,
+        search,
       });
       sendResponse(res, 200, "Students list fetched", students);
     } catch (err) {

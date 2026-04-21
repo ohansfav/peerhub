@@ -16,6 +16,11 @@ const definers = [
   require("@features/reviews/review.model"),
   require("@features/quiz/quiz.model"),
   require("@features/broadcast/broadcast.model"),
+  require("@features/offlineClass/offlineClass.model"),
+  require("@features/offlineClass/offlineClassChatMessage.model"),
+  require("@features/offlineClass/offlineClassChatState.model"),
+  require("@features/offlineClass/offlineClassPresence.model"),
+  require("@features/offlineClass/offlineClassRecording.model"),
   require("@features/localChat/localChat.model"),
   require("@features/course/course.model"),
 ];
@@ -56,6 +61,11 @@ module.exports = {
   Quiz: sequelize.models.Quiz,
   QuizAttempt: sequelize.models.QuizAttempt,
   BroadcastMessage: sequelize.models.BroadcastMessage,
+  OfflineClass: sequelize.models.OfflineClass,
+  OfflineClassChatMessage: sequelize.models.OfflineClassChatMessage,
+  OfflineClassChatState: sequelize.models.OfflineClassChatState,
+  OfflineClassPresence: sequelize.models.OfflineClassPresence,
+  OfflineClassRecording: sequelize.models.OfflineClassRecording,
   LocalChatMessage: sequelize.models.LocalChatMessage,
   Course: sequelize.models.Course,
 

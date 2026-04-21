@@ -1,6 +1,6 @@
 const ApiError = require("@utils/apiError");
 const { User, Student, Subject, Exam } = require("@models");
-const { where, Op } = require("sequelize");
+const { Op } = require("sequelize");
 const sequelize = require("@src/shared/database");
 
 const sanitizeIdList = (list) => {
@@ -10,11 +10,46 @@ const sanitizeIdList = (list) => {
 
 module.exports = {
   // get all
-  async listStudents({ limit = 10, page = 1 }) {
-    return await Student.scope("join").findAndCountAll({
-      limit: limit,
+  async listStudents({ limit = 10, page = 1, search = "" }) {
+    const parsedLimit = Number(limit) || 10;
+    const parsedPage = Number(page) || 1;
+    const trimmedSearch = String(search || "").trim();
 
-      offset: (page - 1) * limit,
+    const include = [
+      {
+        model: User,
+        as: "user",
+      },
+      {
+        model: Subject,
+        as: "subjects",
+        through: { attributes: [] },
+      },
+      {
+        model: Exam,
+        as: "exams",
+        through: { attributes: [] },
+      },
+    ];
+
+    if (trimmedSearch) {
+      const likeOperator = sequelize.getDialect() === "postgres" ? Op.iLike : Op.like;
+      include[0].where = {
+        [Op.or]: [
+          { firstName: { [likeOperator]: `%${trimmedSearch}%` } },
+          { lastName: { [likeOperator]: `%${trimmedSearch}%` } },
+          { email: { [likeOperator]: `%${trimmedSearch}%` } },
+        ],
+      };
+      include[0].required = true;
+    }
+
+    return await Student.findAndCountAll({
+      limit: parsedLimit,
+      offset: (parsedPage - 1) * parsedLimit,
+      include,
+      distinct: true,
+      order: [[{ model: User, as: "user" }, "firstName", "ASC"]],
     });
   },
   // get one

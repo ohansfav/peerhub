@@ -74,7 +74,7 @@ export default function ActiveLayout({
                   Student
                 </th>
                 <th className="text-left py-3 px-2 text-sm font-medium hidden sm:table-cell">
-                  Subject
+                  Course
                 </th>
                 <th className="text-left py-3 px-2 text-sm font-medium hidden md:table-cell">
                   Date

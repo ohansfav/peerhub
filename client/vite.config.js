@@ -19,7 +19,8 @@ export default defineConfig({
   },
   server: {
     allowedHosts: [
-      "neriah-yeld-lon.ngrok-free.dev",
+      ".ngrok-free.dev",
+      ".ngrok.io",
       "localhost",
       "127.0.0.1",
     ],

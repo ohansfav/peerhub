@@ -29,8 +29,8 @@ export function useTutorNotifications(enabled = true) {
     queryFn: getBroadcastMessages,
     staleTime: 1000 * 60 * 5,
     cacheTime: 1000 * 60 * 10,
-    refetchInterval: enabled ? 5000 : false,
-    refetchIntervalInBackground: true,
+    refetchInterval: enabled ? 15000 : false,
+    refetchIntervalInBackground: false,
     enabled,
   });
 
@@ -98,6 +98,18 @@ export function useTutorNotifications(enabled = true) {
         const classIdMatch = msg.message?.match(/class ID ([a-f0-9-]{8,})/i);
         const offlineClassId = offlineClassIdMatch?.[1];
         const classId = classIdMatch?.[1];
+        const isOfflineOrClassroomAnnouncement =
+          /classroom/i.test(String(msg?.message || "")) ||
+          /class is in session/i.test(String(msg?.title || ""));
+
+        const offlineOrClassroomLink =
+          offlineClassId
+            ? `/tutor/live-class/${offlineClassId}`
+            : classId && isOfflineOrClassroomAnnouncement
+            ? `/tutor/classroom-chat/${classId}`
+            : classId
+            ? `/tutor/call/${classId}`
+            : null;
 
         result.push({
           id: `broadcast-${String(msg.id)}`,
@@ -106,12 +118,12 @@ export function useTutorNotifications(enabled = true) {
           message: `${msg.title}: ${msg.message}`,
           timestamp: msg.createdAt,
           priority: "medium",
-          ...((offlineClassId || classId) && {
+          ...(offlineOrClassroomLink && {
             action: {
-              label: "Join Live Class",
-              link: offlineClassId
-                ? `/tutor/live-class/${offlineClassId}`
-                : `/tutor/call/${classId}`,
+              label: isOfflineOrClassroomAnnouncement
+                ? "Join Classroom"
+                : "Join Live Class",
+              link: offlineOrClassroomLink,
             },
           }),
         });

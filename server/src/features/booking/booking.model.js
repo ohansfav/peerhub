@@ -289,7 +289,7 @@ module.exports = (sequelize) => {
 
     const tutorSubject = tutorSubjects.some((s) => s.id === booking.subjectId);
     if (!tutorSubject) {
-      throw new ApiError("Subject not registered for this tutor", 400);
+      throw new ApiError("Course not registered for this tutor", 400);
     }
   };
 

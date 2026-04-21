@@ -58,6 +58,18 @@ exports.updateBooking = async (bookingId, updatedData) => {
 };
 
 exports.createBooking = async (userId, availabilityData) => {
+  if (!userId) {
+    throw new ApiError("Invalid tutor account for availability", 400);
+  }
+
+  const tutorProfile = await Tutor.findByPk(userId);
+  if (!tutorProfile) {
+    throw new ApiError(
+      "Tutor profile not found. Please complete tutor onboarding first.",
+      400
+    );
+  }
+
   const availability = await Booking.scope("join").create({
     ...availabilityData,
     tutorId: userId,

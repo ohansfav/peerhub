@@ -104,14 +104,18 @@ exports.getTutors = async ({
     },
   ];
 
+  // SQLite does not support ILIKE; use LIKE for non-Postgres dialects.
+  const nameLikeOperator =
+    sequelize.getDialect() === "postgres" ? Op.iLike : Op.like;
+
   //Name
   if (name) {
     const searchWords = name.split(" ");
 
     const conditions = searchWords.map((word) => ({
       [Op.or]: [
-        { first_name: { [Op.iLike]: `%${word}%` } },
-        { last_name: { [Op.iLike]: `%${word}%` } },
+        { first_name: { [nameLikeOperator]: `%${word}%` } },
+        { last_name: { [nameLikeOperator]: `%${word}%` } },
       ],
     }));
 
@@ -299,9 +303,9 @@ async function addSubjectsToProfile({
   if (validSubjectIds.length === 0) {
     if (requireAtLeastOne) {
       throw new ApiError(
-        "Please select at least one valid subject.",
+        "Please select at least one valid course.",
         400,
-        "Invalid subject selection"
+        "Invalid course selection"
       );
     }
 
@@ -322,9 +326,9 @@ async function addSubjectsToProfile({
 
   if (selectedSubjects.length !== validSubjectIds.length) {
     throw new ApiError(
-      "One or more selected subjects are invalid.",
+      "One or more selected courses are invalid.",
       400,
-      "Invalid subject selection"
+      "Invalid course selection"
     );
   }
 

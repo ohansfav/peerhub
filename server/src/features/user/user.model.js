@@ -166,6 +166,10 @@ module.exports = () => {
     });
     User.hasOne(models.Tutor, { foreignKey: "userId", as: "tutor" });
     User.hasOne(models.Admin, { foreignKey: "userId", as: "admin" });
+    User.hasMany(models.Course, {
+      foreignKey: "tutorUserId",
+      as: "uploadedCourses",
+    });
   };
 
   return User;

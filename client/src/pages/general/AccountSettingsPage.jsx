@@ -370,11 +370,11 @@ const AccountSettingsPage = () => {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Subjects of Interest
+                          Courses of Interest
                         </label>
                         {subjectLoading ? (
                           <p className="text-sm text-gray-500">
-                            Loading subjects...
+                            Loading courses...
                           </p>
                         ) : (
                           <div className="flex flex-wrap gap-2">
@@ -471,12 +471,12 @@ const AccountSettingsPage = () => {
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Subjects You Teach{" "}
+                          Courses You Teach{" "}
                           <span className="text-red-500">*</span>
                         </label>
                         {subjectLoading ? (
                           <p className="text-sm text-gray-500">
-                            Loading subjects...
+                            Loading courses...
                           </p>
                         ) : (
                           <div className="flex flex-wrap gap-2">
@@ -501,7 +501,7 @@ const AccountSettingsPage = () => {
                         {user?.role === "tutor" &&
                           roleSpecificData.tutorSubjects.length === 0 && (
                             <p className="text-sm text-red-500 mt-1">
-                              Please select at least one subject
+                              Please select at least one course
                             </p>
                           )}
                       </div>
@@ -583,7 +583,7 @@ const AccountSettingsPage = () => {
 
                       <div>
                         <span className="text-sm font-medium text-gray-600">
-                          Subjects of Interest
+                          Courses of Interest
                         </span>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {user?.student?.subjects?.length > 0 ? (
@@ -597,7 +597,7 @@ const AccountSettingsPage = () => {
                             ))
                           ) : (
                             <p className="text-gray-500 text-sm">
-                              No subjects selected
+                              No courses selected
                             </p>
                           )}
                         </div>
@@ -652,7 +652,7 @@ const AccountSettingsPage = () => {
 
                       <div>
                         <span className="text-sm font-medium text-gray-600">
-                          Subjects You Teach
+                          Courses You Teach
                         </span>
                         <div className="flex flex-wrap gap-2 mt-1">
                           {user?.tutor?.subjects?.length > 0 ? (
@@ -666,7 +666,7 @@ const AccountSettingsPage = () => {
                             ))
                           ) : (
                             <p className="text-gray-500 text-sm">
-                              No subjects selected
+                              No courses selected
                             </p>
                           )}
                         </div>

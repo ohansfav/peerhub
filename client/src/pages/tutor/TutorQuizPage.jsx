@@ -236,7 +236,7 @@ function CreateQuizForm({ subjects, onClose, queryClient }) {
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Course</label>
           <select
             value={subjectId}
             onChange={(e) => setSubjectId(e.target.value)}
